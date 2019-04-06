@@ -15,4 +15,4 @@ mix
   .setPublicPath('public')
   .react('resources/js/app.js', 'public')
   .sass('resources/sass/app.scss', 'public')
-  .copy('public', '../../public/vendor/panel');
+  .copy('public', '../public/vendor/panel');
