@@ -1,107 +1,71 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import axios from 'axios';
 
-class DiscussionPage extends React.Component {
+class ResourcePage extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      discussion: null,
-      reply: '',
+      resource: null,
     };
-
-    this.onReplyInputChange = this.onReplyInputChange.bind(this);
-    this.onCreateReplyClick = this.onCreateReplyClick.bind(this);
   }
 
   componentWillMount() {
     const {params} = this.props.match;
-    const channel = params.channel;
-    const discussion = params.discussion;
 
     axios
-      .get('/forum/api/channels/' + channel + '/discussions/' + discussion)
+      .get('/panel/api/resources/' + params.resource)
       .then(response => {
-        this.setState({discussion: response.data});
+        this.setState({resource: response.data});
       });
-  }
-
-  onCreateReplyClick()
-  {
-    const {reply} = this.state;
-    const {params} = this.props.match;
-    const discussion = params.discussion;
-
-    axios
-      .post(
-        '/forum/api/discussions/' + discussion + '/replies',
-        {content: reply}
-      )
-      .then(response => {
-        this.setState({reply: ''});
-      });
-  }
-
-  onReplyInputChange(event)
-  {
-    this.setState({reply: event.target.value});
   }
 
   render() {
-    const {
-      discussion,
-      reply,
-    } = this.state;
+    const {params} = this.props.match;
+    const {resource} = this.state;
 
-    if (discussion === null || typeof discussion !== 'object') {
+    if (typeof resource === 'object' && resource === null) {
       return (
-        <div className="container content">
-          Discussion not found.
-        </div>
+        <div>Loading...</div>
       )
     }
 
     return (
-      <div className="container content">
-        <div className="form-group">
-          <div className="float-right">
-            <span className="badge badge-pill badge-primary">{discussion.channel.title}</span>
-          </div>
-
-          <strong>{discussion.author.name}</strong> posted on {discussion.created_at}
-          <h1>{discussion.title}</h1>
-          {discussion.content}
-        </div>
-
-        <div id="replies">
-          {discussion.replies.map(reply =>
-            <div className="card mb-3" key={reply.id}>
-              <div className="card-body">
-                <strong>{reply.author.name}</strong> posted on {reply.created_at}
-                <div>{reply.content}</div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <h3>Add Reply</h3>
+      <div className="container-fluid content">
+        <h1>{resource.name.plural}</h1>
 
         <div className="form-group">
-          <label>Reply</label>
-          <textarea
-            className="form-control"
-            name="content"
-            onChange={e => this.onReplyInputChange(e)}
-            value={reply}
-          ></textarea>
+          <Link
+            className="btn btn-primary"
+            to={'/resources/' + params.resource + '/create'}
+          >{'Create ' + resource.name.singular}</Link>
         </div>
-        <button
-          className="btn btn-primary"
-          onClick={this.onCreateReplyClick}
-        >Add Reply</button>
+
+        <table className="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th className="text-right"></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {(resource.model_data.data).map(model =>
+              <tr key={model.id}>
+                <td>{model.id}</td>
+                <td className="text-right">
+                  <Link to={'/resources/' + params.resource + '/' + model.id}>View</Link>{' '}
+                  <Link to={'/resources/' + params.resource + '/' + model.id + '/edit'}>Edit</Link>{' '}
+                  <Link>Delete</Link>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     )
   }
 }
 
-export default DiscussionPage;
+export default ResourcePage;

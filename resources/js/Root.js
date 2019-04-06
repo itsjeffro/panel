@@ -1,17 +1,17 @@
 import React from 'react';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
-import HomePage from './pages/HomePage';
-import DiscussionPage from './pages/DiscussionPage';
+import DashboardPage from './pages/DashboardPage';
+import ResourcePage from './pages/ResourcePage';
 
 class Root extends React.Component {
   render() {
     return (
-      <Router basename="/forum">
+      <Router basename="/panel">
         <div>
           <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route exact path="/channels/:channel/discussions/:discussion" component={DiscussionPage} />
+            <Route exact path="/" component={DashboardPage} />
+            <Route exact path="/resources/:resource" component={ResourcePage} />
           </Switch>
         </div>
       </Router>
