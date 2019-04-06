@@ -1,0 +1,24 @@
+{
+	"name" : "itsjeffro/panel",
+	"description" : "Simple administration package",
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Jeff Nielsen",
+			"email" : "jefftoddnielsen@gmail.com"
+		}
+	],
+	"autoload" : {
+		"psr-4" : {
+			"Itsjeffro\\Panel\\" : "src/"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"Itsjeffro\\Panel\\Tests\\" : "tests/"
+		}
+	},
+	"require-dev" : {
+		"phpunit/phpunit" : "~6.0"
+	},
+	"minimum-stability" : "dev"
+}

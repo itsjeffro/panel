@@ -1,0 +1,14 @@
+// Bootstrap
+@import "node_modules/bootstrap/scss/bootstrap";
+
+body {
+    font-family: helvetica, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.content {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}

@@ -1,0 +1,34 @@
+<?php
+
+namespace DummyNamespace;
+
+use Itsjeffro\Panel\Resource;
+
+class DummyClass extends Resource
+{
+    /**
+     * The model that the resource corresponds with.
+     *
+     * @var string
+     */
+    public $model = 'App\DummyClass';
+
+    /**
+     * The single value that is used to represent the resource when it is being displayed.
+     *
+     * @var string
+     */
+    public $title = 'id';
+
+    /**
+     * Get the fields displayed by the resource.
+     *
+     * @return array
+     */
+    public function fields(): array
+    {
+        return [
+            // fields
+        ];
+    }
+}
