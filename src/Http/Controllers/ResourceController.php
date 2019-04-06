@@ -25,26 +25,38 @@ class ResourceController extends Controller
      */
     public function index()
     {
-        $resources = $this->resourcesIn();
+        $registeredResources = $this->resourcesIn();
+
+        $resources = array_map(function ($resource) {
+            $resource = explode('\\', $resource);
+            $name = Str::plural(end($resource));
+
+            return [
+                'name' => $name,
+                'slug' => Str::kebab($name),
+            ];
+        }, $registeredResources);
 
         return response()->json($resources);
     }
 
     /**
-     * @param string $resourceSlug
+     * @param string $resource
      * @throws \Exception
      * @return Illuminate\Http\JsonResponse
      */
-    public function show($resourceSlug)
+    public function show(string $resource)
     {
-        $resource = $this->resourceFromResourceSlug($resourceSlug);
+        $resource = $this->resourceFromResourceSlug($resource);
         $model = $this->modelFromResource($resource);
-
-        $modelPath = $resource->model;
-        $resourceName = explode('\\', $modelPath);
+        $resourceName = explode('\\', $resource->model);
+        $name = end($resourceName);
 
         return response()->json([
-            'name' => end($resourceName),
+            'name' => [
+                'singular' => $name,
+                'plural' => Str::plural($name),
+            ],
             'resource' => $resource,
             'model_data' => $model::paginate(),
         ]);
