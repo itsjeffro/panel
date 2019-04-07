@@ -52,12 +52,18 @@ class ResourceController extends Controller
         $resourceName = explode('\\', $resource->model);
         $name = end($resourceName);
 
+        $indexes = [];
+
+        foreach ($resource->fields() as $field) {
+            $indexes[] = $field;
+        }
+
         return response()->json([
             'name' => [
                 'singular' => $name,
                 'plural' => Str::plural($name),
             ],
-            'resource' => $resource,
+            'indexes' => $indexes,
             'model_data' => $model::paginate(),
         ]);
     }
@@ -92,7 +98,7 @@ class ResourceController extends Controller
         $resourceSlug = ucfirst(Str::singular($resourceSlug));
         $class = '\\'.str_replace(DIRECTORY_SEPARATOR, '\\', ucfirst($this->resourcesPath)).'\\'.$resourceSlug;
 
-        return new $class;
+        return (new $class);
     }
 
     /**
