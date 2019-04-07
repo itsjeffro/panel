@@ -45,7 +45,9 @@ class ResourcePage extends React.Component {
         <table className="table">
           <thead>
             <tr>
-              <th>ID</th>
+              {resource.indexes.map(index =>
+                <th>{index.name}</th>
+              )}
               <th className="text-right"></th>
             </tr>
           </thead>
@@ -53,7 +55,9 @@ class ResourcePage extends React.Component {
           <tbody>
             {(resource.model_data.data).map(model =>
               <tr key={model.id}>
-                <td>{model.id}</td>
+                {resource.indexes.map(index =>
+                  <td>{model[index.column]}</td>
+                )}
                 <td className="text-right">
                   <Link to={'/resources/' + params.resource + '/' + model.id}>View</Link>{' '}
                   <Link to={'/resources/' + params.resource + '/' + model.id + '/edit'}>Edit</Link>{' '}
