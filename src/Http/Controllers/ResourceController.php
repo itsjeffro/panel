@@ -3,11 +3,9 @@
 namespace Itsjeffro\Panel\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Itsjeffro\Panel\Resource;
-use Symfony\Component\Finder\Finder;
 
 class ResourceController extends Controller
 {
@@ -19,33 +17,13 @@ class ResourceController extends Controller
     public $resourcesPath = 'app/Panel';
 
     /**
-     * List resources.
+     * List resources from resource type.
      *
-     * @return Illuminate\Http\JsonResponse
-     */
-    public function index()
-    {
-        $registeredResources = $this->resourcesIn();
-
-        $resources = array_map(function ($resource) {
-            $resource = explode('\\', $resource);
-            $name = Str::plural(end($resource));
-
-            return [
-                'name' => $name,
-                'slug' => Str::kebab($name),
-            ];
-        }, $registeredResources);
-
-        return response()->json($resources);
-    }
-
-    /**
      * @param string $resource
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
-     * @return Illuminate\Http\JsonResponse
      */
-    public function show(string $resource)
+    public function index(string $resource)
     {
         $resource = $this->resourceFromResourceSlug($resource);
         $model = $this->modelFromResource($resource);
@@ -69,22 +47,46 @@ class ResourceController extends Controller
     }
 
     /**
-     * Return resources.
+     * Get single model resource.
      *
-     * @return array
+     * @param string $resource
+     * @param string $id
+     * @throws \Exception
+     * @return Illuminate\Http\JsonResponse
      */
-    public function resourcesIn(): array
+    public function show(string $resource, string $id)
     {
-        $finder = new Finder();
-        $files = $finder->files()->in(base_path($this->resourcesPath));
+        $resource = $this->resourceFromResourceSlug($resource);
+        $model = $this->modelFromResource($resource);
+        $resourceName = explode('\\', $resource->model);
+        $name = end($resourceName);
 
-        $resources = [];
+        $fields = [];
 
-        foreach ($files as $file) {
-            $resources[] = $this->getClassName($file, base_path());
+        foreach ($resource->fields() as $field) {
+            $fields[] = $field;
         }
 
-        return $resources;
+        return response()->json([
+            'name' => [
+                'singular' => $name,
+                'plural' => Str::plural($name),
+            ],
+            'fields' => $fields,
+            'model_data' => $model::find($id),
+        ]);
+    }
+
+    /**
+     * Update single model resource.
+     *
+     * @param string $resource
+     * @param string $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function update(string $resource, string $id)
+    {
+        //
     }
 
     /**
@@ -118,7 +120,6 @@ class ResourceController extends Controller
 
         return $model;
     }
-
 
     /**
      * Get class name from path.
