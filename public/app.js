@@ -31050,12 +31050,16 @@ function (_React$Component) {
         to: '/resources/' + params.resource + '/create'
       }, 'Create ' + resource.name.singular)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
         className: "table"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "ID"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, resource.indexes.map(function (index) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, index.name);
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
         className: "text-right"
       }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, resource.model_data.data.map(function (model) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
           key: model.id
-        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, model.id), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+        }, resource.indexes.map(function (index) {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, model[index.column]);
+        }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
           className: "text-right"
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
           to: '/resources/' + params.resource + '/' + model.id
