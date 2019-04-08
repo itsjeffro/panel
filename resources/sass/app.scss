@@ -2,6 +2,7 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 
 body {
+    background: #eef0f3;
     font-family: helvetica, sans-serif;
     color: #333;
     margin: 0;
@@ -11,4 +12,18 @@ body {
 .content {
     padding-top: 15px;
     padding-bottom: 15px;
+}
+
+.page-heading {
+    h1 {
+        font-size: 1.4em;
+    }
+}
+
+.navbar-light {
+    background: #fff;
+}
+
+.navbar {
+    border-bottom: 1px solid #ccc;
 }
