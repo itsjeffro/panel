@@ -2,10 +2,8 @@
 
 namespace Itsjeffro\Panel\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
-use Itsjeffro\Panel\Resource;
 use Itsjeffro\Panel\ResourceManager;
 
 class ResourceController extends Controller
