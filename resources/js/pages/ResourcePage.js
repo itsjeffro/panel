@@ -52,7 +52,9 @@ class ResourcePage extends React.Component {
           </div>
 
           <div className="col-xs-12 col-md-10">
-            <h1>{resource.name.plural}</h1>
+            <div className="page-heading">
+              <h1>{resource.name.plural}</h1>
+            </div>
 
             <div className="form-group">
               <Link
@@ -61,31 +63,33 @@ class ResourcePage extends React.Component {
               >{'Create ' + resource.name.singular}</Link>
             </div>
 
-            <table className="table">
-              <thead>
-                <tr>
-                  {resource.indexes.map(index =>
-                    <th>{index.name}</th>
-                  )}
-                  <th className="text-right"></th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {(resource.model_data.data).map(model =>
-                  <tr key={model.id}>
+            <div className="card">
+              <table className="table mb-0">
+                <thead>
+                  <tr>
                     {resource.indexes.map(index =>
-                      <td>{model[index.column]}</td>
+                      <th className="border-top-0">{index.name}</th>
                     )}
-                    <td className="text-right">
-                      <Link to={'/resources/' + params.resource + '/' + model.id}>View</Link>{' '}
-                      <Link to={'/resources/' + params.resource + '/' + model.id + '/edit'}>Edit</Link>{' '}
-                      <Link>Delete</Link>
-                    </td>
+                    <th className="border-top-0 text-right"></th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+
+                <tbody>
+                  {(resource.model_data.data).map(model =>
+                    <tr key={model.id}>
+                      {resource.indexes.map(index =>
+                        <td>{model[index.column]}</td>
+                      )}
+                      <td className="text-right">
+                        <Link to={'/resources/' + params.resource + '/' + model.id}>View</Link>{' '}
+                        <Link to={'/resources/' + params.resource + '/' + model.id + '/edit'}>Edit</Link>{' '}
+                        <Link>Delete</Link>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

@@ -52,40 +52,9 @@ class ResourceCreatePage extends React.Component {
           </div>
 
           <div className="col-xs-12 col-md-10">
-            <h1>Create {resource.name.singular}</h1>
-
-            <div className="form-group">
-              <Link
-                className="btn btn-primary"
-                to={'/resources/' + params.resource + '/create'}
-              >{'Create ' + resource.name.singular}</Link>
+            <div className="page-heading">
+              <h1>Create {resource.name.singular}</h1>
             </div>
-
-            <table className="table">
-              <thead>
-                <tr>
-                  {resource.indexes.map(index =>
-                    <th>{index.name}</th>
-                  )}
-                  <th className="text-right"></th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {(resource.model_data.data).map(model =>
-                  <tr key={model.id}>
-                    {resource.indexes.map(index =>
-                      <td>{model[index.column]}</td>
-                    )}
-                    <td className="text-right">
-                      <Link to={'/resources/' + params.resource + '/' + model.id}>View</Link>{' '}
-                      <Link to={'/resources/' + params.resource + '/' + model.id + '/edit'}>Edit</Link>{' '}
-                      <Link>Delete</Link>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
           </div>
         </div>
       </div>

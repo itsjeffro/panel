@@ -22,7 +22,7 @@ class ResourceViewPage extends React.Component {
       });
 
     axios
-      .get('/panel/api/resources/' + params.resource)
+      .get('/panel/api/resources/' + params.resource + '/' + params.id)
       .then(response => {
         this.setState({resource: response.data});
       });
@@ -52,40 +52,26 @@ class ResourceViewPage extends React.Component {
           </div>
 
           <div className="col-xs-12 col-md-10">
-            <h1>Viewing {resource.name.singular}</h1>
-
-            <div className="form-group">
-              <Link
-                className="btn btn-primary"
-                to={'/resources/' + params.resource + '/create'}
-              >{'Create ' + resource.name.singular}</Link>
+            <div className="page-heading">
+              <h1>Viewing {resource.name.singular}</h1>
             </div>
 
-            <table className="table">
-              <thead>
-                <tr>
-                  {resource.indexes.map(index =>
-                    <th>{index.name}</th>
-                  )}
-                  <th className="text-right"></th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {(resource.model_data.data).map(model =>
-                  <tr key={model.id}>
-                    {resource.indexes.map(index =>
-                      <td>{model[index.column]}</td>
-                    )}
-                    <td className="text-right">
-                      <Link to={'/resources/' + params.resource + '/' + model.id}>View</Link>{' '}
-                      <Link to={'/resources/' + params.resource + '/' + model.id + '/edit'}>Edit</Link>{' '}
-                      <Link>Delete</Link>
-                    </td>
-                  </tr>
+            <div className="card">
+              <div className="list-group list-group-flush">
+                {resource.fields.map(field =>
+                  <div className="list-group-item">
+                    <div className="row">
+                      <div className="col-xs-12 col-md-2">
+                        <strong>{field.name}</strong>
+                      </div>
+                      <div className="col-xs-12 col-md-10">
+                        {resource.model_data[field.column]}
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </tbody>
-            </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>

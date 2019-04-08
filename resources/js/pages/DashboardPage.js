@@ -36,7 +36,9 @@ class DashboardPage extends React.Component {
           </div>
 
           <div className="col-xs-12 col-md-10">
-            <h1>Getting Started</h1>
+            <div className="page-heading">
+              <h1>Getting Started</h1>
+            </div>
           </div>
         </div>
       </div>
