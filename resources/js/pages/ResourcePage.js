@@ -42,13 +42,16 @@ class ResourcePage extends React.Component {
       <div className="container-fluid content">
         <div className="row">
           <div className="col-xs-12 col-md-2">
-            <ul>
-              {resources.map(resource =>
-                <li key={resource.slug}>
-                  <Link to={'/resources/' + resource.slug}>{resource.name}</Link>
-                </li>
-              )}
-            </ul>
+            <div className="drawer">
+              <h3>Resources</h3>
+              <ul>
+                {resources.map(resource =>
+                  <li key={resource.slug}>
+                    <Link to={'/resources/' + resource.slug}>{resource.name}</Link>
+                  </li>
+                )}
+              </ul>
+            </div>
           </div>
 
           <div className="col-xs-12 col-md-10">
@@ -56,7 +59,7 @@ class ResourcePage extends React.Component {
               <h1>{resource.name.plural}</h1>
             </div>
 
-            <div className="form-group">
+            <div className="form-group text-right">
               <Link
                 className="btn btn-primary"
                 to={'/resources/' + params.resource + '/create'}
