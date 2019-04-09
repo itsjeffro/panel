@@ -1,0 +1,21 @@
+.drawer {
+  h3 {
+    font-size: 1em;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    display: block;
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+  }
+}

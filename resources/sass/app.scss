@@ -1,6 +1,9 @@
 // Bootstrap
 @import "node_modules/bootstrap/scss/bootstrap";
 
+// Custom
+@import "./components/drawer.scss";
+
 body {
     background: #eef0f3;
     font-family: helvetica, sans-serif;
