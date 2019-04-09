@@ -3,6 +3,7 @@
 namespace DummyNamespace;
 
 use Itsjeffro\Panel\Resource;
+use Itsjeffro\Panel\Fields\ID;
 
 class DummyClass extends Resource
 {
@@ -28,7 +29,7 @@ class DummyClass extends Resource
     public function fields(): array
     {
         return [
-            // fields
+            ID::make(),
         ];
     }
 }
