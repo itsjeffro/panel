@@ -10,6 +10,9 @@ class ResourceEditPage extends React.Component {
       resources: [],
       resource: null,
     };
+
+    this.onInputChange = this.onInputChange.bind(this);
+    this.onHandleClick = this.onHandleClick.bind(this);
   }
 
   componentWillMount() {
@@ -26,6 +29,29 @@ class ResourceEditPage extends React.Component {
       .then(response => {
         this.setState({resource: response.data});
       });
+  }
+
+  onInputChange(event) {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    this.setState(prevState => {
+      let resource = {
+        ...prevState.resource,
+        model_data: {
+          ...prevState.resource.model_data,
+          [name]: value
+        }
+      };
+
+      return {resource: resource};
+    });
+  }
+
+  onHandleClick() {
+    const {params} = this.props.match;
+
+    alert('/panel/api/resources/' + params.resource + '/' + params.id);
   }
 
   render() {
@@ -73,6 +99,7 @@ class ResourceEditPage extends React.Component {
                           name={field.column}
                           type="text"
                           value={resource.model_data[field.column]}
+                          onChange={e => this.onInputChange(e)}
                         />
                       </div>
                     </div>
@@ -80,7 +107,10 @@ class ResourceEditPage extends React.Component {
                 )}
               </div>
               <div className="card-footer text-right">
-                <button className="btn btn-primary">Update {resource.name.singular}</button>
+                <button
+                  className="btn btn-primary"
+                  onClick={this.onHandleClick}
+                >Update {resource.name.singular}</button>
               </div>
             </div>
           </div>
