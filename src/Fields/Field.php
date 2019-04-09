@@ -35,10 +35,12 @@ abstract class Field
     public static function make(string $name = '', string $column = ''): Field
     {
         $childClass = static::class;
-        $name = empty($name) ? $childClass : $name;
+        $classSegments = explode('\\', $childClass);
+
+        $name = empty($name) ? end($classSegments) : $name;
         $column = empty($column) ? strtolower($name) : $column;
 
-        return new new $childClass($name, $column);
+        return new $childClass($name, $column);
     }
     
     /**
