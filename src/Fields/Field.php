@@ -8,27 +8,12 @@ abstract class Field
      * @var string
      */
     public $name = '';
-    
+
     /**
-     * @var bool
+     * @var string
      */
-    public $hideFromIndex = false;
-    
-    /**
-     * @var bool
-     */
-    public $hideFromDetail = false;
-    
-    /**
-     * @var bool
-     */
-    public $hideFromCreate = false;
-    
-    /**
-     * @var bool
-     */
-    public $hideFromUpdate = false;
-    
+    public $column = '';
+
     /**
      * @var bool
      */
@@ -48,8 +33,10 @@ abstract class Field
      * @var bool
      */
     public $showOnUpdate = false;
-    
+
     /**
+     * Field constructor.
+     *
      * @param string $name
      * @param string $column
      */
