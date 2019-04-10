@@ -59,11 +59,18 @@ class ResourcePage extends React.Component {
               <h1>{resource.name.plural}</h1>
             </div>
 
-            <div className="form-group text-right">
-              <Link
-                className="btn btn-primary"
-                to={'/resources/' + params.resource + '/create'}
-              >{'Create ' + resource.name.singular}</Link>
+            <div className="form-group">
+              <div className="row">
+                <div className="col-12 col-lg-3">
+                  <input type="text" className="form-control" placeholder="Search" />
+                </div>
+                <div className="col-12 col-lg-9 text-right">
+                  <Link
+                    className="btn btn-primary"
+                    to={'/resources/' + params.resource + '/create'}
+                  >{'Create ' + resource.name.singular}</Link>
+                </div>
+              </div>
             </div>
 
             <div className="card">
