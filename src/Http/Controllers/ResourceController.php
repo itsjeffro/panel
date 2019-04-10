@@ -3,6 +3,7 @@
 namespace Itsjeffro\Panel\Http\Controllers;
 
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Itsjeffro\Panel\ResourceManager;
 
@@ -27,20 +28,16 @@ class ResourceController extends Controller
         $resourceManager = new ResourceManager($this->resourcesPath, $resource);
         $model = $resourceManager->resolveModel();
         $name = $resourceManager->getName();
-
-        $indexes = [];
-
-        foreach ($resourceManager->getClass()->fields() as $field) {
-            $indexes[] = $field;
-        }
+        $fields = $resourceManager->getFields();
+        $columns = Arr::pluck($fields, 'column');
 
         return response()->json([
             'name' => [
                 'singular' => $name,
                 'plural' => Str::plural($name),
             ],
-            'indexes' => $indexes,
-            'model_data' => $model::paginate(),
+            'fields' => $fields,
+            'model_data' => $model::select($columns)->paginate(),
         ]);
     }
 
@@ -57,12 +54,8 @@ class ResourceController extends Controller
         $resourceManager = new ResourceManager($this->resourcesPath, $resource);
         $model = $resourceManager->resolveModel();
         $name = $resourceManager->getName();
-
-        $fields = [];
-
-        foreach ($resourceManager->getClass()->fields() as $field) {
-            $fields[] = $field;
-        }
+        $fields = $resourceManager->getFields();
+        $columns = Arr::pluck($fields, 'column');
 
         return response()->json([
             'name' => [
@@ -70,11 +63,11 @@ class ResourceController extends Controller
                 'plural' => Str::plural($name),
             ],
             'fields' => $fields,
-            'model_data' => $model::find($id),
+            'model_data' => $model::select($columns)->find($id),
         ]);
     }
 
-    /**
+    /**F
      * Update single model resource.
      *
      * @param string $resource
@@ -82,6 +75,19 @@ class ResourceController extends Controller
      * @return Illuminate\Http\JsonResponse
      */
     public function update(string $resource, string $id)
+    {
+        //
+    }
+
+
+    /**
+     * Create new model resource.
+     *
+     * @param string $resource
+     * @param string $id
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function store(string $resource)
     {
         //
     }
