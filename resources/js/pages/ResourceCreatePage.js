@@ -9,7 +9,12 @@ class ResourceCreatePage extends React.Component {
     this.state = {
       resources: [],
       resource: null,
+      fields: [],
+      name: {}
     };
+
+    this.onInputChange = this.onInputChange.bind(this);
+    this.onHandleClick = this.onHandleClick.bind(this);
   }
 
   componentWillMount() {
@@ -18,25 +23,58 @@ class ResourceCreatePage extends React.Component {
     axios
       .get('/panel/api/resources')
       .then(response => {
-        this.setState({resources: response.data});
+        this.setState({
+          resources: response.data
+        });
       });
 
     axios
-      .get('/panel/api/resources/' + params.resource)
+      .get('/panel/api/resources/' + params.resource + '/fields')
       .then(response => {
-        this.setState({resource: response.data});
+        this.setState({
+          fields: response.data.fields,
+          name: response.data.name
+        });
       });
   }
 
-  render() {
-    const {params} = this.props.match;
-    const {resources, resource} = this.state;
+  onInputChange(event) {
+    const name = event.target.name;
+    const value = event.target.value;
 
-    if (typeof resource === 'object' && resource === null) {
+    this.setState(prevState => {
+      let resource = {
+        ...prevState.resource,
+        [name]: value
+      };
+
+      return {resource: resource};
+    });
+  }
+
+  onHandleClick() {
+    const {params} = this.props.match;
+
+    alert('/panel/api/resources/' + params.resource);
+  }
+
+  render() {
+    const {
+      name,
+      fields,
+      resources,
+      resource
+    } = this.state;
+
+    if (typeof fields === 'object' && fields.length === 0) {
       return (
         <div>Loading...</div>
       )
     }
+
+    let resource_fields = fields.filter(field => {
+      return field.showOnUpdate;
+    });
 
     return (
       <div className="container-fluid content">
@@ -56,8 +94,39 @@ class ResourceCreatePage extends React.Component {
 
           <div className="col-xs-12 col-md-10">
             <div className="page-heading">
-              <h1>Create {resource.name.singular}</h1>
+              <h1>Create {name.singular}</h1>
             </div>
+
+            <div className="card">
+              <div className="list-group list-group-flush">
+                {resource_fields.map(field =>
+                  <div className="list-group-item" key={field.column}>
+                    <div className="row">
+                      <div className="col-xs-12 col-md-2 pt-2">
+                        <strong>{field.name}</strong>
+                      </div>
+                      <div className="col-xs-12 col-md-7">
+                        <input
+                          className="form-control"
+                          name={field.column}
+                          type="text"
+                          value={resource !== null ? resource[field.column] : ''}
+                          onChange={e => this.onInputChange(e)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="card-footer text-right">
+                <button
+                  className="btn btn-primary"
+                  onClick={this.onHandleClick}
+                >Save {name.singular}</button>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
