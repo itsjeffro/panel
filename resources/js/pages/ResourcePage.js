@@ -70,8 +70,8 @@ class ResourcePage extends React.Component {
               <table className="table mb-0">
                 <thead>
                   <tr>
-                    {resource.indexes.map(index =>
-                      <th className="border-top-0">{index.name}</th>
+                    {resource.fields.map(field =>
+                      <th className="border-top-0" key={field.column}>{field.name}</th>
                     )}
                     <th className="border-top-0 text-right"></th>
                   </tr>
@@ -80,13 +80,13 @@ class ResourcePage extends React.Component {
                 <tbody>
                   {(resource.model_data.data).map(model =>
                     <tr key={model.id}>
-                      {resource.indexes.map(index =>
-                        <td>{model[index.column]}</td>
+                      {resource.fields.map(field =>
+                        <td key={model.id + '-' + field.column}>{model[field.column]}</td>
                       )}
                       <td className="text-right">
                         <Link to={'/resources/' + params.resource + '/' + model.id}>View</Link>{' '}
                         <Link to={'/resources/' + params.resource + '/' + model.id + '/edit'}>Edit</Link>{' '}
-                        <Link>Delete</Link>
+                        <Link to={'/'}>Delete</Link>
                       </td>
                     </tr>
                   )}

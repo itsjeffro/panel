@@ -62,7 +62,7 @@ class ResourceViewPage extends React.Component {
             <div className="card">
               <div className="list-group list-group-flush">
                 {resource.fields.map(field =>
-                  <div className="list-group-item">
+                  <div className="list-group-item" key={field.column}>
                     <div className="row">
                       <div className="col-xs-12 col-md-2">
                         <strong>{field.name}</strong>
