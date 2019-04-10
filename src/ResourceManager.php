@@ -38,17 +38,20 @@ class ResourceManager
     }
 
     /**
+     * Return name of resource from class.
+     *
      * @return string
      */
     public function getName(): string
     {
-        $resource = $this->getClass();
-        $model = explode('\\', $resource->model);
+        $model = explode('\\', $this->getClass()->model);
 
         return end($model);
     }
 
     /**
+     * Return fill class name.
+     *
      * @return mixed
      */
     public function getClass()
@@ -57,6 +60,22 @@ class ResourceManager
     }
 
     /**
+     * Return resource's fields along with indexes.
+     *
+     * @return array
+     */
+    public function getFields(): array
+    {
+        $fields = [];
+        foreach ($this->getClass()->fields() as $field) {
+            $fields[] = $field;
+        }
+        return $fields;
+    }
+
+    /**
+     * Resolved associated model class from resource.
+     *
      * @return mixed
      * @throws \Exception
      */
