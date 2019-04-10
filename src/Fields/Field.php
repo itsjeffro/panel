@@ -12,7 +12,42 @@ abstract class Field
     /**
      * @var bool
      */
-    public $index = false;
+    public $hideFromIndex = false;
+    
+    /**
+     * @var bool
+     */
+    public $hideFromDetail = false;
+    
+    /**
+     * @var bool
+     */
+    public $hideFromCreate = false;
+    
+    /**
+     * @var bool
+     */
+    public $hideFromUpdate = false;
+    
+    /**
+     * @var bool
+     */
+    public $showOnIndex = false;
+    
+    /**
+     * @var bool
+     */
+    public $showOnDetail = false;
+    
+    /**
+     * @var bool
+     */
+    public $showOnCreate = false;
+    
+    /**
+     * @var bool
+     */
+    public $showOnUpdate = false;
     
     /**
      * @param string $name
@@ -44,14 +79,112 @@ abstract class Field
     }
     
     /**
-     * Set the field to be indexed in the table.
+     * Set the field to be indexed everywhere.
      *
      * @return self
      */
     public function index(): self
     {
-        $this->index = true;
+        $this->showOnIndex = true;
+        $this->showOnDetail = true;
+        $this->showOnCreate = true;
+        $this->showOnUpdate = true;
+        return $this;
+    }
 
+    /**
+     * Set the field to be hidden from resource index.
+     *
+     * @return self
+     */
+    public function hideFromIndex(): self
+    {
+        $this->showOnIndex = false;
+        return $this;
+    }
+
+    /**
+     * Set the field to be hidden from resource details.
+     *
+     * @return self
+     */
+    public function hideFromDetail(): self
+    {
+        $this->showOnDetail = false;
+        return $this;
+    }
+
+    /**
+     * Set the field to be hidden from resource create.
+     *
+     * @return self
+     */
+    public function hideFromCreate(): self
+    {
+        $this->showOnCreate = false;
+        return $this;
+    }
+
+    /**
+     * Set the field to be hidden from resource update.
+     *
+     * @return self
+     */
+    public function hideFromUpdate(): self
+    {
+        $this->showOnUpdate = false;
+        return $this;
+    }
+
+    /**
+     * Set the field to be indexed on the resource index.
+     *
+     * @return self
+     */
+    public function showOnIndex(): self
+    {
+        $this->showOnIndex = true;
+        return $this;
+    }
+
+    /**
+     * Set the field to be indexed on resource details.
+     *
+     * @return self
+     */
+    public function showOnDetail(): self
+    {
+        $this->showOnDetail = true;
+        return $this;
+    }
+
+    /**
+     * Set the field to be indexed on resource create.
+     *
+     * @return self
+     */
+    public function showOnCreate(): self
+    {
+        $this->showOnCreate = true;
+        return $this;
+    }
+
+    /**
+     * Set the field to be indexed on resource update.
+     *
+     * @return self
+     */
+    public function showOnUpdate(): self
+    {
+        $this->showOnUpdate = true;
+        return $this;
+    }
+    
+    /**
+     * @return self
+     */ 
+    public function sortable(): self
+    {
         return $this;
     }
 }
