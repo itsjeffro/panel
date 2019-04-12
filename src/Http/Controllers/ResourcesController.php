@@ -14,9 +14,6 @@ class ResourcesController extends Controller
      */
     public function index()
     {
-        $panel = new Panel();
-        $panel->resourcesIn(app_path('Panel'));
-
-        return response()->json($panel->getResources());
+        return response()->json(Panel::getResources());
     }
 }

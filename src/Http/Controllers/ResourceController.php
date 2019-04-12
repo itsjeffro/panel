@@ -10,13 +10,6 @@ use Itsjeffro\Panel\ResourceManager;
 class ResourceController extends Controller
 {
     /**
-     * Path to resources.
-     *
-     * @var string
-     */
-    public $resourcesPath = 'app/Panel';
-
-    /**
      * List resources from resource type.
      *
      * @param string $resource
@@ -25,7 +18,7 @@ class ResourceController extends Controller
      */
     public function index(string $resource)
     {
-        $resourceManager = new ResourceManager($this->resourcesPath, $resource);
+        $resourceManager = new ResourceManager($resource);
         $model = $resourceManager->resolveModel();
         $name = $resourceManager->getName();
         $fields = $resourceManager->getFields();
@@ -51,7 +44,7 @@ class ResourceController extends Controller
      */
     public function show(string $resource, string $id)
     {
-        $resourceManager = new ResourceManager($this->resourcesPath, $resource);
+        $resourceManager = new ResourceManager($resource);
         $model = $resourceManager->resolveModel();
         $name = $resourceManager->getName();
         $fields = $resourceManager->getFields();

@@ -9,13 +9,6 @@ use Itsjeffro\Panel\ResourceManager;
 class ResourceFieldController extends Controller
 {
     /**
-     * Path to resources.
-     *
-     * @var string
-     */
-    public $resourcesPath = 'app/Panel';
-
-    /**
      * Get single model resource's fields.
      *
      * @param string $resource
@@ -24,7 +17,7 @@ class ResourceFieldController extends Controller
      */
     public function show(string $resource)
     {
-        $resourceManager = new ResourceManager($this->resourcesPath, $resource);
+        $resourceManager = new ResourceManager($resource);
         $name = $resourceManager->getName();
 
         return response()->json([
