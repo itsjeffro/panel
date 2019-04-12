@@ -2,8 +2,8 @@
 
 namespace Itsjeffro\Panel;
 
+use http\Exception\InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class ResourceManager
 {
@@ -18,23 +18,27 @@ class ResourceManager
      * @param string $path
      * @param string $resource
      */
-    public function __construct(string $path, string $resource)
+    public function __construct(string $resource)
     {
-        $this->recourceClass = $this->classNameFromResource($path, $resource);
+        $this->resourceClass = $this->classNameFromResource(Panel::getResources(), $resource);
     }
 
     /**
      * Return resource class.
      *
-     * @param string $path
+     * @param array $registeredResources
      * @param string $resource
      * @return string
      */
-    public function classNameFromResource(string $path, string $resource): string
+    public function classNameFromResource(array $registeredResources, string $resource): string
     {
-        $resourceSlug = ucfirst(Str::singular($resource));
+        foreach ($registeredResources as $registeredResource) {
+            if (strtolower($registeredResource['slug']) === strtolower($resource)) {
+                return $registeredResource['path'];
+            }
+        }
 
-        return '\\'.str_replace(DIRECTORY_SEPARATOR, '\\', ucfirst($path)).'\\'.$resourceSlug;
+        throw new \InvalidArgumentException(sprintf("Resource [%s] is not registered.", $resource));
     }
 
     /**
@@ -56,7 +60,7 @@ class ResourceManager
      */
     public function getClass()
     {
-        return (new $this->recourceClass);
+        return (new $this->resourceClass);
     }
 
     /**
