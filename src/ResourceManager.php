@@ -2,7 +2,6 @@
 
 namespace Itsjeffro\Panel;
 
-use http\Exception\InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 
 class ResourceManager
@@ -15,7 +14,6 @@ class ResourceManager
     /**
      * ResourceManager constructor.
      *
-     * @param string $path
      * @param string $resource
      */
     public function __construct(string $resource)
@@ -29,6 +27,7 @@ class ResourceManager
      * @param array $registeredResources
      * @param string $resource
      * @return string
+     * @throw InvalidArgumentException
      */
     public function classNameFromResource(array $registeredResources, string $resource): string
     {
