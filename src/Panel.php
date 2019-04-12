@@ -10,14 +10,14 @@ class Panel
     /**
      * @var array
      */
-    private $resources = [];
+    private static $resources = [];
 
     /**
      * Get registered resources.
      *
      * @return array
      */
-    public function getResources(): array
+    public static function getResources(): array
     {
         return array_map(function ($resource) {
             $resourcePath = $resource;
@@ -29,7 +29,7 @@ class Panel
                 'slug' => Str::kebab($name),
                 'path' => $resourcePath,
             ];
-        }, $this->resources);
+        }, self::$resources);
     }
 
     /**
@@ -38,7 +38,7 @@ class Panel
      * @param string path
      * @return void
      */
-    public function resourcesIn(string $path): void
+    public static function resourcesIn(string $path): void
     {
         $finder = new Finder();
         $files = $finder->files()->in($path);
@@ -46,10 +46,10 @@ class Panel
         $resources = [];
 
         foreach ($files as $file) {
-            $resources[] = $this->getClassName($file, base_path());
+            $resources[] = self::getClassName($file, base_path());
         }
 
-        $this->resources = $resources;
+        self::$resources = $resources;
     }
 
     /**
@@ -59,7 +59,7 @@ class Panel
      * @param string $basePath
      * @return string
      */
-    public function getClassName($file, string $basePath): string
+    public static function getClassName($file, string $basePath): string
     {
         $class = trim(str_replace([$basePath, '.php'], ['', ''], $file->getRealPath()), DIRECTORY_SEPARATOR);
 
