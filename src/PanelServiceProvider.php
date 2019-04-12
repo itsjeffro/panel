@@ -24,7 +24,7 @@ class PanelServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register package services.
+     * Register any package services.
      *
      * @return void
      */
@@ -70,13 +70,18 @@ class PanelServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             // Assets
             $this->publishes([
-                __DIR__.'/../public' => public_path('vendor/panel'),
+                __DIR__ . '/../public' => public_path('vendor/panel'),
             ], 'panel-assets');
             
             // Config
             $this->publishes([
                 __DIR__ . '/../config/panel.php' => config_path('panel.php'),
             ], 'panel-config');
+            
+            // The application service provider
+            $this->publishes([
+                __DIR__ . '/../stubs/PanelServiceProvider.stub' => app_path('Providers/PanelServiceProvider.php'),
+            ], 'panel-provider');
         }
     }
 
