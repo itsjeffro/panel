@@ -1,21 +1,25 @@
 # Panel
-Laravel package that provides a separate administration panel to manage model data
+Laravel package that provides a separate administration panel to manage model data.
 
 ### Installation
+The package's main service provider will be automatically registered with Laravel's package auto-discovery.
+
 ```bash
 composer require itsjeffro/panel
 ```
 
-Register service provider in config/app.php
-
-```php
-Itsjeffro\Panel\PanelServiceProvider::class,
-```
-
-Publish config and assets
+Publish config, assets and application service provider.
 ```bash
 php artisan vendor:publish --tag=panel-config
 php artisan vendor:publish --tag=panel-assets
+php artisan vendor:publish --tag=panel-provider
+```
+
+The published application service provider is where the path to the resources is configured. Register the Panel service 
+provider in the providers array in your config/app.php configuration file:
+
+```php
+App\Providers\PanelServiceProvider::class,
 ```
 
 ### Resources
