@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Panel;
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+use Itsjeffro\Panel\Panel;
+use Itsjeffro\Panel\PanelApplicationServiceProvider;
+
+class PanelServiceProvider extends PanelApplicationServiceProvider
+{
+    /**
+     * Register any resources.
+     *
+     * @return void
+     */
+    protected function resources(): void
+    {
+        Panel::resourcesIn(app_path('Panel'));
+    }
+}
