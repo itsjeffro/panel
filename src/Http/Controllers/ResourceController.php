@@ -87,12 +87,12 @@ class ResourceController extends Controller
             ->update($request->only($fields));
 
         if ($affectedRows > 0) {
-            $model = $resourceModel::find($id);
+            $model = $resourceModel::select($fields)->find($id);
 
             return response()->json($model);
         }
 
-        return response()->json([]);
+        return response()->json(['Model not found.'], 404);
     }
 
 
