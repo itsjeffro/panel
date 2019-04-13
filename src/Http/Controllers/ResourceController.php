@@ -2,6 +2,7 @@
 
 namespace Itsjeffro\Panel\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -40,7 +41,7 @@ class ResourceController extends Controller
      * @param string $resource
      * @param string $id
      * @throws \Exception
-     * @return Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $resource, string $id)
     {
@@ -63,13 +64,35 @@ class ResourceController extends Controller
     /**F
      * Update single model resource.
      *
+     * @param \Illuminate\Http\Request
      * @param string $resource
      * @param string $id
      * @return Illuminate\Http\JsonResponse
      */
-    public function update(string $resource, string $id)
+    public function update(Request $request, string $resource, string $id)
     {
-        //
+        $resourceManager = new ResourceManager($resource);
+        $resourceModel = $resourceManager->resolveModel();
+
+        $allowedFields = array_filter($resourceManager->getFields(), function ($field) {
+            return $field->showOnUpdate;
+        });
+
+        $fields = array_map(function ($field) {
+            return $field->column;
+         }, $allowedFields);
+
+        $affectedRows = $resourceModel::where('id', $id)
+            ->limit(1)
+            ->update($request->only($fields));
+
+        if ($affectedRows > 0) {
+            $model = $resourceModel::find($id);
+
+            return response()->json($model);
+        }
+
+        return response()->json([]);
     }
 
 
@@ -82,6 +105,6 @@ class ResourceController extends Controller
      */
     public function store(string $resource)
     {
-        //
+        return response()->json([], 201);
     }
 }
