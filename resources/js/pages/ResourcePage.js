@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import Pagination from "../components/Pagination";
 
 class ResourcePage extends React.Component {
   constructor(props) {
@@ -99,6 +100,12 @@ class ResourcePage extends React.Component {
                   )}
                 </tbody>
               </table>
+              <div className="card-footer card-pagination">
+                <Pagination
+                  total={resource.model_data.total}
+                  per_page={resource.model_data.per_page}
+                />
+              </div>
             </div>
           </div>
         </div>
