@@ -12,7 +12,7 @@ class ResourceEditPage extends React.Component {
     };
 
     this.onInputChange = this.onInputChange.bind(this);
-    this.onHandleClick = this.onHandleClick.bind(this);
+    this.onHandleSubmit = this.onHandleSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -48,10 +48,17 @@ class ResourceEditPage extends React.Component {
     });
   }
 
-  onHandleClick() {
-    const {params} = this.props.match;
+  onHandleSubmit(event) {
+    event.preventDefault();
 
-    alert('/panel/api/resources/' + params.resource + '/' + params.id);
+    const {params} = this.props.match;
+    const {resource} = this.state;
+
+    axios
+      .put('/panel/api/resources/' + params.resource + '/' + params.id, resource.model_data)
+      .then(response => {
+        //
+      });
   }
 
   render() {
@@ -90,32 +97,34 @@ class ResourceEditPage extends React.Component {
             </div>
 
             <div className="card">
-              <div className="list-group list-group-flush">
-                {fields.map(field =>
-                  <div className="list-group-item" key={field.column}>
-                    <div className="row">
-                      <div className="col-xs-12 col-md-2 pt-2">
-                        <strong>{field.name}</strong>
-                      </div>
-                      <div className="col-xs-12 col-md-7">
-                        <input
-                          className="form-control"
-                          name={field.column}
-                          type="text"
-                          value={resource.model_data[field.column]}
-                          onChange={e => this.onInputChange(e)}
-                        />
+              <form onSubmit={e => this.onHandleSubmit(e)}>
+                <div className="list-group list-group-flush">
+                  {fields.map(field =>
+                    <div className="list-group-item" key={field.column}>
+                      <div className="row">
+                        <div className="col-xs-12 col-md-2 pt-2">
+                          <strong>{field.name}</strong>
+                        </div>
+                        <div className="col-xs-12 col-md-7">
+                          <input
+                            className="form-control"
+                            name={field.column}
+                            type="text"
+                            value={resource.model_data[field.column]}
+                            onChange={e => this.onInputChange(e)}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-              <div className="card-footer text-right">
-                <button
-                  className="btn btn-primary"
-                  onClick={this.onHandleClick}
-                >Update {resource.name.singular}</button>
-              </div>
+                  )}
+                </div>
+                <div className="card-footer text-right">
+                  <button
+                    className="btn btn-primary"
+                    onClick={this.onHandleClick}
+                  >Update {resource.name.singular}</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
