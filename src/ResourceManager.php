@@ -77,6 +77,23 @@ class ResourceManager
     }
 
     /**
+     * Return fields with their associated validation rules.
+     *
+     * @return array
+     */
+    public function getValidationRules()
+    {
+        $fields = array_reduce($this->getClass()->fields(), function ($carry, $field) {
+            if ($field->rules) {
+                $carry[$field->column] = implode('|', $field->rules);
+            }
+            return $carry;
+        });
+
+        return $fields;
+    }
+
+    /**
      * Resolved associated model class from resource.
      *
      * @return mixed
