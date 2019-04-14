@@ -55,6 +55,10 @@ class ResourcePage extends React.Component {
       )
     }
 
+    const fields = resource.fields.filter(field => {
+      return field.showOnIndex;
+    });
+
     return (
       <div className="container-fluid content">
         <div className="row">
@@ -94,7 +98,7 @@ class ResourcePage extends React.Component {
               <table className="table mb-0">
                 <thead>
                   <tr>
-                    {resource.fields.map(field =>
+                    {fields.map(field =>
                       <th className="border-top-0" key={field.column}>{field.name}</th>
                     )}
                     <th className="border-top-0 text-right"></th>
@@ -104,7 +108,7 @@ class ResourcePage extends React.Component {
                 <tbody>
                   {(resource.model_data.data).map(model =>
                     <tr key={model.id}>
-                      {resource.fields.map(field =>
+                      {fields.map(field =>
                         <td key={model.id + '-' + field.column}>{model[field.column]}</td>
                       )}
                       <td className="text-right">
