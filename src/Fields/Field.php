@@ -40,6 +40,11 @@ abstract class Field
     public $component = 'Text';
 
     /**
+     * @var array
+     */
+    public $rules = [];
+
+    /**
      * Field constructor.
      *
      * @param string $name
@@ -177,6 +182,18 @@ abstract class Field
      */ 
     public function sortable(): self
     {
+        return $this;
+    }
+
+    /**
+     * Rules for the specified field.
+     *
+     * @param array $rules
+     * @return $this
+     */
+    public function rules(array $rules = []): self
+    {
+        $this->rules = $rules;
         return $this;
     }
 }
