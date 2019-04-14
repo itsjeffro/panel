@@ -1,10 +1,13 @@
 import React from 'react';
 
 const BelongsToIndex = (props) => {
-  const {name} = props;
+  const {
+    model,
+    field
+  } = props;
 
   return (
-    <span>{name}</span>
+    <span>{model[field.column]}</span>
   )
 };
 
