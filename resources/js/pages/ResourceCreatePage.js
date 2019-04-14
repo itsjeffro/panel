@@ -54,8 +54,13 @@ class ResourceCreatePage extends React.Component {
 
   onHandleClick() {
     const {params} = this.props.match;
+    const {resource} = this.state;
 
-    alert('/panel/api/resources/' + params.resource);
+    axios
+      .post('/panel/api/resources/' + params.resource, resource)
+      .then(response => {
+        //
+      });
   }
 
   render() {
