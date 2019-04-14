@@ -4,7 +4,7 @@
   .pagination {
     margin: 0;
   }
-  .page-link {
+  .page-link, .page-item.disabled .page-link {
     background-color: transparent;
     border-top: 0;
     border-bottom: 0;
