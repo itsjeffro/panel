@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 import Pagination from "../components/Pagination";
+import IndexComponent from "../fields/IndexComponent";
 
 class ResourcePage extends React.Component {
   constructor(props) {
@@ -109,7 +110,12 @@ class ResourcePage extends React.Component {
                   {(resource.model_data.data).map(model =>
                     <tr key={model.id}>
                       {fields.map(field =>
-                        <td key={model.id + '-' + field.column}>{model[field.column]}</td>
+                        <td key={model.id + '-' + field.column}>
+                          <IndexComponent
+                            model={model}
+                            field={field}
+                          />
+                        </td>
                       )}
                       <td className="text-right">
                         <Link to={'/resources/' + params.resource + '/' + model.id}>View</Link>{' '}
