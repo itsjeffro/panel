@@ -11,6 +11,7 @@ Route::prefix('api')->group(function () {
     Route::get('resources/{resource}/{id}', 'ResourceController@show');
     Route::put('resources/{resource}/{id}', 'ResourceController@update');
     Route::post('resources/{resource}', 'ResourceController@store');
+    Route::delete('resources/{resource}/{id}', 'ResourceController@destroy');
 });
 
 Route::get('/{view?}', 'AppController@show')->where('view', '(.*)');

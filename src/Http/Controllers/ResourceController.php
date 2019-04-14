@@ -67,7 +67,8 @@ class ResourceController extends Controller
      * @param \Illuminate\Http\Request
      * @param string $resource
      * @param string $id
-     * @return Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function update(Request $request, string $resource, string $id)
     {
@@ -100,11 +101,23 @@ class ResourceController extends Controller
      * Create new model resource.
      *
      * @param string $resource
-     * @param string $id
-     * @return Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(string $resource)
     {
         return response()->json([], 201);
+    }
+
+    /**
+     * Delete resource.
+     *
+     * @param Request $request
+     * @param string $resource
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Request $request, string $resource, string $id)
+    {
+        return response()->json([], 200);
     }
 }
