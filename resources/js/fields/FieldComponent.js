@@ -1,9 +1,11 @@
 import React from 'react';
 import PasswordField from './Password/PasswordField';
+import BelongsToField from "./BelongsTo/BelongsToField";
 
 const FieldComponent = (props) => {
   const components = {
-    Password: PasswordField
+    Password: PasswordField,
+    BelongsTo: BelongsToField
   };
 
   const {
@@ -25,11 +27,7 @@ const FieldComponent = (props) => {
     />;
   }
 
-  return <ComponentName
-    column={column}
-    value={value}
-    handleInputChange={handleInputChange}
-  />
+  return <ComponentName {...props} />
 }
 
 export default FieldComponent;
