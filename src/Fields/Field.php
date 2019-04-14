@@ -35,6 +35,11 @@ abstract class Field
     public $showOnUpdate = false;
 
     /**
+     * @var string
+     */
+    public $component = 'Text';
+
+    /**
      * Field constructor.
      *
      * @param string $name

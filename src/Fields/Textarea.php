@@ -2,7 +2,7 @@
 
 namespace Itsjeffro\Panel\Fields;
 
-class Text extends Field
+class Textarea extends Field
 {
     /**
      * @var bool
@@ -20,12 +20,7 @@ class Text extends Field
     public $showOnDetail = true;
 
     /**
-     * @var bool
-     */
-    public $showOnIndex = true;
-
-    /**
      * @var string
      */
-    public $component = 'Text';
+    public $component = 'Textarea';
 }

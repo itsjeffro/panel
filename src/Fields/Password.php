@@ -2,7 +2,7 @@
 
 namespace Itsjeffro\Panel\Fields;
 
-class Text extends Field
+class Password extends Field
 {
     /**
      * @var bool
@@ -15,17 +15,7 @@ class Text extends Field
     public $showOnUpdate = true;
 
     /**
-     * @var bool
-     */
-    public $showOnDetail = true;
-
-    /**
-     * @var bool
-     */
-    public $showOnIndex = true;
-
-    /**
      * @var string
      */
-    public $component = 'Text';
+    public $component = 'Password';
 }

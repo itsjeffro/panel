@@ -8,4 +8,9 @@ class ID extends Field
      * @var bool
      */
     public $showOnIndex = true;
+
+    /**
+     * @var string
+     */
+    public $component = 'Text';
 }
