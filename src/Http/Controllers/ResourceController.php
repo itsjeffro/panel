@@ -74,6 +74,11 @@ class ResourceController extends Controller
     {
         $resourceManager = new ResourceManager($resource);
         $resourceModel = $resourceManager->resolveModel();
+        $validationRules = $resourceManager->getValidationRules();
+
+        if ($validationRules) {
+            $request->validate($validationRules);
+        }
 
         $allowedFields = array_filter($resourceManager->getFields(), function ($field) {
             return $field->showOnUpdate;
@@ -100,11 +105,19 @@ class ResourceController extends Controller
     /**
      * Create new model resource.
      *
+     * @param Request $request
      * @param string $resource
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(string $resource)
+    public function store(Request $request, string $resource)
     {
+        $resourceManager = new ResourceManager($resource);
+        $validationRules = $resourceManager->getValidationRules();
+
+        if ($validationRules) {
+            $request->validate($validationRules);
+        }
+
         return response()->json([], 201);
     }
 
