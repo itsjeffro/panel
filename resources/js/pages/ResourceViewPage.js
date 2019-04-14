@@ -38,6 +38,10 @@ class ResourceViewPage extends React.Component {
       )
     }
 
+    const fields = resource.fields.filter(field => {
+      return field.showOnDetail;
+    });
+
     return (
       <div className="container-fluid content">
         <div className="row">
@@ -61,7 +65,7 @@ class ResourceViewPage extends React.Component {
 
             <div className="card">
               <div className="list-group list-group-flush">
-                {resource.fields.map(field =>
+                {fields.map(field =>
                   <div className="list-group-item" key={field.column}>
                     <div className="row">
                       <div className="col-xs-12 col-md-2">
