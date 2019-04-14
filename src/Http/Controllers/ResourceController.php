@@ -31,7 +31,7 @@ class ResourceController extends Controller
                 'plural' => Str::plural($name),
             ],
             'fields' => $fields,
-            'model_data' => $model::select($columns)->paginate(),
+            'model_data' => $model::select($columns)->orderBy('id', 'desc')->paginate(),
         ]);
     }
 
@@ -112,13 +112,30 @@ class ResourceController extends Controller
     public function store(Request $request, string $resource)
     {
         $resourceManager = new ResourceManager($resource);
+        $resourceModel = $resourceManager->resolveModel();
         $validationRules = $resourceManager->getValidationRules();
 
         if ($validationRules) {
             $request->validate($validationRules);
         }
 
-        return response()->json([], 201);
+        $allowedFields = array_filter($resourceManager->getFields(), function ($field) {
+            return $field->showOnCreate;
+        });
+
+        $fields = array_map(function ($field) {
+            return $field->column;
+        }, $allowedFields);
+
+        $model = new $resourceModel;
+
+        foreach ($fields as $field) {
+            $model->{$field} = $request->input($field);
+        }
+
+        $model->save();
+
+        return response()->json($model, 201);
     }
 
     /**
