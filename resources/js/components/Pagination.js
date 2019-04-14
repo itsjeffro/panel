@@ -3,7 +3,8 @@ import React from 'react';
 const Pagination = (props) => {
   const {
     total,
-    per_page
+    per_page,
+    current_page
   } = props;
 
   const total_pages = Math.ceil(total / per_page);
@@ -15,6 +16,9 @@ const Pagination = (props) => {
 
   return (
     <nav>
+      <div className="pt-2 pr-3 float-right">
+        Total: {total}
+      </div>
       <ul className="pagination">
         <li className="page-item">
           <a className="page-link" href="#" aria-label="Previous">
