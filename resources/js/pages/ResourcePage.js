@@ -11,6 +11,8 @@ class ResourcePage extends React.Component {
       resources: [],
       resource: null,
     };
+
+    this.onPageClick = this.onPageClick.bind(this);
   }
 
   componentWillMount() {
@@ -22,11 +24,25 @@ class ResourcePage extends React.Component {
         this.setState({resources: response.data});
       });
 
+    this.loadResources();
+  }
+
+  loadResources(page) {
+    const {params} = this.props.match;
+    let currentPage = typeof page == undefined ? 1 : page;
+    let pageQuery = '?page=' + currentPage;
+
     axios
-      .get('/panel/api/resources/' + params.resource)
+      .get('/panel/api/resources/' + params.resource + pageQuery)
       .then(response => {
         this.setState({resource: response.data});
       });
+  }
+
+  onPageClick(event, page) {
+    event.preventDefault();
+
+    this.loadResources(page);
   }
 
   render() {
@@ -104,6 +120,8 @@ class ResourcePage extends React.Component {
                 <Pagination
                   total={resource.model_data.total}
                   per_page={resource.model_data.per_page}
+                  current_page={resource.model_data.current_page}
+                  handlePageClick={this.onPageClick}
                 />
               </div>
             </div>
