@@ -10,6 +10,11 @@ class ID extends Field
     public $showOnIndex = true;
 
     /**
+     * @var bool
+     */
+    public $showOnDetail = true;
+
+    /**
      * @var string
      */
     public $component = 'Text';
