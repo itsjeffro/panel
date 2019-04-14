@@ -13,7 +13,7 @@ const PasswordField = (props) => {
         type="password"
         name={column}
         onChange={e => handleInputChange(e)}
-        autoComplete="off"
+        autoComplete={'new-' + column}
       />
     </span>
   )
