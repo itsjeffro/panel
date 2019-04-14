@@ -2,6 +2,7 @@ import React from 'react';
 
 const BelongsToField = (props) => {
   const {
+    name,
     column,
     handleInputChange
   } = props;
@@ -13,7 +14,7 @@ const BelongsToField = (props) => {
         name={column}
         onChange={e => handleInputChange(e)}
       >
-        <option value="">Select {column}</option>
+        <option value="">Select {name}</option>
       </select>
     </span>
   )
