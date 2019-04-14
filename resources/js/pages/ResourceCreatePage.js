@@ -9,7 +9,7 @@ class ResourceCreatePage extends React.Component {
 
     this.state = {
       resources: [],
-      resource: null,
+      resource: {},
       fields: [],
       name: {}
     };
@@ -115,7 +115,7 @@ class ResourceCreatePage extends React.Component {
                         <FieldComponent
                           component={field.component}
                           column={field.column}
-                          value={resource !== null ? resource[field.column] : ''}
+                          value={this.state.resource[field.column] || ''}
                           handleInputChange={this.onInputChange}
                         />
                       </div>
