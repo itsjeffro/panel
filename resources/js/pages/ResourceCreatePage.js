@@ -79,7 +79,7 @@ class ResourceCreatePage extends React.Component {
     }
 
     let resource_fields = fields.filter(field => {
-      return field.showOnUpdate;
+      return field.showOnCreate;
     });
 
     return (
