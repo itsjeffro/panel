@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import FieldComponent from "../fields/FieldComponent";
 
 class ResourceEditPage extends React.Component {
   constructor(props) {
@@ -97,7 +98,7 @@ class ResourceEditPage extends React.Component {
             </div>
 
             <div className="card">
-              <form onSubmit={e => this.onHandleSubmit(e)}>
+              <form onSubmit={e => this.onHandleSubmit(e)} autoComplete="off">
                 <div className="list-group list-group-flush">
                   {fields.map(field =>
                     <div className="list-group-item" key={field.column}>
@@ -106,12 +107,11 @@ class ResourceEditPage extends React.Component {
                           <strong>{field.name}</strong>
                         </div>
                         <div className="col-xs-12 col-md-7">
-                          <input
-                            className="form-control"
-                            name={field.column}
-                            type="text"
+                          <FieldComponent
+                            component={field.component}
+                            column={field.column}
                             value={resource.model_data[field.column]}
-                            onChange={e => this.onInputChange(e)}
+                            handleInputChange={e => this.onInputChange(e)}
                           />
                         </div>
                       </div>

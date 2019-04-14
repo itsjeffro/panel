@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import FieldComponent from "../fields/FieldComponent";
 
 class ResourceCreatePage extends React.Component {
   constructor(props) {
@@ -111,12 +112,11 @@ class ResourceCreatePage extends React.Component {
                         <strong>{field.name}</strong>
                       </div>
                       <div className="col-xs-12 col-md-7">
-                        <input
-                          className="form-control"
-                          name={field.column}
-                          type="text"
+                        <FieldComponent
+                          component={field.component}
+                          column={field.column}
                           value={resource !== null ? resource[field.column] : ''}
-                          onChange={e => this.onInputChange(e)}
+                          handleInputChange={this.onInputChange}
                         />
                       </div>
                     </div>
