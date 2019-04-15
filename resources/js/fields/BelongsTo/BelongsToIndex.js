@@ -7,7 +7,7 @@ const BelongsToIndex = (props) => {
   } = props;
 
   return (
-    <span>{model[field.column]}</span>
+    <span>{model[field.column][field.relation.title]}</span>
   )
 };
 
