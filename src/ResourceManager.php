@@ -41,6 +41,20 @@ class ResourceManager
     }
 
     /**
+     * Return namespace where application resources are located.
+     *
+     * @return string
+     */
+    public function getResourcesNamespace(): string
+    {
+        $classSegments =  explode('\\', $this->resourceClass);
+
+        array_pop($classSegments);
+
+        return implode('\\', $classSegments);
+    }
+
+    /**
      * Return name of resource from class.
      *
      * @return string
@@ -69,11 +83,29 @@ class ResourceManager
      */
     public function getFields(): array
     {
-        $fields = [];
-        foreach ($this->getClass()->fields() as $field) {
-            $fields[] = $field;
+
+        return array_map(function ($field) {
+            $relationshipResource = $this->getRelationshipResource($field->relation);
+
+            if ($field->isRelationshipField) {
+                $field->relation = new $relationshipResource;
+            }
+
+            return $field;
+        }, $this->getClass()->fields());
+    }
+
+    /**
+     * @param string $relation
+     * @return string
+     */
+    public function getRelationshipResource(string $relation)
+    {
+        if (strpos($relation, '\\') !== false) {
+            return $relation;
         }
-        return $fields;
+
+        return $this->getResourcesNamespace().'\\'.$relation;
     }
 
     /**
