@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import DetailComponent from "../fields/DetailComponent";
 
 class ResourceViewPage extends React.Component {
   constructor(props) {
@@ -29,7 +30,6 @@ class ResourceViewPage extends React.Component {
   }
 
   render() {
-    const {params} = this.props.match;
     const {resources, resource} = this.state;
 
     if (typeof resource === 'object' && resource === null) {
@@ -72,7 +72,11 @@ class ResourceViewPage extends React.Component {
                         <strong>{field.name}</strong>
                       </div>
                       <div className="col-xs-12 col-md-10">
-                        {resource.model_data[field.column]}
+                        <DetailComponent
+                          component={field.component}
+                          model={resource.model_data}
+                          field={field}
+                        />
                       </div>
                     </div>
                   </div>
