@@ -15,6 +15,16 @@ abstract class Field
     public $column = '';
 
     /**
+     * @var string
+     */
+    public $relation = '';
+
+    /**
+     * @var bool
+     */
+    public $isRelationshipField = false;
+
+    /**
      * @var bool
      */
     public $showOnIndex = false;
@@ -49,11 +59,13 @@ abstract class Field
      *
      * @param string $name
      * @param string $column
+     * @param string $relation
      */
-    public function __construct(string $name = '', string $column = '')
+    public function __construct(string $name = '', string $column = '', string $relation = '')
     {
         $this->name = $name;
         $this->column = $column;
+        $this->relation = $relation;
     }
 
     /**
@@ -62,17 +74,19 @@ abstract class Field
      *
      * @param string $name
      * @param string $column
-     * @return \Field
+     * @param string $relation
+     * @return \Itsjeffro\Panel\Fields\Field
      */
-    public static function make(string $name = '', string $column = ''): Field
+    public static function make(string $name = '', string $column = '', string $relation = ''): Field
     {
         $childClass = static::class;
         $classSegments = explode('\\', $childClass);
 
         $name = empty($name) ? end($classSegments) : $name;
         $column = empty($column) ? strtolower($name) : $column;
+        $relation = empty($relation) ? $name : $relation;
 
-        return new $childClass($name, $column);
+        return new $childClass($name, $column, $relation);
     }
     
     /**
