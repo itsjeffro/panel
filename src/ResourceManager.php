@@ -96,10 +96,12 @@ class ResourceManager
     }
 
     /**
+     * Return relationship resource class.
+     *
      * @param string $relation
      * @return string
      */
-    public function getRelationshipResource(string $relation)
+    public function getRelationshipResource(string $relation): string
     {
         if (strpos($relation, '\\') !== false) {
             return $relation;
@@ -113,16 +115,14 @@ class ResourceManager
      *
      * @return array
      */
-    public function getValidationRules()
+    public function getValidationRules(): array
     {
-        $fields = array_reduce($this->getClass()->fields(), function ($carry, $field) {
+        return array_reduce($this->getClass()->fields(), function ($carry, $field) {
             if ($field->rules) {
                 $carry[$field->column] = implode('|', $field->rules);
             }
             return $carry;
         });
-
-        return $fields;
     }
 
     /**
