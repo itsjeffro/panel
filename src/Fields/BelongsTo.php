@@ -7,6 +7,11 @@ class BelongsTo extends Field
     /**
      * @var bool
      */
+    public $isRelationshipField = true;
+
+    /**
+     * @var bool
+     */
     public $showOnCreate = true;
 
     /**
