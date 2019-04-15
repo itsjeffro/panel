@@ -1,12 +1,14 @@
 import React from 'react';
 
 const BelongsToDetail = (props) => {
-  const {name} = props;
+  const {
+    model,
+    field
+  } = props;
 
   return (
-    <span>{name}</span>
+    <span>{model[field.column][field.relation.title]}</span>
   )
-
 };
 
 export default BelongsToDetail;
