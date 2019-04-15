@@ -112,6 +112,7 @@ class ResourcePage extends React.Component {
                       {fields.map(field =>
                         <td key={model.id + '-' + field.column}>
                           <IndexComponent
+                            component={field.component}
                             model={model}
                             field={field}
                           />
