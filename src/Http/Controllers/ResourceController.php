@@ -31,7 +31,7 @@ class ResourceController extends Controller
                 'plural' => Str::plural($name),
             ],
             'fields' => $fields,
-            'model_data' => $model::select($columns)->orderBy('id', 'desc')->paginate(),
+            'model_data' => $model::orderBy('id', 'desc')->paginate(),
         ]);
     }
 
@@ -57,7 +57,7 @@ class ResourceController extends Controller
                 'plural' => Str::plural($name),
             ],
             'fields' => $fields,
-            'model_data' => $model::select($columns)->find($id),
+            'model_data' => $model::find($id),
         ]);
     }
 
@@ -108,6 +108,7 @@ class ResourceController extends Controller
      * @param Request $request
      * @param string $resource
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function store(Request $request, string $resource)
     {
