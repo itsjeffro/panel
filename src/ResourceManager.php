@@ -96,6 +96,29 @@ class ResourceManager
     }
 
     /**
+     * @return array
+     */
+    public function getRelationships(): array
+    {
+        $relationshipFields = array_filter($this->getFields(), function ($field) {
+            return $field->isRelationshipField;
+        });
+
+        return array_reduce($relationshipFields, function ($carry, $field) {
+            $relation = $field->relation;
+            $columns = ['id'];
+
+            if (!in_array($relation->title, $columns)) {
+                $columns[] = $relation->title;
+            }
+
+            $carry[$field->column] = $relation->model::select($columns)->get();
+
+            return $carry;
+        });
+    }
+
+    /**
      * Return relationship resource class.
      *
      * @param string $relation
