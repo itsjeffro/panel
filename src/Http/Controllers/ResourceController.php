@@ -58,6 +58,7 @@ class ResourceController extends Controller
             ],
             'fields' => $fields,
             'model_data' => $model::find($id),
+            'relationships' => $resourceManager->getRelationships(),
         ]);
     }
 

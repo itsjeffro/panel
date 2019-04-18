@@ -26,6 +26,7 @@ class ResourceFieldController extends Controller
                 'plural' => Str::plural($name),
             ],
             'fields' => $resourceManager->getFields(),
+            'relationships' => $resourceManager->getRelationships(),
         ]);
     }
 }
