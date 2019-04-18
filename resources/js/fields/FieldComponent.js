@@ -9,19 +9,18 @@ const FieldComponent = (props) => {
   };
 
   const {
-    component,
-    column,
+    field,
     value,
     handleInputChange
   } = props;
 
-  const ComponentName = components[component];
+  const ComponentName = components[field.component];
 
   if (typeof ComponentName == 'undefined') {
     return <input
       className="form-control"
       type="text"
-      name={column}
+      name={field.column}
       value={value}
       onChange={handleInputChange}
     />;

@@ -108,9 +108,8 @@ class ResourceEditPage extends React.Component {
                         </div>
                         <div className="col-xs-12 col-md-7">
                           <FieldComponent
-                            name={field.name}
-                            component={field.component}
-                            column={field.column}
+                            resource={resource}
+                            field={field}
                             value={resource.model_data[field.column]}
                             handleInputChange={e => this.onInputChange(e)}
                           />

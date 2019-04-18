@@ -10,8 +10,7 @@ class ResourceCreatePage extends React.Component {
     this.state = {
       resources: [],
       resource: {},
-      fields: [],
-      name: {}
+      newResource: {},
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -33,8 +32,7 @@ class ResourceCreatePage extends React.Component {
       .get('/panel/api/resources/' + params.resource + '/fields')
       .then(response => {
         this.setState({
-          fields: response.data.fields,
-          name: response.data.name
+          resource: response.data,
         });
       });
   }
@@ -44,21 +42,21 @@ class ResourceCreatePage extends React.Component {
     const value = event.target.value;
 
     this.setState(prevState => {
-      let resource = {
-        ...prevState.resource,
+      let newResource = {
+        ...prevState.newResource,
         [name]: value
       };
 
-      return {resource: resource};
+      return {newResource: newResource};
     });
   }
 
   onHandleClick() {
     const {params} = this.props.match;
-    const {resource} = this.state;
+    const {newResource} = this.state;
 
     axios
-      .post('/panel/api/resources/' + params.resource, resource)
+      .post('/panel/api/resources/' + params.resource, newResource)
       .then(response => {
         //
       });
@@ -66,19 +64,17 @@ class ResourceCreatePage extends React.Component {
 
   render() {
     const {
-      name,
-      fields,
       resources,
       resource
     } = this.state;
 
-    if (typeof fields === 'object' && fields.length === 0) {
+    if (resource.fields === undefined) {
       return (
         <div>Loading...</div>
       )
     }
 
-    let resource_fields = fields.filter(field => {
+    let resourceFields = resource.fields.filter(field => {
       return field.showOnCreate;
     });
 
@@ -100,12 +96,12 @@ class ResourceCreatePage extends React.Component {
 
           <div className="col-xs-12 col-md-10">
             <div className="page-heading">
-              <h1>Create {name.singular}</h1>
+              <h1>Create {resource.name.singular}</h1>
             </div>
 
             <div className="card">
               <div className="list-group list-group-flush">
-                {resource_fields.map(field =>
+                {resourceFields.map(field =>
                   <div className="list-group-item" key={field.column}>
                     <div className="row">
                       <div className="col-xs-12 col-md-2 pt-2">
@@ -113,10 +109,9 @@ class ResourceCreatePage extends React.Component {
                       </div>
                       <div className="col-xs-12 col-md-7">
                         <FieldComponent
-                          name={field.name}
-                          component={field.component}
-                          column={field.column}
-                          value={this.state.resource[field.column] || ''}
+                          resource={resource}
+                          field={field}
+                          value={this.state.newResource[field.column] || ''}
                           handleInputChange={this.onInputChange}
                         />
                       </div>
