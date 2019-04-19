@@ -21,6 +21,7 @@ class ResourceController extends Controller
         $resourceManager = new ResourceManager($resource);
         $model = $resourceManager->resolveModel();
         $name = $resourceManager->getName();
+        $with = $resourceManager->getWith();
 
         return response()->json([
             'name' => [
@@ -28,7 +29,7 @@ class ResourceController extends Controller
                 'plural' => Str::plural($name),
             ],
             'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_INDEX),
-            'model_data' => $model::orderBy('id', 'desc')->paginate(),
+            'model_data' => $model::with($with)->orderBy('id', 'desc')->paginate(),
         ]);
     }
 
@@ -45,6 +46,7 @@ class ResourceController extends Controller
         $resourceManager = new ResourceManager($resource);
         $model = $resourceManager->resolveModel();
         $name = $resourceManager->getName();
+        $with = $resourceManager->getWith();
 
         return response()->json([
             'name' => [
@@ -52,7 +54,7 @@ class ResourceController extends Controller
                 'plural' => Str::plural($name),
             ],
             'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_CREATE),
-            'model_data' => $model::find($id),
+            'model_data' => $model::with($with)->find($id),
             'relationships' => $resourceManager->getRelationships(),
         ]);
     }
