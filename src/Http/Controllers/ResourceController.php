@@ -34,7 +34,7 @@ class ResourceController extends Controller
     }
 
     /**
-     * Get single model resource.
+     * Retrieve a single model resource.
      *
      * @param string $resource
      * @param string $id
@@ -59,7 +59,7 @@ class ResourceController extends Controller
         ]);
     }
 
-    /**F
+    /**
      * Update single model resource.
      *
      * @param \Illuminate\Http\Request
@@ -73,30 +73,39 @@ class ResourceController extends Controller
         $resourceManager = new ResourceManager($resource);
         $resourceModel = $resourceManager->resolveModel();
         $validationRules = $resourceManager->getValidationRules();
+        $fields = $resourceManager->getFields(ResourceManager::SHOW_ON_UPDATE);
 
         if ($validationRules) {
             $request->validate($validationRules);
         }
 
-        $allowedFields = array_filter($resourceManager->getFields(ResourceManager::SHOW_ON_UPDATE), function ($field) {
+        $fields = array_filter($fields, function ($field) use ($validationRules) {
+            $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
+            $fieldValidation = $validationRules[$column] ?? '';
+
+            // Exclude the field from being processed
+            if ($fieldValidation && strpos($fieldValidation, 'nullable') !== false) {
+                return false;
+            }
+
             return $field->showOnUpdate;
         });
 
-        $fields = array_map(function ($field) {
-            return $field->isRelationshipField ? $field->foreignKey : $field->column;
-         }, $allowedFields);
+        $model = $resourceModel::find($id);
 
-        $affectedRows = $resourceModel::where('id', $id)
-            ->limit(1)
-            ->update($request->only($fields));
-
-        if ($affectedRows > 0) {
-            $model = $resourceModel::select($fields)->find($id);
-
-            return response()->json($model);
+        if (!is_object($model)) {
+            return response()->json(['Model not found.'], 404);
         }
 
-        return response()->json(['Model not found.'], 404);
+        foreach ($fields as $field) {
+            $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
+
+            $field->fillAttributeFromRequest($request, $model, $column);
+        }
+
+        $model->save();
+
+        return response()->json($model);
     }
 
 
