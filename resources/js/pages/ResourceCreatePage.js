@@ -9,7 +9,7 @@ class ResourceCreatePage extends React.Component {
 
     this.state = {
       resources: [],
-      resource: {},
+      resource: null,
       newResource: {},
     };
 
@@ -31,12 +31,26 @@ class ResourceCreatePage extends React.Component {
     axios
       .get('/panel/api/resources/' + params.resource + '/fields')
       .then(response => {
-        this.setState({
-          resource: response.data,
-        });
+        this.buildDataStructureFromResource(response.data);
       });
   }
 
+  /**
+   * Build resource structure.
+   *
+   * @param resource
+   */
+  buildDataStructureFromResource(resource) {
+    this.setState({
+      resource: resource
+    });
+  }
+
+  /**
+   * Update the request data from input, textarea, select changes.
+   *
+   * @param event
+   */
   onInputChange(event) {
     const name = event.target.name;
     const value = event.target.value;
@@ -51,6 +65,9 @@ class ResourceCreatePage extends React.Component {
     });
   }
 
+  /**
+   * Process resource create request.
+   */
   onHandleClick() {
     const {params} = this.props.match;
     const {newResource} = this.state;
@@ -68,15 +85,13 @@ class ResourceCreatePage extends React.Component {
       resource
     } = this.state;
 
-    if (resource.fields === undefined) {
+    if (resource === null) {
       return (
         <div>Loading...</div>
       )
     }
 
-    let resourceFields = resource.fields.filter(field => {
-      return field.showOnCreate;
-    });
+    let resourceFields = resource.fields;
 
     return (
       <div className="container-fluid content">
