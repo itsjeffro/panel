@@ -111,17 +111,34 @@ class ResourceManager
             $relationshipResource = $this->getRelationshipResource($field->relation);
 
             if ($field->isRelationshipField) {
-                $field->foreignKey = $this->resolveModel()->author()->getForeignKey();
+                $relationMethod = $field->column;
+                $field->foreignKey = $this->resolveModel()->$relationMethod()->getForeignKey();
                 $field->relation = new $relationshipResource;
             }
 
             return $field;
         }, $fields, []);
-
-        dd($fields);
     }
 
     /**
+     * Return the model relationships that should be eager loaded via the with() method.
+     *
+     * @return array
+     */
+    public function getWith(): array
+    {
+        $relationshipFields = array_filter($this->getFields(), function ($field) {
+            return $field->isRelationshipField;
+        });
+
+        return array_map(function ($field) {
+            return $field->column;
+        }, $relationshipFields, []);
+    }
+
+    /**
+     * Return list of models based on the relationships from the main resource.
+     *
      * @param string $showOn
      * @return array
      */
