@@ -10,6 +10,7 @@ class ResourceEditPage extends React.Component {
     this.state = {
       resources: [],
       resource: null,
+      errors: null,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -32,6 +33,11 @@ class ResourceEditPage extends React.Component {
       });
   }
 
+  /**
+   * Update the request data from input, textarea, select changes.
+   *
+   * @param event
+   */
   onInputChange(event) {
     const name = event.target.name;
     const value = event.target.value;
@@ -49,6 +55,9 @@ class ResourceEditPage extends React.Component {
     });
   }
 
+  /**
+   * Process resource create request.
+   */
   onHandleSubmit(event) {
     event.preventDefault();
 
@@ -58,13 +67,19 @@ class ResourceEditPage extends React.Component {
     axios
       .put('/panel/api/resources/' + params.resource + '/' + params.id, resource.model_data)
       .then(response => {
-        //
+        this.setState({errors: null});
+      },
+          error => {
+        this.setState({errors: error.response.data.errors});
       });
   }
 
   render() {
-    const {params} = this.props.match;
-    const {resources, resource} = this.state;
+    const {
+      errors,
+      resources,
+      resource,
+    } = this.state;
 
     if (typeof resource === 'object' && resource === null) {
       return (
@@ -108,10 +123,11 @@ class ResourceEditPage extends React.Component {
                         </div>
                         <div className="col-xs-12 col-md-7">
                           <FieldComponent
-                            resource={resource}
+                            errors={errors}
                             field={field}
-                            value={resource.model_data[field.column]}
                             handleInputChange={e => this.onInputChange(e)}
+                            resource={resource}
+                            value={resource.model_data[field.column]}
                           />
                         </div>
                       </div>

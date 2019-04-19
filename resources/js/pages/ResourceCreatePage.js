@@ -11,6 +11,7 @@ class ResourceCreatePage extends React.Component {
       resources: [],
       resource: null,
       newResource: {},
+      errors: null,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -75,14 +76,18 @@ class ResourceCreatePage extends React.Component {
     axios
       .post('/panel/api/resources/' + params.resource, newResource)
       .then(response => {
-        //
+        this.setState({errors: null});
+      },
+        error => {
+        this.setState({errors: error.response.data.errors});
       });
   }
 
   render() {
     const {
+      errors,
       resources,
-      resource
+      resource,
     } = this.state;
 
     if (resource === null) {
@@ -124,10 +129,11 @@ class ResourceCreatePage extends React.Component {
                       </div>
                       <div className="col-xs-12 col-md-7">
                         <FieldComponent
-                          resource={resource}
+                          errors={errors}
                           field={field}
-                          value={this.state.newResource[field.column] || ''}
                           handleInputChange={this.onInputChange}
+                          resource={resource}
+                          value={this.state.newResource[field.column] || ''}
                         />
                       </div>
                     </div>
