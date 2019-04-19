@@ -30,6 +30,8 @@ class Password extends Field
      */
     public function fillAttributeFromRequest(Request $request, $model, $field)
     {
-        $model->{$field} = bcrypt($request->input($field));
+        if ($request->exists($field)) {
+            $model->{$field} = bcrypt($request->input($field));
+        }
     }
 }
