@@ -2,6 +2,8 @@
 
 namespace Itsjeffro\Panel\Fields;
 
+use Illuminate\Http\Request;
+
 abstract class Field
 {
     /**
@@ -209,5 +211,17 @@ abstract class Field
     {
         $this->rules = $rules;
         return $this;
+    }
+
+    /**
+     * Fill attribute from request.
+     *
+     * @param Request $request
+     * @param $model
+     * @param $field
+     */
+    public function fillAttributeFromRequest(Request $request, $model, $field)
+    {
+        $model->{$field} = $request->input($field);
     }
 }
