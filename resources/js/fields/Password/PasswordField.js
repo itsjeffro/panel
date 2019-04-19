@@ -2,8 +2,8 @@ import React from 'react';
 
 const PasswordField = (props) => {
   const {
-    column,
-    handleInputChange
+    field,
+    handleInputChange,
   } = props;
 
   return (
@@ -11,9 +11,9 @@ const PasswordField = (props) => {
       <input
         className="form-control"
         type="password"
-        name={column}
+        name={field.column}
         onChange={e => handleInputChange(e)}
-        autoComplete={'new-' + column}
+        autoComplete={'new-' + field.column}
       />
     </span>
   )
