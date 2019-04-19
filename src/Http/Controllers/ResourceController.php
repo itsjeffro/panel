@@ -111,20 +111,18 @@ class ResourceController extends Controller
         $resourceManager = new ResourceManager($resource);
         $resourceModel = $resourceManager->resolveModel();
         $validationRules = $resourceManager->getValidationRules();
-        $allowedFields = $resourceManager->getFields(ResourceManager::SHOW_ON_CREATE);
+        $fields = $resourceManager->getFields(ResourceManager::SHOW_ON_CREATE);
 
         if ($validationRules) {
             $request->validate($validationRules);
         }
 
-        $fields = array_map(function ($field) {
-            return $field->isRelationshipField ? $field->foreignKey : $field->column;
-        }, $allowedFields);
-
         $model = new $resourceModel;
 
         foreach ($fields as $field) {
-            $model->{$field} = $request->input($field);
+            $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
+
+            $field->fillAttributeFromRequest($request, $model, $column);
         }
 
         $model->save();
