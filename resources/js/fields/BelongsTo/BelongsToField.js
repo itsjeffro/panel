@@ -13,7 +13,7 @@ const BelongsToField = (props) => {
   return (
     <select
       className="form-control"
-      name={field.column}
+      name={field.foreignKey}
       onChange={e => handleInputChange(e)}
       value={selected}
     >
