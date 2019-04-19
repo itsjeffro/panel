@@ -4,7 +4,6 @@ namespace Itsjeffro\Panel\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Itsjeffro\Panel\ResourceManager;
 
@@ -22,15 +21,13 @@ class ResourceController extends Controller
         $resourceManager = new ResourceManager($resource);
         $model = $resourceManager->resolveModel();
         $name = $resourceManager->getName();
-        $fields = $resourceManager->getFields();
-        $columns = Arr::pluck($fields, 'column');
 
         return response()->json([
             'name' => [
                 'singular' => $name,
                 'plural' => Str::plural($name),
             ],
-            'fields' => $fields,
+            'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_INDEX),
             'model_data' => $model::orderBy('id', 'desc')->paginate(),
         ]);
     }
@@ -48,15 +45,13 @@ class ResourceController extends Controller
         $resourceManager = new ResourceManager($resource);
         $model = $resourceManager->resolveModel();
         $name = $resourceManager->getName();
-        $fields = $resourceManager->getFields();
-        $columns = Arr::pluck($fields, 'column');
 
         return response()->json([
             'name' => [
                 'singular' => $name,
                 'plural' => Str::plural($name),
             ],
-            'fields' => $fields,
+            'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_CREATE),
             'model_data' => $model::find($id),
             'relationships' => $resourceManager->getRelationships(),
         ]);
@@ -81,12 +76,12 @@ class ResourceController extends Controller
             $request->validate($validationRules);
         }
 
-        $allowedFields = array_filter($resourceManager->getFields(), function ($field) {
+        $allowedFields = array_filter($resourceManager->getFields(ResourceManager::SHOW_ON_UPDATE), function ($field) {
             return $field->showOnUpdate;
         });
 
         $fields = array_map(function ($field) {
-            return $field->column;
+            return $field->isRelationshipField ? $field->foreignKey : $field->column;
          }, $allowedFields);
 
         $affectedRows = $resourceModel::where('id', $id)
@@ -116,17 +111,14 @@ class ResourceController extends Controller
         $resourceManager = new ResourceManager($resource);
         $resourceModel = $resourceManager->resolveModel();
         $validationRules = $resourceManager->getValidationRules();
+        $allowedFields = $resourceManager->getFields(ResourceManager::SHOW_ON_CREATE);
 
         if ($validationRules) {
             $request->validate($validationRules);
         }
 
-        $allowedFields = array_filter($resourceManager->getFields(), function ($field) {
-            return $field->showOnCreate;
-        });
-
         $fields = array_map(function ($field) {
-            return $field->column;
+            return $field->isRelationshipField ? $field->foreignKey : $field->column;
         }, $allowedFields);
 
         $model = new $resourceModel;
