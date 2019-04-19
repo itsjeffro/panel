@@ -25,8 +25,8 @@ class ResourceFieldController extends Controller
                 'singular' => $name,
                 'plural' => Str::plural($name),
             ],
-            'fields' => $resourceManager->getFields(),
-            'relationships' => $resourceManager->getRelationships(),
+            'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_CREATE),
+            'relationships' => $resourceManager->getRelationships(ResourceManager::SHOW_ON_CREATE),
         ]);
     }
 }
