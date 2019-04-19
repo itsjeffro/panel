@@ -9,6 +9,21 @@ class ResourceManager
     /**
      * @var string
      */
+    const SHOW_ON_CREATE = 'showOnCreate';
+
+    /**
+     * @var string
+     */
+    const SHOW_ON_UPDATE = 'showOnUpdate';
+
+    /**
+     * @var string
+     */
+    const SHOW_ON_INDEX = 'showOnIndex';
+
+    /**
+     * @var string
+     */
     public $resourceClass;
 
     /**
@@ -79,28 +94,40 @@ class ResourceManager
     /**
      * Return resource's fields along with indexes.
      *
+     * @param string $showOn
      * @return array
      */
-    public function getFields(): array
+    public function getFields(string $showOn = ''): array
     {
+        $fields = $this->getClass()->fields();
+
+        if ($showOn) {
+            $fields = array_filter($this->getClass()->fields(), function ($field) use ($showOn) {
+                return $field->{$showOn};
+            });
+        }
 
         return array_map(function ($field) {
             $relationshipResource = $this->getRelationshipResource($field->relation);
 
             if ($field->isRelationshipField) {
+                $field->foreignKey = $this->resolveModel()->author()->getForeignKey();
                 $field->relation = new $relationshipResource;
             }
 
             return $field;
-        }, $this->getClass()->fields());
+        }, $fields, []);
+
+        dd($fields);
     }
 
     /**
+     * @param string $showOn
      * @return array
      */
-    public function getRelationships(): array
+    public function getRelationships(string $showOn = ''): array
     {
-        $relationshipFields = array_filter($this->getFields(), function ($field) {
+        $relationshipFields = array_filter($this->getFields($showOn), function ($field) {
             return $field->isRelationshipField;
         });
 
@@ -115,7 +142,7 @@ class ResourceManager
             $carry[$field->column] = $relation->model::select($columns)->get();
 
             return $carry;
-        });
+        }, []);
     }
 
     /**
@@ -140,9 +167,11 @@ class ResourceManager
      */
     public function getValidationRules(): array
     {
-        return array_reduce($this->getClass()->fields(), function ($carry, $field) {
+        return array_reduce($this->getFields(), function ($carry, $field) {
+            $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
+
             if ($field->rules) {
-                $carry[$field->column] = implode('|', $field->rules);
+                $carry[$column] = implode('|', $field->rules);
             }
             return $carry;
         });
