@@ -10,7 +10,7 @@ use Itsjeffro\Panel\ResourceManager;
 class ResourceController extends Controller
 {
     /**
-     * List resources from resource type.
+     * Retrieve paginated models from a given resource.
      *
      * @param string $resource
      * @return \Illuminate\Http\JsonResponse
@@ -34,7 +34,7 @@ class ResourceController extends Controller
     }
 
     /**
-     * Retrieve a single model resource.
+     * Retrieve a single model from a given resource.
      *
      * @param string $resource
      * @param string $id
@@ -60,7 +60,7 @@ class ResourceController extends Controller
     }
 
     /**
-     * Update single model resource.
+     * Update a single model from a given resource.
      *
      * @param \Illuminate\Http\Request
      * @param string $resource
@@ -110,7 +110,7 @@ class ResourceController extends Controller
 
 
     /**
-     * Create new model resource.
+     * Create a new model for a given resource.
      *
      * @param Request $request
      * @param string $resource
@@ -142,7 +142,7 @@ class ResourceController extends Controller
     }
 
     /**
-     * Delete resource.
+     * Delete a single model from a given resource.
      *
      * @param Request $request
      * @param string $resource
