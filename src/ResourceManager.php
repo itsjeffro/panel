@@ -195,7 +195,7 @@ class ResourceManager
                 $carry[$column] = implode('|', $field->rules);
             }
             return $carry;
-        });
+        }, []);
     }
 
     /**
