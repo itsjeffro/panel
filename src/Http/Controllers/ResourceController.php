@@ -4,7 +4,6 @@ namespace Itsjeffro\Panel\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Str;
 use Itsjeffro\Panel\ResourceManager;
 
 class ResourceController extends Controller
@@ -20,14 +19,10 @@ class ResourceController extends Controller
     {
         $resourceManager = new ResourceManager($resource);
         $model = $resourceManager->resolveModel();
-        $name = $resourceManager->getName();
         $with = $resourceManager->getWith();
 
         return response()->json([
-            'name' => [
-                'singular' => $name,
-                'plural' => Str::plural($name),
-            ],
+            'name' => $resourceManager->getName(),
             'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_INDEX),
             'model_data' => $model::with($with)->orderBy('id', 'desc')->paginate(),
         ]);
@@ -45,14 +40,10 @@ class ResourceController extends Controller
     {
         $resourceManager = new ResourceManager($resource);
         $model = $resourceManager->resolveModel();
-        $name = $resourceManager->getName();
         $with = $resourceManager->getWith();
 
         return response()->json([
-            'name' => [
-                'singular' => $name,
-                'plural' => Str::plural($name),
-            ],
+            'name' => $resourceManager->getName(),
             'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_CREATE),
             'model_data' => $model::with($with)->find($id),
             'relationships' => $resourceManager->getRelationships(),

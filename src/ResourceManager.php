@@ -3,6 +3,7 @@
 namespace Itsjeffro\Panel;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class ResourceManager
 {
@@ -74,11 +75,15 @@ class ResourceManager
      *
      * @return string
      */
-    public function getName(): string
+    public function getName(): array
     {
         $model = explode('\\', $this->getClass()->model);
+        $name = end($model);
 
-        return end($model);
+        return [
+            'singular' => $name,
+            'plural' => Str::plural($name),
+        ];
     }
 
     /**
