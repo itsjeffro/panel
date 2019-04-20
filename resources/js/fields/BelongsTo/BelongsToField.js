@@ -13,8 +13,6 @@ const BelongsToField = (props) => {
 
   const selected = value.id;
 
-  console.log(field);
-
   return (
     <span>
       <select
