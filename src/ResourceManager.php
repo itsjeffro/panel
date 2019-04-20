@@ -73,7 +73,7 @@ class ResourceManager
     /**
      * Return name of resource from class.
      *
-     * @return string
+     * @return array
      */
     public function getName(): array
     {
@@ -87,7 +87,7 @@ class ResourceManager
     }
 
     /**
-     * Return fill class name.
+     * Return resource's full class name.
      *
      * @return mixed
      */
