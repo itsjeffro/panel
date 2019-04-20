@@ -11,20 +11,36 @@ class ResourceController extends Controller
     /**
      * Retrieve paginated models from a given resource.
      *
+     * @param Request $request
      * @param string $resource
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function index(string $resource)
+    public function index(Request $request, string $resource)
     {
         $resourceManager = new ResourceManager($resource);
         $model = $resourceManager->resolveModel();
         $with = $resourceManager->getWith();
 
+        $models = $model::with($with)
+            ->orderBy('id', 'desc')
+            ->paginate();
+
+        if ($request->exists('search')) {
+            $whereClause = [
+                ['id', 'LIKE', $request->input('search') . '%'],
+            ];
+
+            $models = $model::with($with)
+                ->where($whereClause)
+                ->orderBy('id', 'desc')
+                ->paginate();
+        }
+
         return response()->json([
             'name' => $resourceManager->getName(),
             'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_INDEX),
-            'model_data' => $model::with($with)->orderBy('id', 'desc')->paginate(),
+            'model_data' => $models,
         ]);
     }
 
