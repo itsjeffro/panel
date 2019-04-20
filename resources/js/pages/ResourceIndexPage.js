@@ -4,21 +4,22 @@ import axios from 'axios';
 import Pagination from "../components/Pagination";
 import IndexComponent from "../fields/IndexComponent";
 
-class ResourcePage extends React.Component {
+class ResourceIndexPage extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       resources: [],
       resource: null,
+      searchTimeout: null,
+      search: '',
     };
 
     this.onPageClick = this.onPageClick.bind(this);
+    this.onSearchChange = this.onSearchChange.bind(this);
   }
 
   componentWillMount() {
-    const {params} = this.props.match;
-
     axios
       .get('/panel/api/resources')
       .then(response => {
@@ -28,22 +29,58 @@ class ResourcePage extends React.Component {
     this.loadResources();
   }
 
+  /**
+   * @param page
+   */
   loadResources(page) {
+    const {search} = this.state;
     const {params} = this.props.match;
-    let currentPage = typeof page == undefined ? 1 : page;
-    let pageQuery = '?page=' + currentPage;
+
+    let query = [];
+
+    if (page !== undefined) {
+      query.push('page=' + page);
+    }
+
+    if (search) {
+      query.push('search=' + search);
+    }
+
+    const endpointQuery = query.length ? '?' + query.join('&') : '';
 
     axios
-      .get('/panel/api/resources/' + params.resource + pageQuery)
+      .get('/panel/api/resources/' + params.resource + endpointQuery)
       .then(response => {
         this.setState({resource: response.data});
       });
   }
 
+  /**
+   * @param event
+   * @param page
+   */
   onPageClick(event, page) {
     event.preventDefault();
 
     this.loadResources(page);
+  }
+
+  /**
+   * @param event
+   */
+  onSearchChange(event) {
+    const value = event.target.value;
+
+    if (this.state.searchTimeout) {
+      clearTimeout(this.state.searchTimeout);
+    }
+
+    this.setState({
+      search: value,
+      searchTimeout: setTimeout(() => {
+        this.loadResources();
+      }, 1000)
+    })
   }
 
   render() {
@@ -84,7 +121,12 @@ class ResourcePage extends React.Component {
             <div className="form-group">
               <div className="row">
                 <div className="col-12 col-lg-3">
-                  <input type="text" className="form-control" placeholder="Search" />
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search"
+                    onChange={this.onSearchChange}
+                  />
                 </div>
                 <div className="col-12 col-lg-9 text-right">
                   <Link
@@ -143,4 +185,4 @@ class ResourcePage extends React.Component {
   }
 }
 
-export default ResourcePage;
+export default ResourceIndexPage;
