@@ -22,20 +22,18 @@ class ResourceController extends Controller
         $model = $resourceManager->resolveModel();
         $with = $resourceManager->getWith();
 
-        $models = $model::with($with)
-            ->orderBy('id', 'desc')
-            ->paginate();
+        $whereClause = [];
 
         if ($request->exists('search')) {
             $whereClause = [
                 ['id', 'LIKE', $request->input('search') . '%'],
             ];
-
-            $models = $model::with($with)
-                ->where($whereClause)
-                ->orderBy('id', 'desc')
-                ->paginate();
         }
+
+        $models = $model::with($with)
+            ->where($whereClause)
+            ->orderBy('id', 'desc')
+            ->paginate();
 
         return response()->json([
             'name' => $resourceManager->getName(),
