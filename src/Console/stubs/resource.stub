@@ -22,6 +22,15 @@ class DummyClass extends Resource
     public $title = 'id';
 
     /**
+     * The columns that should be search from the resource.
+     *
+     * @return array
+     */
+    public $search = [
+        'id',
+    ];
+
+    /**
      * Get the fields displayed by the resource.
      *
      * @return array
