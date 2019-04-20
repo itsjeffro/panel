@@ -31,40 +31,24 @@ You may generate a new resource by useing the panel:resource console command.
 php artisan panel:resource User
 ```
 
-### API
-Available endpoints.
+### Fields
 
-#### Get resources
-```
-GET /panel/api/resources
-```
+* ID
+* Password
+* Text
+* Textarea
 
-```json
-[
-  "App\\Panel\\User"
-]
-```
+#### Field Visibility
 
-#### Get resource
-```
-GET /panel/api/resources/{resourceSlug}
-```
+* showOnIndex()
+* showOnDisplay()
+* showOnCreate()
+* showOnUpdate()
+* hideOnIndex()
+* hideOnDisplay()
+* hideOnCreate()
+* hideOnUpdate()
 
-```json
-{
-  "name": "User",
-  "resource": {
-    "model": "App\\User",
-    "title": "id"
-  },
-  "data": {
-    "current_page": 1,
-    "data": [
-      {
-        "id": 1,
-      }
-    }
-  }
-}
-```
-      
+### Relationships
+
+* BelongsTo
