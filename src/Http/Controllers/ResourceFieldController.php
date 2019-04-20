@@ -18,13 +18,9 @@ class ResourceFieldController extends Controller
     public function show(string $resource)
     {
         $resourceManager = new ResourceManager($resource);
-        $name = $resourceManager->getName();
 
         return response()->json([
-            'name' => [
-                'singular' => $name,
-                'plural' => Str::plural($name),
-            ],
+            'name' => $resourceManager->getName(),
             'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_CREATE),
             'relationships' => $resourceManager->getRelationships(ResourceManager::SHOW_ON_CREATE),
         ]);
