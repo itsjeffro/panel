@@ -172,7 +172,7 @@ class ResourceIndexPage extends React.Component {
                   <input className="form-check-input" type="checkbox" />
 
                   <div className="dropdown">
-                    <button className="btn dropdown-toggle" onClick={this.onDropdownBulkClick}></button>
+                    <button className="btn pb-0 dropdown-toggle" onClick={this.onDropdownBulkClick}></button>
                     <div className={'dropdown-menu' + (isDropdownBulkShown ? ' show' : '')}>
                       <a className="dropdown-item" href="#">Bulk Delete</a>
                     </div>
