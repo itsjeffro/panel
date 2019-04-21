@@ -30,7 +30,16 @@ class ResourceViewPage extends React.Component {
   }
 
   render() {
-    const {resources, resource} = this.state;
+    const {
+      resources,
+      resource,
+    } = this.state;
+
+    const {
+      match: {
+        params,
+      },
+    } = this.props;
 
     if (typeof resource === 'object' && resource === null) {
       return (
@@ -59,8 +68,20 @@ class ResourceViewPage extends React.Component {
           </div>
 
           <div className="col-xs-12 col-md-10">
-            <div className="page-heading">
-              <h1>Viewing {resource.name.singular}</h1>
+            <div className="row">
+              <div className="col-md-6">
+                <div className="page-heading">
+                  <h1>{resource.name.singular} Details</h1>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="form-group text-md-right">
+                  <Link
+                    className="btn btn-primary btn-sm"
+                    to={'/resources/' + params.resource + '/' + params.id + '/edit'}
+                  >Edit</Link>
+                </div>
+              </div>
             </div>
 
             <div className="card">
