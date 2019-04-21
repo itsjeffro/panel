@@ -25,7 +25,7 @@ App\Providers\PanelServiceProvider::class,
 ### Resources
 Resources allow for mapping to your applications model.
 
-You may generate a new resource by useing the panel:resource console command.
+You may generate a new resource by using the panel:resource console command.
 
 ```bash
 php artisan panel:resource User
