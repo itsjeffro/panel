@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import axios from 'axios';
 import FieldComponent from "../fields/FieldComponent";
 
@@ -8,10 +8,12 @@ class ResourceCreatePage extends React.Component {
     super(props);
 
     this.state = {
+      errors: null,
+      isCreated: false,
+      newResource: {},
+      newResourceId: null,
       resources: [],
       resource: null,
-      newResource: {},
-      errors: null,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -76,7 +78,11 @@ class ResourceCreatePage extends React.Component {
     axios
       .post('/panel/api/resources/' + params.resource, newResource)
       .then(response => {
-        this.setState({errors: null});
+        this.setState({
+          errors: null,
+          isCreated: true,
+          newResourceId: response.data.id,
+        });
       },
         error => {
         this.setState({errors: error.response.data.errors});
@@ -85,10 +91,22 @@ class ResourceCreatePage extends React.Component {
 
   render() {
     const {
+      match: {
+        params,
+      },
+    } = this.props;
+
+    const {
       errors,
+      isCreated,
+      newResourceId,
       resources,
       resource,
     } = this.state;
+
+    if (isCreated) {
+      return <Redirect to={'/resources/' + params.resource + '/' + newResourceId} />
+    }
 
     if (resource === null) {
       return (
