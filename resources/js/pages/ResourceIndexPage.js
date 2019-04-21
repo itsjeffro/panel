@@ -197,7 +197,7 @@ class ResourceIndexPage extends React.Component {
               <table className="table mb-0">
                 <thead>
                   <tr>
-                    <th className="border-top-0 text-right">
+                    <th width="1%" className="border-top-0 text-right">
                       {' '}
                     </th>
                     {fields.map(field =>
@@ -212,7 +212,7 @@ class ResourceIndexPage extends React.Component {
                 <tbody>
                   {(resource.model_data.data).map(model =>
                     <tr key={model.id}>
-                      <td>
+                      <td width="1%">
                         <div className="form-check form-check-inline">
                           <input className="form-check-input" type="checkbox" />
                         </div>
