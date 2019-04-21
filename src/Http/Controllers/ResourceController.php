@@ -149,13 +149,23 @@ class ResourceController extends Controller
     /**
      * Delete a single model from a given resource.
      *
-     * @param Request $request
      * @param string $resource
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroy(Request $request, string $resource, string $id)
+    public function destroy(string $resource, string $id)
     {
-        return response()->json([], 200);
+        $resourceManager = new ResourceManager($resource);
+        $resourceModel = $resourceManager->resolveModel();
+        $model = $resourceModel::find($id);
+
+        if (!is_object($model)) {
+            return response()->json(['Model not found.'], 404);
+        }
+
+        $model->delete();
+
+        return response()->json(null, 204);
     }
 }
