@@ -9,6 +9,7 @@ class ResourceIndexPage extends React.Component {
     super(props);
 
     this.state = {
+      isDropdownBulkShown: false,
       resources: [],
       resource: null,
       searchTimeout: null,
@@ -17,6 +18,8 @@ class ResourceIndexPage extends React.Component {
 
     this.onPageClick = this.onPageClick.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
+    this.onDeleteClick = this.onDeleteClick.bind(this);
+    this.onDropdownBulkClick = this.onDropdownBulkClick.bind(this);
   }
 
   componentWillMount() {
@@ -83,9 +86,35 @@ class ResourceIndexPage extends React.Component {
     })
   }
 
+  /**
+   * Handle delete and reload resources.
+   *
+   * @param event
+   * @param resource
+   * @param id
+   */
+  onDeleteClick(event, resource, id) {
+    axios
+      .delete('/panel/api/resources/' + resource + '/' + id)
+      .then(response => {
+        this.loadResources();
+      });
+  }
+
+  /**
+   * Toggle bulk dropdown menu.
+   */
+  onDropdownBulkClick() {
+    this.setState(prevState => {
+      return {
+        isDropdownBulkShown: prevState.isDropdownBulkShown ? false : true,
+      }
+    });
+  }
+
   render() {
     const {params} = this.props.match;
-    const {resources, resource} = this.state;
+    const {resources, resource, isDropdownBulkShown} = this.state;
 
     if (typeof resource === 'object' && resource === null) {
       return (
@@ -123,7 +152,7 @@ class ResourceIndexPage extends React.Component {
                 <div className="col-12 col-lg-3">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control form-control--drop-shadow"
                     placeholder="Search"
                     onChange={this.onSearchChange}
                   />
@@ -137,20 +166,43 @@ class ResourceIndexPage extends React.Component {
               </div>
             </div>
 
-            <div className="card">
+            <div className="table-card card">
+              <div className="card-header">
+                <div className="form-check form-check-inline">
+                  <input className="form-check-input" type="checkbox" />
+
+                  <div className="dropdown">
+                    <button className="btn dropdown-toggle" onClick={this.onDropdownBulkClick}></button>
+                    <div className={'dropdown-menu' + (isDropdownBulkShown ? ' show' : '')}>
+                      <a className="dropdown-item" href="#">Bulk Delete</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <table className="table mb-0">
                 <thead>
                   <tr>
+                    <th className="border-top-0 text-right">
+                      {' '}
+                    </th>
                     {fields.map(field =>
                       <th className="border-top-0" key={field.column}>{field.name}</th>
                     )}
-                    <th className="border-top-0 text-right"></th>
+                    <th className="border-top-0 text-right">
+                      {' '}
+                    </th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {(resource.model_data.data).map(model =>
                     <tr key={model.id}>
+                      <td>
+                        <div className="form-check form-check-inline">
+                          <input className="form-check-input" type="checkbox" />
+                        </div>
+                      </td>
                       {fields.map(field =>
                         <td key={model.id + '-' + field.column}>
                           <IndexComponent
@@ -161,9 +213,12 @@ class ResourceIndexPage extends React.Component {
                         </td>
                       )}
                       <td className="text-right">
-                        <Link to={'/resources/' + params.resource + '/' + model.id}>View</Link>{' '}
-                        <Link to={'/resources/' + params.resource + '/' + model.id + '/edit'}>Edit</Link>{' '}
-                        <Link to={'/'}>Delete</Link>
+                        <Link className="btn btn-link" to={'/resources/' + params.resource + '/' + model.id}>View</Link>{' '}
+                        <Link className="btn btn-link" to={'/resources/' + params.resource + '/' + model.id + '/edit'}>Edit</Link>{' '}
+                        <button
+                          className="btn btn-link"
+                          onClick={e => this.onDeleteClick(e, params.resource, model.id)}
+                        >Delete</button>
                       </td>
                     </tr>
                   )}
