@@ -32,6 +32,20 @@ class ResourceIndexPage extends React.Component {
     this.loadResources();
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      match: {
+        params
+      }
+    } = this.props;
+
+    const previousResource = prevProps.match.params.resource;
+
+    if (params.resource !== previousResource) {
+      this.loadResources();
+    }
+  }
+
   /**
    * @param page
    */
