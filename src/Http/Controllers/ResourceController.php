@@ -20,26 +20,22 @@ class ResourceController extends Controller
     public function index(Request $request, string $resource)
     {
         $resourceManager = new ResourceManager($resource);
+        $resource = $resourceManager->getClass();
         $model = $resourceManager->resolveModel();
         $with = $resourceManager->getWith();
 
-        $whereClause = [];
+        $models = $model::with($with)->orderBy('id', 'desc');
 
         if ($request->exists('search')) {
-            $whereClause = [
-                ['id', 'LIKE', $request->input('search') . '%'],
-            ];
+            foreach ($resource->search as $column) {
+                $models->orWhere($column, 'LIKE', $request->input('search').'%');
+            }
         }
-
-        $models = $model::with($with)
-            ->where($whereClause)
-            ->orderBy('id', 'desc')
-            ->paginate();
 
         return response()->json([
             'name' => $resourceManager->getName(),
             'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_INDEX),
-            'model_data' => $models,
+            'model_data' => $models->paginate(),
         ]);
     }
 
