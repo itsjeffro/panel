@@ -1,9 +1,11 @@
 import React from 'react';
 import BelongsToIndex from "./BelongsTo/BelongsToIndex";
+import TextareaIndex from "./Textarea/TextareaIndex";
 
 const IndexComponent = (props) => {
   const components = {
-    BelongsTo: BelongsToIndex
+    BelongsTo: BelongsToIndex,
+    Textarea: TextareaIndex,
   };
 
   const {

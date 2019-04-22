@@ -1,9 +1,11 @@
 import React from 'react';
 import BelongsToDetail from "./BelongsTo/BelongsToDetail";
+import TextareaDetail from "./Textarea/TextareaDetail";
 
 const DetailComponent = (props) => {
   const components = {
-    BelongsTo: BelongsToDetail
+    BelongsTo: BelongsToDetail,
+    Textarea: TextareaDetail,
   };
 
   const {

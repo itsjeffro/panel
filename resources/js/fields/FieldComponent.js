@@ -1,11 +1,13 @@
 import React from 'react';
 import PasswordField from './Password/PasswordField';
 import BelongsToField from "./BelongsTo/BelongsToField";
+import TextareaField from "./Textarea/TextareaField";
 
 const FieldComponent = (props) => {
   const components = {
     Password: PasswordField,
-    BelongsTo: BelongsToField
+    BelongsTo: BelongsToField,
+    Textarea: TextareaField,
   };
 
   const {
