@@ -10,7 +10,10 @@ class ResourceEditPage extends React.Component {
     this.state = {
       resources: [],
       resource: null,
-      errors: null,
+      error: {
+        message: '',
+        errors: {},
+      },
       isUpdated: false,
     };
 
@@ -69,18 +72,29 @@ class ResourceEditPage extends React.Component {
       .put('/panel/api/resources/' + params.resource + '/' + params.id, resource.model_data)
       .then(response => {
         this.setState({
-          errors: null,
+          error: {
+            message: '',
+            errors: {},
+          },
           isUpdated: true,
         });
       },
           error => {
-        this.setState({errors: error.response.data.errors});
+        const message = error.response.data.message || '';
+        const errors = error.response.data.errors || {};
+
+        this.setState({
+          error: {
+            message: message,
+            errors: errors,
+          }
+        });
       });
   }
 
   render() {
     const {
-      errors,
+      error,
       isUpdated,
       resources,
       resource,
@@ -127,6 +141,8 @@ class ResourceEditPage extends React.Component {
               <h1>Edit {resource.name.singular}</h1>
             </div>
 
+            {error.message.length ? <div className="alert alert-danger">{error.message}</div> : ''}
+
             <div className="card">
               <form onSubmit={e => this.onHandleSubmit(e)} autoComplete="off">
                 <div className="list-group list-group-flush">
@@ -138,7 +154,7 @@ class ResourceEditPage extends React.Component {
                         </div>
                         <div className="col-xs-12 col-md-7">
                           <FieldComponent
-                            errors={errors}
+                            errors={error.errors}
                             field={field}
                             handleInputChange={e => this.onInputChange(e)}
                             resource={resource}
