@@ -112,7 +112,15 @@ class ResourceManager
             });
         }
 
-        return array_map(function ($field) {
+        return array_map(function ($field) use ($showOn) {
+            if ($showOn === self::SHOW_ON_UPDATE) {
+                $field->rules = $field->rulesOnUpdate;
+            }
+
+            if ($showOn === self::SHOW_ON_CREATE) {
+                $field->rules = $field->rulesOnCreate;
+            }
+
             $relationshipResource = $this->getRelationshipResource($field->relation);
 
             if ($field->isRelationshipField) {
@@ -189,12 +197,21 @@ class ResourceManager
     /**
      * Return fields with their associated validation rules.
      *
+     * @param string $showOn
      * @return array
      */
-    public function getValidationRules(): array
+    public function getValidationRules(string $showOn = ''): array
     {
-        return array_reduce($this->getFields(), function ($carry, $field) {
+        return array_reduce($this->getFields(), function ($carry, $field) use ($showOn) {
             $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
+
+            if ($showOn === self::SHOW_ON_UPDATE) {
+                $field->rules = $field->rules + $field->rulesOnUpdate;
+            }
+
+            if ($showOn === self::SHOW_ON_CREATE) {
+                $field->rules = $field->rules + $field->rulesOnCreate;
+            }
 
             if ($field->rules) {
                 $carry[$column] = implode('|', $field->rules);

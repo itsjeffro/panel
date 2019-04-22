@@ -2,6 +2,7 @@
 
 namespace Itsjeffro\Panel\Http\Controllers;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Itsjeffro\Panel\ResourceManager;
@@ -58,7 +59,7 @@ class ResourceController extends Controller
 
         return response()->json([
             'name' => $resourceManager->getName(),
-            'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_CREATE),
+            'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_UPDATE),
             'model_data' => $model::with($with)->find($id),
             'relationships' => $resourceManager->getRelationships(),
         ]);
@@ -77,7 +78,7 @@ class ResourceController extends Controller
     {
         $resourceManager = new ResourceManager($resource);
         $resourceModel = $resourceManager->resolveModel();
-        $validationRules = $resourceManager->getValidationRules();
+        $validationRules = $resourceManager->getValidationRules(ResourceManager::SHOW_ON_UPDATE);
         $fields = $resourceManager->getFields(ResourceManager::SHOW_ON_UPDATE);
 
         if ($validationRules) {
@@ -96,21 +97,25 @@ class ResourceController extends Controller
             return $field->showOnUpdate;
         });
 
-        $model = $resourceModel::find($id);
+        try {
+            $model = $resourceModel::find($id);
 
-        if (!is_object($model)) {
-            return response()->json(['Model not found.'], 404);
+            if (!is_object($model)) {
+                return response()->json(['Model not found.'], 404);
+            }
+
+            foreach ($fields as $field) {
+                $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
+
+                $field->fillAttributeFromRequest($request, $model, $column);
+            }
+
+            $model->save();
+
+            return response()->json($model);
+        } catch (QueryException $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
         }
-
-        foreach ($fields as $field) {
-            $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
-
-            $field->fillAttributeFromRequest($request, $model, $column);
-        }
-
-        $model->save();
-
-        return response()->json($model);
     }
 
 
@@ -126,24 +131,28 @@ class ResourceController extends Controller
     {
         $resourceManager = new ResourceManager($resource);
         $resourceModel = $resourceManager->resolveModel();
-        $validationRules = $resourceManager->getValidationRules();
+        $validationRules = $resourceManager->getValidationRules(ResourceManager::SHOW_ON_CREATE);
         $fields = $resourceManager->getFields(ResourceManager::SHOW_ON_CREATE);
 
         if ($validationRules) {
             $request->validate($validationRules);
         }
 
-        $model = new $resourceModel;
+        try {
+            $model = new $resourceModel;
 
-        foreach ($fields as $field) {
-            $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
+            foreach ($fields as $field) {
+                $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
 
-            $field->fillAttributeFromRequest($request, $model, $column);
+                $field->fillAttributeFromRequest($request, $model, $column);
+            }
+
+            $model->save();
+
+            return response()->json($model, 201);
+        } catch (QueryException $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
         }
-
-        $model->save();
-
-        return response()->json($model, 201);
     }
 
     /**
