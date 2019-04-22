@@ -57,6 +57,16 @@ abstract class Field
     public $rules = [];
 
     /**
+     * @var array
+     */
+    public $rulesOnCreate = [];
+
+    /**
+     * @var array
+     */
+    public $rulesOnUpdate = [];
+
+    /**
      * Field constructor.
      *
      * @param string $name
@@ -214,6 +224,30 @@ abstract class Field
     }
 
     /**
+     * Rules for the specified field during create.
+     *
+     * @param array $rules
+     * @return $this
+     */
+    public function createRules(array $rules = []): self
+    {
+        $this->rulesOnCreate = $rules;
+        return $this;
+    }
+
+    /**
+     * Rules for the specified field during update.
+     *
+     * @param array $rules
+     * @return $this
+     */
+    public function updateRules(array $rules = []): self
+    {
+        $this->rulesOnUpdate = $rules;
+        return $this;
+    }
+
+    /**
      * Fill attribute from request.
      *
      * @param Request $request
@@ -222,6 +256,8 @@ abstract class Field
      */
     public function fillAttributeFromRequest(Request $request, $model, $field)
     {
-        $model->{$field} = $request->input($field);
+        if ($request->exists($field)) {
+            $model->{$field} = $request->input($field);
+        }
     }
 }
