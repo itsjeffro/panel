@@ -8,7 +8,10 @@ class ResourceCreatePage extends React.Component {
     super(props);
 
     this.state = {
-      errors: null,
+      error: {
+        message: '',
+        errors: {},
+      },
       isCreated: false,
       newResource: {},
       newResourceId: null,
@@ -79,13 +82,24 @@ class ResourceCreatePage extends React.Component {
       .post('/panel/api/resources/' + params.resource, newResource)
       .then(response => {
         this.setState({
-          errors: null,
+          error: {
+            message: '',
+            errors: {},
+          },
           isCreated: true,
           newResourceId: response.data.id,
         });
       },
         error => {
-        this.setState({errors: error.response.data.errors});
+        const message = error.response.data.message || '';
+        const errors = error.response.data.errors || {};
+
+        this.setState({
+          error: {
+            message: message,
+            errors: errors,
+          }
+        });
       });
   }
 
@@ -97,7 +111,7 @@ class ResourceCreatePage extends React.Component {
     } = this.props;
 
     const {
-      errors,
+      error,
       isCreated,
       newResourceId,
       resources,
@@ -137,6 +151,8 @@ class ResourceCreatePage extends React.Component {
               <h1>Create {resource.name.singular}</h1>
             </div>
 
+            {error.message.length ? <div className="alert alert-danger">{error.message}</div> : ''}
+
             <div className="card">
               <div className="list-group list-group-flush">
                 {resourceFields.map(field =>
@@ -147,7 +163,7 @@ class ResourceCreatePage extends React.Component {
                       </div>
                       <div className="col-xs-12 col-md-7">
                         <FieldComponent
-                          errors={errors}
+                          errors={error.errors}
                           field={field}
                           handleInputChange={this.onInputChange}
                           resource={resource}
