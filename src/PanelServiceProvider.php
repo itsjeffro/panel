@@ -55,7 +55,7 @@ class PanelServiceProvider extends ServiceProvider
         return [
             'namespace' => 'Itsjeffro\Panel\Http\Controllers',
             'prefix' => 'panel',
-            'middleware' => ['web'],
+            'middleware' => config('panel.middleware_group'),
         ];
     }
     
