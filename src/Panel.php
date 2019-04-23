@@ -65,4 +65,17 @@ class Panel
 
         return str_replace(DIRECTORY_SEPARATOR, '\\', ucfirst($class));
     }
+
+    /**
+     * Return panel script variables.
+     *
+     * @return array
+     */
+    public static function scriptVariables()
+    {
+        return [
+            'prefix' => config('panel.prefix'),
+            'resources' => self::getResources(),
+        ];
+    }
 }
