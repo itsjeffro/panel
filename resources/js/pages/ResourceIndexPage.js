@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import axios from 'axios';
 import Pagination from "../components/Pagination";
 import IndexComponent from "../fields/IndexComponent";
+import Drawer from "../components/Drawer";
 
 class ResourceIndexPage extends React.Component {
   constructor(props) {
@@ -10,7 +11,6 @@ class ResourceIndexPage extends React.Component {
 
     this.state = {
       isDropdownBulkShown: false,
-      resources: [],
       resource: null,
       searchTimeout: null,
       search: '',
@@ -23,12 +23,6 @@ class ResourceIndexPage extends React.Component {
   }
 
   componentWillMount() {
-    axios
-      .get('/panel/api/resources')
-      .then(response => {
-        this.setState({resources: response.data});
-      });
-
     this.loadResources();
   }
 
@@ -128,7 +122,7 @@ class ResourceIndexPage extends React.Component {
 
   render() {
     const {params} = this.props.match;
-    const {resources, resource, isDropdownBulkShown} = this.state;
+    const {resource, isDropdownBulkShown} = this.state;
 
     if (typeof resource === 'object' && resource === null) {
       return (
@@ -144,16 +138,7 @@ class ResourceIndexPage extends React.Component {
       <div className="container-fluid content">
         <div className="row">
           <div className="col-xs-12 col-md-2">
-            <div className="drawer">
-              <h3>Resources</h3>
-              <ul>
-                {resources.map(resource =>
-                  <li key={resource.slug}>
-                    <Link to={'/resources/' + resource.slug}>{resource.name}</Link>
-                  </li>
-                )}
-              </ul>
-            </div>
+            <Drawer/>
           </div>
 
           <div className="col-xs-12 col-md-10">

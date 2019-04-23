@@ -2,13 +2,13 @@ import React from 'react';
 import {Link, Redirect} from 'react-router-dom';
 import axios from 'axios';
 import FieldComponent from "../fields/FieldComponent";
+import Drawer from "../components/Drawer";
 
 class ResourceEditPage extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      resources: [],
       resource: null,
       error: {
         message: '',
@@ -23,12 +23,6 @@ class ResourceEditPage extends React.Component {
 
   componentWillMount() {
     const {params} = this.props.match;
-
-    axios
-      .get('/panel/api/resources')
-      .then(response => {
-        this.setState({resources: response.data});
-      });
 
     axios
       .get('/panel/api/resources/' + params.resource + '/' + params.id)
@@ -96,7 +90,6 @@ class ResourceEditPage extends React.Component {
     const {
       error,
       isUpdated,
-      resources,
       resource,
     } = this.state;
 
@@ -124,16 +117,7 @@ class ResourceEditPage extends React.Component {
       <div className="container-fluid content">
         <div className="row">
           <div className="col-xs-12 col-md-2">
-            <div className="drawer">
-              <h3>Resources</h3>
-              <ul>
-                {resources.map(resource =>
-                  <li key={resource.slug}>
-                    <Link to={'/resources/' + resource.slug}>{resource.name}</Link>
-                  </li>
-                )}
-              </ul>
-            </div>
+            <Drawer/>
           </div>
 
           <div className="col-xs-12 col-md-10">

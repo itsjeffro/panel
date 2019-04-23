@@ -2,6 +2,7 @@ import React from 'react';
 import {Link, Redirect} from 'react-router-dom';
 import axios from 'axios';
 import FieldComponent from "../fields/FieldComponent";
+import Drawer from "../components/Drawer";
 
 class ResourceCreatePage extends React.Component {
   constructor(props) {
@@ -15,7 +16,6 @@ class ResourceCreatePage extends React.Component {
       isCreated: false,
       newResource: {},
       newResourceId: null,
-      resources: [],
       resource: null,
     };
 
@@ -25,14 +25,6 @@ class ResourceCreatePage extends React.Component {
 
   componentWillMount() {
     const {params} = this.props.match;
-
-    axios
-      .get('/panel/api/resources')
-      .then(response => {
-        this.setState({
-          resources: response.data
-        });
-      });
 
     axios
       .get('/panel/api/resources/' + params.resource + '/fields')
@@ -114,7 +106,6 @@ class ResourceCreatePage extends React.Component {
       error,
       isCreated,
       newResourceId,
-      resources,
       resource,
     } = this.state;
 
@@ -134,16 +125,7 @@ class ResourceCreatePage extends React.Component {
       <div className="container-fluid content">
         <div className="row">
           <div className="col-xs-12 col-md-2">
-            <div className="drawer">
-              <h3>Resources</h3>
-              <ul>
-                {resources.map(resource =>
-                  <li key={resource.slug}>
-                    <Link to={'/resources/' + resource.slug}>{resource.name}</Link>
-                  </li>
-                )}
-              </ul>
-            </div>
+            <Drawer/>
           </div>
 
           <div className="col-xs-12 col-md-10">
