@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
-    Route::get('resources', 'ResourcesController@index');
-
     Route::get('resources/{resource}/fields', 'ResourceFieldController@show');
 
     Route::get('resources/{resource}', 'ResourceController@index');
