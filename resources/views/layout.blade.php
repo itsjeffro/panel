@@ -22,6 +22,9 @@
 
 	<div id="app"></div>
 
+    <script>
+        window.panel = {!! $panelVariables !!};
+    </script>
     <script type="text/javascript" src="{{ mix('app.js', 'vendor/panel') }}"></script>
 </body>
 </html>
