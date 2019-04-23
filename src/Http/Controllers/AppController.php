@@ -3,6 +3,7 @@
 namespace Itsjeffro\Panel\Http\Controllers;
 
 use Illuminate\Routing\Controller;
+use Itsjeffro\Panel\Panel;
 
 class AppController extends Controller
 {
@@ -13,6 +14,8 @@ class AppController extends Controller
      */
     public function show()
     {
-        return view('panel::layout');
+        return view('panel::layout', [
+            'panelVariables' => json_encode(Panel::scriptVariables()),
+        ]);
     }
 }
