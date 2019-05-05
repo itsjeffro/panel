@@ -61,7 +61,7 @@ class ResourceManager
      *
      * @return string
      */
-    public function getResourcesNamespace(): string
+    public function getResourceNamespace(): string
     {
         $classSegments =  explode('\\', $this->resourceClass);
 
@@ -75,9 +75,9 @@ class ResourceManager
      *
      * @return array
      */
-    public function getName(): array
+    public function getResourceName(): array
     {
-        $model = explode('\\', $this->getClass()->model);
+        $model = explode('\\', $this->getResourceClass()->model);
         $name = end($model);
 
         return [
@@ -91,7 +91,7 @@ class ResourceManager
      *
      * @return mixed
      */
-    public function getClass()
+    public function getResourceClass()
     {
         return (new $this->resourceClass);
     }
@@ -104,10 +104,10 @@ class ResourceManager
      */
     public function getFields(string $showOn = ''): array
     {
-        $fields = $this->getClass()->fields();
+        $fields = $this->getResourceClass()->fields();
 
         if ($showOn) {
-            $fields = array_filter($this->getClass()->fields(), function ($field) use ($showOn) {
+            $fields = array_filter($this->getResourceClass()->fields(), function ($field) use ($showOn) {
                 return $field->{$showOn};
             });
         }
@@ -191,33 +191,7 @@ class ResourceManager
             return $relation;
         }
 
-        return $this->getResourcesNamespace().'\\'.$relation;
-    }
-
-    /**
-     * Return fields with their associated validation rules.
-     *
-     * @param string $showOn
-     * @return array
-     */
-    public function getValidationRules(string $showOn = ''): array
-    {
-        return array_reduce($this->getFields(), function ($carry, $field) use ($showOn) {
-            $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
-
-            if ($showOn === self::SHOW_ON_UPDATE) {
-                $field->rules = $field->rules + $field->rulesOnUpdate;
-            }
-
-            if ($showOn === self::SHOW_ON_CREATE) {
-                $field->rules = $field->rules + $field->rulesOnCreate;
-            }
-
-            if ($field->rules) {
-                $carry[$column] = implode('|', $field->rules);
-            }
-            return $carry;
-        }, []);
+        return $this->getResourceNamespace().'\\'.$relation;
     }
 
     /**
@@ -228,7 +202,7 @@ class ResourceManager
      */
     public function resolveModel()
     {
-        $resource = $this->getClass();
+        $resource = $this->getResourceClass();
         $model = app()->make($resource->model);
 
         if (!$model instanceof Model) {
