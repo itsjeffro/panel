@@ -36,7 +36,7 @@ class ModelResults
      */
     public function get(): array
     {
-        $resource = $this->resourceManager->getClass();
+        $resource = $this->resourceManager->getResourceClass();
         $model = $this->resourceManager->resolveModel();
         $with = $this->resourceManager->getWith();
 
@@ -49,7 +49,7 @@ class ModelResults
         }
 
         return [
-            'name' => $this->resourceManager->getName(),
+            'name' => $this->resourceManager->getResourceName(),
             'fields' => $this->resourceManager->getFields(ResourceManager::SHOW_ON_INDEX),
             'model_data' => $models->paginate(),
         ];
