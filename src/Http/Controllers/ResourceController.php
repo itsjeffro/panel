@@ -45,8 +45,8 @@ class ResourceController extends Controller
             $with = $resourceManager->getWith();
 
             return response()->json([
-                'name' => $resourceManager->getName(),
-                'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_UPDATE),
+                'name' => $resourceManager->getResourceName(),
+                'fields' => $resourceManager->getFields(),
                 'model_data' => $model::with($with)->find($id),
                 'relationships' => $resourceManager->getRelationships(),
             ]);
@@ -62,6 +62,7 @@ class ResourceController extends Controller
      * @param string $resource
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function update(Request $request, string $resource, string $id)
     {
@@ -76,8 +77,6 @@ class ResourceController extends Controller
             return response()->json(['message' => sprintf('Resource [%s] not found', $resource)], 404);
         } catch (QueryException $e) {
             return response()->json(['message' => $e->getMessage()], 500);
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
         }
     }
 
@@ -88,6 +87,7 @@ class ResourceController extends Controller
      * @param Request $request
      * @param string $resource
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function store(Request $request, string $resource)
     {
@@ -100,8 +100,6 @@ class ResourceController extends Controller
             return response()->json($model, 201);
         } catch (QueryException $e) {
             return response()->json(['message' => $e->getMessage()], 500);
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
         }
     }
 
@@ -111,6 +109,7 @@ class ResourceController extends Controller
      * @param string $resource
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function destroy(string $resource, string $id)
     {
@@ -123,8 +122,6 @@ class ResourceController extends Controller
             return response()->json(null, 204);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => sprintf('Resource [%s] not found', $resource)], 404);
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
         }
     }
 }
