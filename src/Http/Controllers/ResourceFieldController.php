@@ -3,7 +3,6 @@
 namespace Itsjeffro\Panel\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Str;
 use Itsjeffro\Panel\ResourceManager;
 
 class ResourceFieldController extends Controller
@@ -13,14 +12,14 @@ class ResourceFieldController extends Controller
      *
      * @param string $resource
      * @throws \Exception
-     * @return Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(string $resource)
     {
         $resourceManager = new ResourceManager($resource);
 
         return response()->json([
-            'name' => $resourceManager->getName(),
+            'name' => $resourceManager->getResourceName(),
             'fields' => $resourceManager->getFields(ResourceManager::SHOW_ON_CREATE),
             'relationships' => $resourceManager->getRelationships(ResourceManager::SHOW_ON_CREATE),
         ]);
