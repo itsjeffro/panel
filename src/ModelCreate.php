@@ -35,8 +35,8 @@ class ModelCreate
     public function create()
     {
         $resourceModel = $this->resourceManager->resolveModel();
-        $validationRules = $this->resourceManager->getValidationRules(ResourceManager::SHOW_ON_CREATE);
-        $fields = $this->resourceManager->getFields(ResourceManager::SHOW_ON_CREATE);
+        $fields = $this->fields();
+        $validationRules = $this->validationRules($fields);
 
         if ($validationRules) {
             $this->request->validate($validationRules);
@@ -53,5 +53,37 @@ class ModelCreate
         $model->save();
 
         return $model;
+    }
+
+    /**
+     * Get creation fields.
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return array_filter($this->resourceManager->getFields(), function ($field) {
+            return $field->showOnCreate;
+        });
+    }
+
+    /**
+     * Get validation rules for creation fields.
+     *
+     * @param array $fields
+     * @return array
+     */
+    public function validationRules(array $fields): array
+    {
+        return array_reduce($fields, function ($carry, $field) {
+            $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
+            $field->rules = $field->rules + $field->rulesOnCreate;
+
+            if ($field->rules) {
+                $carry[$column] = implode('|', $field->rules);
+            }
+
+            return $carry;
+        }, []);
     }
 }
