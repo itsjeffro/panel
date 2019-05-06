@@ -1,0 +1,19 @@
+language: php
+
+sudo: false
+
+php:
+  - 7.0
+  - 7.1
+
+env:
+  matrix:
+    - LARAVEL=5.6.*
+    - LARAVEL=5.7.*
+    - LARAVEL=5.8.*
+    - LARAVEL=dev-master
+
+install:
+  - travis_retry composer require "illuminate/contracts=${LARAVEL}" --dev --prefer-dist --no-interaction --no-suggest
+
+script: vendor/bin/phpunit --verbose
