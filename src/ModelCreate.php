@@ -62,9 +62,13 @@ class ModelCreate
      */
     public function fields()
     {
-        return array_filter($this->resourceManager->getFields(), function ($field) {
+        $fields = array_filter($this->resourceManager->getFields(), function ($field) {
             return $field->showOnCreate;
         });
+        
+        return array_map(function ($field) {
+            return $field->rules = $field->rules + $field->rulesOnCreate;
+        }, $fields, []);
     }
 
     /**
@@ -77,7 +81,6 @@ class ModelCreate
     {
         return array_reduce($fields, function ($carry, $field) {
             $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
-            $field->rules = $field->rules + $field->rulesOnCreate;
 
             if ($field->rules) {
                 $carry[$column] = implode('|', $field->rules);
