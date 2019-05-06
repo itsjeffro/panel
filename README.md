@@ -1,4 +1,9 @@
 # Panel
+
+<p align="center">
+    <a href="https://travis-ci.org/itsjeffro/panel"><img src="https://travis-ci.org/itsjeffro/panel.svg?branch=master" alt="Build Status"></a>
+</p>
+
 Inspired by Laravel Nova. This package provides a separate administration panel to manage model data.
 
 This is by no means a replacement or a competitor. I mainly created this package to see if I could create 
