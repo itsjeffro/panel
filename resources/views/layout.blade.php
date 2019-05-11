@@ -10,16 +10,6 @@
     <link href="{{ mix('app.css', 'vendor/panel') }}" rel="stylesheet" type="text/css">
 </head>
 <body>
-    <nav class="navbar navbar-light">
-        <a class="navbar-brand" href="#">Panel</a>
-
-        @auth
-            <span class="navbar-text">
-                Welcome, {{ Auth::user()->name }}
-            </span>
-        @endif
-    </nav>
-
 	<div id="app"></div>
 
     <script>
