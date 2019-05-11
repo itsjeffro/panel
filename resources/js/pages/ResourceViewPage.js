@@ -42,13 +42,11 @@ class ResourceViewPage extends React.Component {
     });
 
     return (
-      <div className="container-fluid content">
-        <div className="row">
-          <div className="col-xs-12 col-md-2">
-            <Drawer/>
-          </div>
+      <div className="wrapper">
+        <Drawer/>
 
-          <div className="col-xs-12 col-md-10">
+        <main className="main-content">
+          <div className="content">
             <div className="row">
               <div className="col-md-6">
                 <div className="page-heading">
@@ -86,7 +84,7 @@ class ResourceViewPage extends React.Component {
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
     )
   }

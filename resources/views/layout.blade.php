@@ -10,7 +10,7 @@
     <link href="{{ mix('app.css', 'vendor/panel') }}" rel="stylesheet" type="text/css">
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-light">
         <a class="navbar-brand" href="#">Panel</a>
 
         @auth

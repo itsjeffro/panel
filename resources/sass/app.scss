@@ -8,6 +8,9 @@
 @import "./components/table.scss";
 @import "./components/pagination.scss";
 
+body, html {
+    height: 100%;
+}
 body {
     background: #e6eaef;
     font-family: helvetica, sans-serif;
@@ -16,9 +19,24 @@ body {
     padding: 0;
 }
 
+#app {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    width: 100%;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+}
+
+.main-content {
+    width: 100%;
+}
+
 .content {
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding: 30px;
 }
 
 .page-heading {

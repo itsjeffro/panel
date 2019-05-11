@@ -114,13 +114,11 @@ class ResourceEditPage extends React.Component {
     });
 
     return (
-      <div className="container-fluid content">
-        <div className="row">
-          <div className="col-xs-12 col-md-2">
-            <Drawer/>
-          </div>
+      <div className="wrapper">
+        <Drawer/>
 
-          <div className="col-xs-12 col-md-10">
+        <main className="main-content">
+          <div className="content">
             <div className="page-heading">
               <h1>Edit {resource.name.singular}</h1>
             </div>
@@ -158,7 +156,7 @@ class ResourceEditPage extends React.Component {
               </form>
             </div>
           </div>
-        </div>
+        </main>
       </div>
     )
   }

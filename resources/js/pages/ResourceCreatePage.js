@@ -122,13 +122,11 @@ class ResourceCreatePage extends React.Component {
     let resourceFields = resource.fields;
 
     return (
-      <div className="container-fluid content">
-        <div className="row">
-          <div className="col-xs-12 col-md-2">
-            <Drawer/>
-          </div>
+      <div className="wrapper">
+        <Drawer/>
 
-          <div className="col-xs-12 col-md-10">
+        <main className="main-content">
+          <div className="content">
             <div className="page-heading">
               <h1>Create {resource.name.singular}</h1>
             </div>
@@ -166,7 +164,7 @@ class ResourceCreatePage extends React.Component {
             </div>
 
           </div>
-        </div>
+        </main>
       </div>
     )
   }

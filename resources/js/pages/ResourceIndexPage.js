@@ -135,13 +135,11 @@ class ResourceIndexPage extends React.Component {
     });
 
     return (
-      <div className="container-fluid content">
-        <div className="row">
-          <div className="col-xs-12 col-md-2">
-            <Drawer/>
-          </div>
+      <div className="wrapper">
+        <Drawer/>
 
-          <div className="col-xs-12 col-md-10">
+        <main className="main-content">
+          <div className="content">
             <div className="page-heading">
               <h1>{resource.name.plural}</h1>
             </div>
@@ -233,7 +231,7 @@ class ResourceIndexPage extends React.Component {
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
     )
   }
