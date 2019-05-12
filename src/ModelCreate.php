@@ -67,7 +67,8 @@ class ModelCreate
         });
         
         return array_map(function ($field) {
-            return $field->rules = $field->rules + $field->rulesOnCreate;
+            $field->rules = $field->rules + $field->rulesOnCreate;
+            return $field;
         }, $fields, []);
     }
 

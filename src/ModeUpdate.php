@@ -68,9 +68,14 @@ class ModeUpdate
      */
     public function fields(): array
     {
-        return array_filter($this->resourceManager->getFields(), function ($field) {
+        $fields = array_filter($this->resourceManager->getFields(), function ($field) {
             return $field->showOnUpdate;
         });
+
+        return array_map(function ($field) {
+            $field->rules = $field->rules + $field->rulesOnUpdate;
+            return $field;
+        }, $fields, []);
     }
 
     /**
@@ -83,7 +88,6 @@ class ModeUpdate
     {
         return array_reduce($fields, function ($carry, $field) {
             $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
-            $field->rules = $field->rules + $field->rulesOnUpdate;
 
             if ($field->rules) {
                 $carry[$column] = implode('|', $field->rules);
