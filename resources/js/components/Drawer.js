@@ -6,6 +6,7 @@ const Drawer = (props) => {
 
   return (
     <div className="drawer">
+      <h2>Panel</h2>
       <h3>Resources</h3>
       <ul>
         {resources.map(resource =>
