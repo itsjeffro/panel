@@ -5,7 +5,7 @@ namespace Itsjeffro\Panel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
-class ModeUpdate
+class ModelUpdate
 {
     private $resourceManager;
 

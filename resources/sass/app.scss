@@ -13,7 +13,8 @@ body, html {
 }
 body {
     background: #e6eaef;
-    font-family: helvetica, sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 15px;
     color: #333;
     margin: 0;
     padding: 0;
@@ -37,12 +38,13 @@ body {
 }
 
 .content {
-    padding: 30px;
+    padding: 18px 36px;
 }
 
 .page-heading {
     h1 {
         font-size: 1.4em;
+        font-weight: 300;
         margin-bottom: 1em;
     }
 }

@@ -113,14 +113,6 @@ class ResourceManager
         }
 
         return array_map(function ($field) use ($showOn) {
-            if ($showOn === self::SHOW_ON_UPDATE) {
-                $field->rules = $field->rulesOnUpdate;
-            }
-
-            if ($showOn === self::SHOW_ON_CREATE) {
-                $field->rules = $field->rulesOnCreate;
-            }
-
             $relationshipResource = $this->getRelationshipResource($field->relation);
 
             if ($field->isRelationshipField) {
