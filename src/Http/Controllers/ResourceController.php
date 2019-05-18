@@ -9,7 +9,7 @@ use Illuminate\Routing\Controller;
 use Itsjeffro\Panel\ModelCreate;
 use Itsjeffro\Panel\ModelDelete;
 use Itsjeffro\Panel\ModelResults;
-use Itsjeffro\Panel\ModeUpdate;
+use Itsjeffro\Panel\ModelUpdate;
 use Itsjeffro\Panel\ResourceManager;
 
 class ResourceController extends Controller
@@ -68,7 +68,7 @@ class ResourceController extends Controller
     {
         try {
             $resourceManager = new ResourceManager($resource);
-            $resourceModel = new ModeUpdate($resourceManager, $request, $id);
+            $resourceModel = new ModelUpdate($resourceManager, $request, $id);
 
             $model = $resourceModel->update();
 
