@@ -140,7 +140,7 @@ class ResourceEditPage extends React.Component {
                             field={field}
                             handleInputChange={e => this.onInputChange(e)}
                             resource={resource}
-                            value={resource.model_data[field.column]}
+                            value={resource.model_data[field.isRelationshipField ? field.foreignKey : field.column]}
                           />
                         </div>
                       </div>

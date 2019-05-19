@@ -147,7 +147,7 @@ class ResourceCreatePage extends React.Component {
                           field={field}
                           handleInputChange={this.onInputChange}
                           resource={resource}
-                          value={this.state.newResource[field.column] || ''}
+                          value={this.state.newResource[field.isRelationshipField ? field.foreignKey : field.column] || ''}
                         />
                       </div>
                     </div>
