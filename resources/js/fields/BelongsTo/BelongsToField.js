@@ -11,8 +11,6 @@ const BelongsToField = (props) => {
     value
   } = props;
 
-  const selected = value.id;
-
   return (
     <span>
       <select
@@ -25,7 +23,7 @@ const BelongsToField = (props) => {
         {resource.relationships[field.column].map(relationship =>
           <option
             key={relationship.id}
-            value={relationship.id}
+            value={value}
           >{relationship[field.relation.title]}</option>
         )}
       </select>
