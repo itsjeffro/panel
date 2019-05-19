@@ -17,13 +17,13 @@ const BelongsToField = (props) => {
         className={'form-control' + (hasError ? ' is-invalid' : '')}
         name={column}
         onChange={e => handleInputChange(e)}
-        value={selected}
+        value={value}
       >
         <option value="">Choose {field.name}</option>
         {resource.relationships[field.column].map(relationship =>
           <option
             key={relationship.id}
-            value={value}
+            value={relationship.id}
           >{relationship[field.relation.title]}</option>
         )}
       </select>
