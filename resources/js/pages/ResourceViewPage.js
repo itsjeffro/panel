@@ -2,7 +2,6 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 import DetailComponent from "../fields/DetailComponent";
-import Drawer from "../components/Drawer";
 
 class ResourceViewPage extends React.Component {
   constructor(props) {
@@ -42,49 +41,43 @@ class ResourceViewPage extends React.Component {
     });
 
     return (
-      <div className="wrapper">
-        <Drawer/>
-
-        <main className="main-content">
-          <div className="content">
-            <div className="row">
-              <div className="col-md-6">
-                <div className="page-heading">
-                  <h1>{resource.name.singular} Details</h1>
-                </div>
-              </div>
-              <div className="col-md-6">
-                <div className="form-group text-md-right">
-                  <Link
-                    className="btn btn-primary btn-sm"
-                    to={'/resources/' + params.resource + '/' + params.id + '/edit'}
-                  >Edit</Link>
-                </div>
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="list-group list-group-flush">
-                {fields.map(field =>
-                  <div className="list-group-item" key={field.column}>
-                    <div className="row">
-                      <div className="col-xs-12 col-md-2">
-                        <strong>{field.name}</strong>
-                      </div>
-                      <div className="col-xs-12 col-md-10">
-                        <DetailComponent
-                          component={field.component}
-                          model={resource.model_data}
-                          field={field}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
+      <div className="content">
+        <div className="row">
+          <div className="col-md-6">
+            <div className="page-heading">
+              <h1>{resource.name.singular} Details</h1>
             </div>
           </div>
-        </main>
+          <div className="col-md-6">
+            <div className="form-group text-md-right">
+              <Link
+                className="btn btn-primary btn-sm"
+                to={'/resources/' + params.resource + '/' + params.id + '/edit'}
+              >Edit</Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="list-group list-group-flush">
+            {fields.map(field =>
+              <div className="list-group-item" key={field.column}>
+                <div className="row">
+                  <div className="col-xs-12 col-md-2">
+                    <strong>{field.name}</strong>
+                  </div>
+                  <div className="col-xs-12 col-md-10">
+                    <DetailComponent
+                      component={field.component}
+                      model={resource.model_data}
+                      field={field}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     )
   }

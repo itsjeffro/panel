@@ -8,16 +8,10 @@ class DashboardPage extends React.Component {
 
   render() {
     return(
-      <div className="wrapper">
-        <Drawer/>
-
-        <main className="main-content">
-          <div className="content">
-            <div className="page-heading">
-              <h1>Getting Started</h1>
-            </div>
-          </div>
-        </main>
+      <div className="content">
+        <div className="page-heading">
+          <h1>Getting Started</h1>
+        </div>
       </div>
     )
   }

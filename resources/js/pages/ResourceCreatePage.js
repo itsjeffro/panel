@@ -1,8 +1,7 @@
 import React from 'react';
-import {Link, Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import axios from 'axios';
 import FieldComponent from "../fields/FieldComponent";
-import Drawer from "../components/Drawer";
 
 class ResourceCreatePage extends React.Component {
   constructor(props) {
@@ -122,49 +121,42 @@ class ResourceCreatePage extends React.Component {
     let resourceFields = resource.fields;
 
     return (
-      <div className="wrapper">
-        <Drawer/>
+      <div className="content">
+        <div className="page-heading">
+          <h1>Create {resource.name.singular}</h1>
+        </div>
 
-        <main className="main-content">
-          <div className="content">
-            <div className="page-heading">
-              <h1>Create {resource.name.singular}</h1>
-            </div>
+        {error.message.length ? <div className="alert alert-danger">{error.message}</div> : ''}
 
-            {error.message.length ? <div className="alert alert-danger">{error.message}</div> : ''}
-
-            <div className="card">
-              <div className="list-group list-group-flush">
-                {resourceFields.map(field =>
-                  <div className="list-group-item" key={field.column}>
-                    <div className="row">
-                      <div className="col-xs-12 col-md-2 pt-2">
-                        <strong>{field.name}</strong>
-                      </div>
-                      <div className="col-xs-12 col-md-7">
-                        <FieldComponent
-                          errors={error.errors}
-                          field={field}
-                          handleInputChange={this.onInputChange}
-                          resource={resource}
-                          value={this.state.newResource[field.isRelationshipField ? field.foreignKey : field.column] || ''}
-                        />
-                      </div>
-                    </div>
+        <div className="card">
+          <div className="list-group list-group-flush">
+            {resourceFields.map(field =>
+              <div className="list-group-item" key={field.column}>
+                <div className="row">
+                  <div className="col-xs-12 col-md-2 pt-2">
+                    <strong>{field.name}</strong>
                   </div>
-                )}
+                  <div className="col-xs-12 col-md-7">
+                    <FieldComponent
+                      errors={error.errors}
+                      field={field}
+                      handleInputChange={this.onInputChange}
+                      resource={resource}
+                      value={this.state.newResource[field.isRelationshipField ? field.foreignKey : field.column] || ''}
+                    />
+                  </div>
+                </div>
               </div>
-
-              <div className="card-footer text-right">
-                <button
-                  className="btn btn-primary"
-                  onClick={this.onHandleClick}
-                >Save {name.singular}</button>
-              </div>
-            </div>
-
+            )}
           </div>
-        </main>
+
+          <div className="card-footer text-right">
+            <button
+              className="btn btn-primary"
+              onClick={this.onHandleClick}
+            >Save {name.singular}</button>
+          </div>
+        </div>
       </div>
     )
   }

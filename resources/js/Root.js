@@ -6,12 +6,13 @@ import ResourceIndexPage from './pages/ResourceIndexPage';
 import ResourceCreatePage from './pages/ResourceCreatePage';
 import ResourceEditPage from './pages/ResourceEditPage';
 import ResourceViewPage from './pages/ResourceViewPage';
+import Layout from "./containers/Layout";
 
 class Root extends React.Component {
   render() {
     return (
       <Router basename="/panel">
-        <>
+        <Layout>
           <Switch>
             <Route exact path="/" component={DashboardPage} />
             <Route exact path="/resources/:resource" component={ResourceIndexPage} />
@@ -19,7 +20,7 @@ class Root extends React.Component {
             <Route exact path="/resources/:resource/:id" component={ResourceViewPage} />
             <Route exact path="/resources/:resource/:id/edit" component={ResourceEditPage} />
           </Switch>
-        </>
+        </Layout>
       </Router>
     )
   }
