@@ -210,12 +210,12 @@ class ResourceIndexPage extends React.Component {
                         </td>
                       )}
                       <td className="text-right">
-                        <Link className="btn btn-link" to={'/resources/' + params.resource + '/' + model.id}>View</Link>{' '}
-                        <Link className="btn btn-link" to={'/resources/' + params.resource + '/' + model.id + '/edit'}>Edit</Link>{' '}
+                        <Link className="btn btn-link" to={'/resources/' + params.resource + '/' + model.id}><span className="typcn typcn-eye-outline" /></Link>{' '}
+                        <Link className="btn btn-link" to={'/resources/' + params.resource + '/' + model.id + '/edit'}><span className="typcn typcn-edit" /></Link>{' '}
                         <button
                           className="btn btn-link"
                           onClick={e => this.onDeleteClick(e, params.resource, model.id)}
-                        >Delete</button>
+                        ><span className="typcn typcn-trash" /></button>
                       </td>
                     </tr>
                   )}
