@@ -18,7 +18,7 @@ const Pagination = (props) => {
 
   return (
     <nav>
-      <div className="pt-2 pr-3 float-right">
+      <div className="pt-1 pr-3 float-right">
         Total: {total}
       </div>
       <ul className="pagination">
