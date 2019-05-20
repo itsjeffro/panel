@@ -7,13 +7,20 @@ const Drawer = (props) => {
   return (
     <div className="drawer">
       <h2>Panel</h2>
-      <h3>Resources</h3>
       <ul>
-        {resources.map(resource =>
-          <li key={resource.slug}>
-          <Link to={'/resources/' + resource.slug}>{resource.name}</Link>
-          </li>
-        )}
+        <li>
+          <Link to="/"><span className="typcn typcn-home-outline" />Dashboard</Link>
+        </li>
+        <li>
+          <a href="#"><span className="typcn typcn-th-large-outline" />Resources</a>
+          <ul>
+            {resources.map(resource =>
+              <li key={resource.slug}>
+                <Link to={'/resources/' + resource.slug}>{resource.name}</Link>
+              </li>
+            )}
+          </ul>
+        </li>
       </ul>
     </div>
   )
