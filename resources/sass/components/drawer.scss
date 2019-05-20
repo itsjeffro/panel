@@ -3,31 +3,38 @@
   box-shadow: 0 0 3px rgba(0,0,0,.12);
   min-width: 250px;
   width: 250px;
-
-  h2 {
-    padding: 18px 15px 0;
-    font-size: 18px;
+  &>ul>li>a {
+    color: #666;
+    padding-top: 9px;
+    padding-bottom: 9px;
   }
-
-  h3 {
-    font-size: 1em;
-    margin: 30px 0 0;
-    padding: 0 15px;
+  ul ul {
+    padding-left: 15px;
+    a {
+      padding-left: 25px;
+    }
+  }
+  h2 {
+    font-size: 18px;
+    margin: 0;
+    padding: 18px 15px;
   }
   ul {
     margin: 0;
     padding: 0;
     list-style: none;
   }
-
   li {
     margin: 0;
     padding: 0;
   }
-
   a {
     display: block;
-    padding: 12px 15px;
-    border-bottom: 1px solid #e6eaee;
+    padding: 7px 15px;
+  }
+  .typcn {
+    vertical-align: text-bottom;
+    width: 25px;
+    display: inline-block;
   }
 }
