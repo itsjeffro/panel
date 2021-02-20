@@ -11,6 +11,8 @@ const BelongsToField = (props) => {
     value
   } = props;
 
+  const options = resource.relationships[field.column] || [];
+
   return (
     <span>
       <select
@@ -20,12 +22,12 @@ const BelongsToField = (props) => {
         value={value}
       >
         <option value="">Choose {field.name}</option>
-        {resource.relationships[field.column].map(relationship =>
+        { options.map((relationship) =>
           <option
             key={relationship.id}
             value={relationship.id}
-          >{relationship[field.relation.title]}</option>
-        )}
+          >{ relationship[field.relation.title] }</option>
+        ) }
       </select>
 
       {hasError ? <div className="invalid-feedback">{messageError}</div> : ''}
