@@ -108,7 +108,9 @@ class ResourceManager
             if ($field->isRelationshipField) {
                 try {
                     $relationMethod = $field->column;
-                    $field->foreignKey = $this->resolveModel()->$relationMethod()->getForeignKey();
+                    $relationshipModel = $this->resolveModel()->$relationMethod();
+
+                    $field->foreignKey = $relationshipModel->getForeignKeyName();
                     $field->relation = new $relationshipResource;
                 } catch (\BadMethodCallException $e) {
                     throw new \Exception("Call to undefined relationship [$relationMethod] from model");
