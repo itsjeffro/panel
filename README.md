@@ -12,7 +12,11 @@ Inspired by Laravel Nova. This package provides a separate administration panel 
 This is by no means a replacement or a competitor. I mainly created this package to see if I could create 
 something similar as a learning experience.
 
-### Installation
+## Requirements
+
+* Laravel 7
+
+## Installation
 The package's main service provider will be automatically registered with Laravel's package auto-discovery.
 
 ```bash
@@ -33,7 +37,7 @@ provider in the providers array in your config/app.php configuration file:
 App\Providers\PanelServiceProvider::class,
 ```
 
-### Resources
+## Resources
 Resources allow for mapping to your applications model.
 
 You may generate a new resource by using the panel:resource console command.
@@ -42,7 +46,7 @@ You may generate a new resource by using the panel:resource console command.
 php artisan panel:resource User
 ```
 
-### Fields
+## Fields
 
 When a resource is generated, it will contain an ID field to begin with. You may use any of the fields below by adding them
 to the fields method inside your generated resource.
@@ -62,7 +66,7 @@ public function fields()
 }
 ```
 
-#### Field Visibility
+### Field Visibility
 
 - showOnIndex()
 - showOnDisplay()
@@ -73,15 +77,32 @@ public function fields()
 - hideOnCreate()
 - hideOnUpdate()
 
-### Relationships
+## Relationships
 
-- BelongsTo
+### BelongsTo
 
-### Roadmap
+```php
+<?php
+
+use Itsjeffro\Panel\Resource;
+use Itsjeffro\Panel\Fields\BelongsTo;
+
+class Comment extends  Resource
+{
+    public function fields(): array
+    {
+        return [
+            BelongsTo::make('Posts'),
+        ];
+    }
+}
+```
+
+## Roadmap
 
 Since this is a project I plan to use quite often, there will be additional features I would like to add when needed.
 
-#### Relationships
+### Relationships
 
 - [ ] HasMany
 
