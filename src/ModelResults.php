@@ -2,6 +2,7 @@
 
 namespace Itsjeffro\Panel;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class ModelResults
@@ -36,7 +37,14 @@ class ModelResults
         $model = $this->resourceManager->resolveModel();
         $with = $this->resourceManager->getWith();
 
+        $relations = $this->request->get('relation', []);
         $models = $model::with($with)->orderBy('id', 'desc');
+
+        foreach ($relations as $relation => $id) {
+            $models = $models->whereHas($relation, function (Builder $query) use ($id) {
+                $query->where('id', $id);
+            });
+        }
 
         if ($this->request->exists('search')) {
             foreach ($resource->search as $column) {
