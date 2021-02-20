@@ -4,6 +4,7 @@ namespace Itsjeffro\Panel;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Itsjeffro\Panel\Fields\HasMany;
 
 class ResourceManager
 {
@@ -126,8 +127,9 @@ class ResourceManager
      */
     public function getWith(): array
     {
+        // Exclude hasMany fields as they will be passed with the relationships property in the controllers.
         $relationshipFields = array_filter($this->getFields(), function ($field) {
-            return $field->isRelationshipField;
+            return $field->isRelationshipField && !$field instanceof HasMany;
         });
 
         return array_map(function ($field) {
@@ -138,24 +140,23 @@ class ResourceManager
     /**
      * Return list of models based on the relationships from the main resource.
      */
-    public function getRelationships(string $showOn = ''): array
+    public function getRelationships(string $showOn = '', string $id = ''): array
     {
-        $relationshipFields = array_filter($this->getFields($showOn), function ($field) {
-            return $field->isRelationshipField;
+        $fields = array_filter($this->getFields($showOn), function ($field) {
+            return $field instanceof HasMany;
         });
 
-        return array_reduce($relationshipFields, function ($carry, $field) {
-            $relation = $field->relation;
-            $columns = ['id'];
+        $relationshipFields = [];
 
-            if (!in_array($relation->title, $columns)) {
-                $columns[] = $relation->title;
-            }
+        foreach ($fields as $field) {
+            $relationshipFields[] = [
+                'relationship' => $field->column,
+                'foreign_key' => $field->foreignKey,
+                'id' => $id,
+            ];
+        }
 
-            $carry[$field->column] = $relation->model::select($columns)->get();
-
-            return $carry;
-        }, []);
+        return $relationshipFields;
     }
 
     /**
