@@ -18,9 +18,6 @@ class ModelCreate
 
     /**
      * ModelCreate constructor.
-     *
-     * @param ResourceManager $resourceManager
-     * @param Request $request
      */
     public function __construct(ResourceManager $resourceManager, Request $request)
     {
@@ -29,6 +26,8 @@ class ModelCreate
     }
 
     /**
+     * Create resource.
+     *
      * @return mixed
      * @throws \Exception
      */
@@ -57,10 +56,8 @@ class ModelCreate
 
     /**
      * Get creation fields.
-     *
-     * @return array
      */
-    public function fields()
+    protected function fields(): array
     {
         $fields = array_filter($this->resourceManager->getFields(), function ($field) {
             return $field->showOnCreate;
@@ -74,11 +71,8 @@ class ModelCreate
 
     /**
      * Get validation rules for creation fields.
-     *
-     * @param array $fields
-     * @return array
      */
-    public function validationRules(array $fields): array
+    protected function validationRules(array $fields): array
     {
         return array_reduce($fields, function ($carry, $field) {
             $column = $field->isRelationshipField ? $field->foreignKey : $field->column;

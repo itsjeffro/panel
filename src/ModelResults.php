@@ -18,9 +18,6 @@ class ModelResults
 
     /**
      * ModelResults constructor.
-     *
-     * @param ResourceManager $resourceManager
-     * @param Request $request
      */
     public function __construct(ResourceManager $resourceManager, Request $request)
     {
@@ -31,7 +28,6 @@ class ModelResults
     /**
      * Return built data response.
      *
-     * @return array
      * @throws \Exception
      */
     public function get(): array

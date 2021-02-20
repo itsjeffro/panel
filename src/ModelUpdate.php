@@ -15,10 +15,6 @@ class ModelUpdate
 
     /**
      * ModeUpdate constructor.
-     *
-     * @param ResourceManager $resourceManager
-     * @param Request $request
-     * @param string $id
      */
     public function __construct(ResourceManager $resourceManager, Request $request, string $id)
     {
@@ -62,11 +58,9 @@ class ModelUpdate
     }
 
     /**
-     * Get updateable fields.
-     *
-     * @return array
+     * Get updatable fields.
      */
-    public function fields(): array
+    protected function fields(): array
     {
         $fields = array_filter($this->resourceManager->getFields(), function ($field) {
             return $field->showOnUpdate;
@@ -79,12 +73,9 @@ class ModelUpdate
     }
 
     /**
-     * Get validation rules for updateable fields.
-     *
-     * @param array $fields
-     * @return array
+     * Get validation rules for updatable fields.
      */
-    public function validationRules(array $fields): array
+    protected function validationRules(array $fields): array
     {
         return array_reduce($fields, function ($carry, $field) {
             $column = $field->isRelationshipField ? $field->foreignKey : $field->column;

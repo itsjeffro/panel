@@ -39,10 +39,7 @@ class ResourceManager
 
     /**
      * Return resource class.
-     *
-     * @param array $registeredResources
-     * @param string $resource
-     * @return string
+
      * @throw InvalidArgumentException
      */
     public function classNameFromResource(array $registeredResources, string $resource): string
@@ -58,8 +55,6 @@ class ResourceManager
 
     /**
      * Return namespace where application resources are located.
-     *
-     * @return string
      */
     public function getResourceNamespace(): string
     {
@@ -72,8 +67,6 @@ class ResourceManager
 
     /**
      * Return name of resource from class.
-     *
-     * @return array
      */
     public function getResourceName(): array
     {
@@ -98,9 +91,6 @@ class ResourceManager
 
     /**
      * Return resource's fields along with indexes.
-     *
-     * @param string $showOn
-     * @return array
      */
     public function getFields(string $showOn = ''): array
     {
@@ -131,8 +121,6 @@ class ResourceManager
 
     /**
      * Return the model relationships that should be eager loaded via the with() method.
-     *
-     * @return array
      */
     public function getWith(): array
     {
@@ -147,9 +135,6 @@ class ResourceManager
 
     /**
      * Return list of models based on the relationships from the main resource.
-     *
-     * @param string $showOn
-     * @return array
      */
     public function getRelationships(string $showOn = ''): array
     {
@@ -173,9 +158,6 @@ class ResourceManager
 
     /**
      * Return relationship resource class.
-     *
-     * @param string $relation
-     * @return string
      */
     public function getRelationshipResource(string $relation): string
     {

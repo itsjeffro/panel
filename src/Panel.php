@@ -7,15 +7,11 @@ use Symfony\Component\Finder\Finder;
 
 class Panel
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     private static $resources = [];
 
     /**
      * Get registered resources.
-     *
-     * @return array
      */
     public static function getResources(): array
     {
@@ -34,9 +30,6 @@ class Panel
 
     /**
      * Return resources.
-     *
-     * @param string path
-     * @return void
      */
     public static function resourcesIn(string $path): void
     {
@@ -54,10 +47,6 @@ class Panel
 
     /**
      * Get class name from path.
-     *
-     * @param object $file
-     * @param string $basePath
-     * @return string
      */
     public static function getClassName($file, string $basePath): string
     {
@@ -68,10 +57,8 @@ class Panel
 
     /**
      * Return panel script variables.
-     *
-     * @return array
      */
-    public static function scriptVariables()
+    public static function scriptVariables(): array
     {
         return [
             'prefix' => config('panel.prefix'),

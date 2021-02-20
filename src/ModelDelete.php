@@ -18,9 +18,6 @@ class ModelDelete
 
     /**
      * ModelDelete constructor.
-     *
-     * @param ResourceManager $resourceManager
-     * @param string $id
      */
     public function __construct(ResourceManager $resourceManager, string $id)
     {
@@ -29,7 +26,9 @@ class ModelDelete
     }
 
     /**
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * Delete resource.
+     *
+     * @throws ModelNotFoundException
      * @throws \Exception
      */
     public function delete()

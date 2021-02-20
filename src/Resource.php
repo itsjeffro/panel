@@ -5,7 +5,7 @@ namespace Itsjeffro\Panel;
 abstract class Resource
 {
     /**
-     * @return array
+     * Return resource's fields.
      */
     abstract public function fields(): array;
 }
