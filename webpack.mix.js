@@ -14,6 +14,7 @@ const mix = require('laravel-mix');
 mix
   .setPublicPath('public')
   .setResourceRoot('/vendor/panel/')
-  .react('resources/js/app.js', 'public')
+  .js('resources/js/app.js', 'public')
   .sass('resources/sass/app.scss', 'public')
+  .react()
   .copy('public', '../public/vendor/panel');
