@@ -8,6 +8,10 @@
             "email":"jefftoddnielsen@gmail.com"
         }
     ],
+    "scripts": {
+        "test": "php ./vendor/bin/phpunit --colors=always -v --testdox",
+        "test-coverage": "php -dxdebug.mode=coverage ./vendor/bin/phpunit --coverage-html coverage"
+    },
     "autoload":{
         "psr-4":{
             "Itsjeffro\\Panel\\":"src/"
@@ -23,7 +27,7 @@
         "laravel/framework": "^7.0"
     },
     "require-dev":{
-        "orchestra/testbench": "^6.0"
+        "orchestra/testbench": "^5.0"
     },
     "extra":{
         "laravel":{

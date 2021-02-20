@@ -1,10 +1,10 @@
 # Panel
 
 <p align="center">
-    <a href="https://travis-ci.org/itsjeffro/panel"><img src="https://travis-ci.org/itsjeffro/panel.svg?branch=master" alt="Build Status"></a>
-    <a href="https://packagist.org/packages/itsjeffro/deploy"><img src="https://poser.pugx.org/itsjeffro/panel/d/total.svg" alt="Total Downloads"></a>
-    <a href="https://packagist.org/packages/itsjeffro/deploy"><img src="https://poser.pugx.org/itsjeffro/panel/v/stable.svg" alt="Latest Stable Version"></a>
-    <a href="https://packagist.org/packages/itsjeffro/deploy"><img src="https://poser.pugx.org/itsjeffro/panel/license.svg"></a>
+    <a href="https://github.com/itsjeffro/panel/actions"><img src="https://github.com/itsjeffro/panel/workflows/tests/badge.svg" alt="Build Status"></a>
+    <a href="https://packagist.org/packages/itsjeffro/panel"><img src="https://poser.pugx.org/itsjeffro/panel/d/total.svg" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/itsjeffro/panel"><img src="https://poser.pugx.org/itsjeffro/panel/v/stable.svg" alt="Latest Stable Version"></a>
+    <a href="https://packagist.org/packages/itsjeffro/panel"><img src="https://poser.pugx.org/itsjeffro/panel/license.svg"></a>
 </p>
 
 Inspired by Laravel Nova. This package provides a separate administration panel to manage model data.
