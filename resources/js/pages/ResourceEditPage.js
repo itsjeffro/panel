@@ -2,22 +2,29 @@ import React from 'react';
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
 import FieldComponent from "../fields/FieldComponent";
+import ResourceTable from "../components/ResourceTable";
 
 class ResourceEditPage extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      isDropdownBulkShown: false,
       resource: null,
       error: {
         message: '',
         errors: {},
       },
       isUpdated: false,
+      relationships: [],
     };
 
     this.onInputChange = this.onInputChange.bind(this);
     this.onHandleSubmit = this.onHandleSubmit.bind(this);
+    this.onPageClick = this.onPageClick.bind(this);
+    this.onDeleteClick = this.onDeleteClick.bind(this);
+    this.onDropdownBulkClick = this.onDropdownBulkClick.bind(this);
+    this.loadRelationships = this.loadRelationships.bind(this);
   }
 
   componentWillMount() {
@@ -26,8 +33,31 @@ class ResourceEditPage extends React.Component {
     axios
       .get('/panel/api/resources/' + params.resource + '/' + params.id)
       .then(response => {
-        this.setState({resource: response.data});
+        const relationships = response.data.relationships;
+
+        this.loadRelationships(relationships);
+
+        this.setState({ resource: response.data });
       });
+  }
+
+  loadRelationships(relationships) {
+    relationships.map((relationship) => {
+      axios
+        .get('/panel/api/resources/' + relationship.relationship)
+        .then((response) => {
+          this.setState((prevState) => {
+            const relationships = [
+              ...prevState.relationships,
+              response.data,
+            ];
+
+            return { relationships: relationships };
+          });
+        }, (error) => {
+          console.log(error);
+        });
+    })
   }
 
   /**
@@ -85,11 +115,44 @@ class ResourceEditPage extends React.Component {
       });
   }
 
+  /**
+   * Load paged results based on page click.
+   */
+  onPageClick(event, page) {
+    event.preventDefault();
+
+    // this.loadResources(page);
+  }
+
+  /**
+   * Handle delete and reload resources.
+   */
+  onDeleteClick(event, resource, id) {
+    // axios
+    //   .delete('/panel/api/resources/' + resource + '/' + id)
+    //   .then(response => {
+    //     this.loadResources();
+    //   });
+  }
+
+  /**
+   * Toggle bulk dropdown menu.
+   */
+  onDropdownBulkClick() {
+    this.setState(prevState => {
+      return {
+        isDropdownBulkShown: !prevState.isDropdownBulkShown,
+      }
+    });
+  }
+
   render() {
     const {
       error,
       isUpdated,
       resource,
+      isDropdownBulkShown,
+      relationships,
     } = this.state;
 
     const {
@@ -118,7 +181,7 @@ class ResourceEditPage extends React.Component {
           <h1>Edit {resource.name.singular}</h1>
         </div>
 
-        {error.message.length ? <div className="alert alert-danger">{error.message}</div> : ''}
+        { error.message.length ? <div className="alert alert-danger">{error.message}</div> : '' }
 
         <div className="card">
           <form onSubmit={e => this.onHandleSubmit(e)} autoComplete="off">
@@ -150,6 +213,22 @@ class ResourceEditPage extends React.Component {
             </div>
           </form>
         </div>
+
+        { relationships.map((relationship) => {
+          return (
+            <div key={relationship.name.plural} className="mt-3">
+              <h3>{ relationship.name.plural }</h3>
+              <ResourceTable
+                onPageClick={ this.onPageClick }
+                onDropdownBulkClick={ this.onDropdownBulkClick }
+                onDeleteClick={ this.onDeleteClick }
+                isDropdownBulkShown={ isDropdownBulkShown }
+                resource={ relationship }
+                params={ params }
+              />
+            </div>
+          )
+        }) }
       </div>
     )
   }
