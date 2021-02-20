@@ -4,6 +4,7 @@ namespace Itsjeffro\Panel\Http\Controllers;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Itsjeffro\Panel\ModelCreate;
@@ -17,12 +18,9 @@ class ResourceController extends Controller
     /**
      * Retrieve paginated models from a given resource.
      *
-     * @param Request $request
-     * @param string $resource
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function index(Request $request, string $resource)
+    public function index(Request $request, string $resource): JsonResponse
     {
         $resourceManager = new ResourceManager($resource);
         $resourceModel = new ModelResults($resourceManager, $request);
@@ -32,12 +30,8 @@ class ResourceController extends Controller
 
     /**
      * Retrieve a single model from a given resource.
-     *
-     * @param string $resource
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $resource, string $id)
+    public function show(Request $request, string $resource, string $id): JsonResponse
     {
         try {
             $resourceManager = new ResourceManager($resource);
@@ -48,7 +42,7 @@ class ResourceController extends Controller
                 'name' => $resourceManager->getResourceName(),
                 'fields' => $resourceManager->getFields(),
                 'model_data' => $model::with($with)->find($id),
-                'relationships' => $resourceManager->getRelationships(),
+                'relationships' => $resourceManager->getRelationships('', $id),
             ]);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
@@ -58,13 +52,9 @@ class ResourceController extends Controller
     /**
      * Update a single model from a given resource.
      *
-     * @param \Illuminate\Http\Request
-     * @param string $resource
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function update(Request $request, string $resource, string $id)
+    public function update(Request $request, string $resource, string $id): JsonResponse
     {
         try {
             $resourceManager = new ResourceManager($resource);
@@ -84,12 +74,9 @@ class ResourceController extends Controller
     /**
      * Create a new model for a given resource.
      *
-     * @param Request $request
-     * @param string $resource
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function store(Request $request, string $resource)
+    public function store(Request $request, string $resource): JsonResponse
     {
         try {
             $resourceManager = new ResourceManager($resource);
@@ -106,12 +93,9 @@ class ResourceController extends Controller
     /**
      * Delete a single model from a given resource.
      *
-     * @param string $resource
-     * @param string $id
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function destroy(string $resource, string $id)
+    public function destroy(string $resource, string $id): JsonResponse
     {
         try {
             $resourceManager = new ResourceManager($resource);
@@ -121,7 +105,9 @@ class ResourceController extends Controller
 
             return response()->json(null, 204);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => sprintf('Resource [%s] not found', $resource)], 404);
+            return response()->json([
+                'message' => sprintf('Resource [%s] not found', $resource)
+            ], 404);
         }
     }
 }
