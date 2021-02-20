@@ -8,7 +8,7 @@ const Layout = (props) => {
 
       <main className="main-content">
         <div className="main-content__navbar">
-          Username
+          Welcome, Username
         </div>
         {props.children}
       </main>
