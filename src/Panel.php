@@ -7,7 +7,11 @@ use Symfony\Component\Finder\Finder;
 
 class Panel
 {
-    /** @var array */
+    /**
+     * The registered resources in the specified resource path.
+     *
+     * @var array
+     */
     private static $resources = [];
 
     /**
