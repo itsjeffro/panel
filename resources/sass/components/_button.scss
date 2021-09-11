@@ -1,0 +1,17 @@
+.btn {
+  font-size: inherit;
+
+  &-secondary {
+    color: $font-color-base;
+    background-color: #fff;
+    border-color: #c0c4c8;
+    box-shadow: 0 1px 2px rgba(0,0,0,.12);
+
+    &:hover, &:focus, &:not(:disabled):not(.disabled):active {
+      color: $font-color-base;
+      background-color: #fff;
+      border-color: #c0c4c8;
+      box-shadow: 0 1px 3px rgba(0,0,0,.20);
+    }
+  }
+}

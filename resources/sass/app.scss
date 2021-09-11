@@ -2,7 +2,11 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "~typicons.font/src/font/typicons.css";
 
+// Variables
+@import 'variables';
+
 // Custom
+@import "./components/button.scss";
 @import "./components/card.scss";
 @import "./components/drawer.scss";
 @import "./components/forms.scss";
@@ -13,12 +17,13 @@ body, html {
     height: 100%;
 }
 body {
-    background: #e6eaef;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 15px;
-    color: #333;
+    background: $body-bg;
+    font-family: $font-family-sans-serif;
+    font-size: 14px;
+    color: $font-color-base;
     margin: 0;
     padding: 0;
+    font-weight: 300;
 }
 
 #app {
@@ -50,7 +55,7 @@ body {
 .page-heading {
     h1 {
         font-size: 1.4em;
-        font-weight: 300;
+        font-weight: 400;
         margin-bottom: 1em;
     }
 }
