@@ -14,31 +14,27 @@ const ResourceTable = (props) => {
   } = props;
 
   return (
-    <div className="table-card card">
-      <div className="card-header">
-        <div className="form-check form-check-inline">
-          <input className="form-check-input" type="checkbox" />
+    <>
+      <div className="form-check form-check-inline">
+        <div className="dropdown">
+          <button className="btn btn-secondary dropdown-toggle" onClick={ onDropdownBulkClick }>Actions</button>
 
-          <div className="dropdown">
-            <button className="btn pb-0 dropdown-toggle" onClick={ onDropdownBulkClick }>{''}</button>
-
-            <div className={'dropdown-menu' + ( isDropdownBulkShown ? ' show' : '') }>
-              <a className="dropdown-item" href="#">Bulk Delete</a>
-            </div>
+          <div className={'dropdown-menu' + ( isDropdownBulkShown ? ' show' : '') }>
+            <a className="dropdown-item" href="#">Bulk Delete</a>
           </div>
         </div>
       </div>
 
-      <table className="table mb-0">
+      <table className="table">
         <thead>
         <tr>
-          <th width="1%" className="border-top-0 text-right">
-            {' '}
+          <th width="1%">
+            <input type="checkbox" />
           </th>
           { resource.fields.map(field =>
-            <th className="border-top-0" key={field.column}>{field.name}</th>
+            <th key={field.column}>{field.name}</th>
           ) }
-          <th className="border-top-0 text-right">
+          <th className="text-right">
             {' '}
           </th>
         </tr>
@@ -74,15 +70,13 @@ const ResourceTable = (props) => {
         </tbody>
       </table>
 
-      <div className="card-footer card-pagination">
-        <Pagination
-          total={ resource.model_data.total }
-          per_page={ resource.model_data.per_page }
-          current_page={ resource.model_data.current_page }
-          handlePageClick={ onPageClick }
-        />
-      </div>
-    </div>
+      <Pagination
+        total={ resource.model_data.total }
+        per_page={ resource.model_data.per_page }
+        current_page={ resource.model_data.current_page }
+        handlePageClick={ onPageClick }
+      />
+    </>
   )
 }
 
