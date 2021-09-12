@@ -22,11 +22,43 @@ class ResourceCreatePage extends React.Component {
     axios
       .get('/panel/api/resources/' + params.resource + '/fields')
       .then((response) => {
-        this.setState({
-          resource: response.data,
-          relationships: response.data.relationships,
-        });
+        const relationships = response.data.relationships;
+
+        this.loadRelationships(relationships);
+
+        this.setState({ resource: response.data });
       });
+  }
+
+  /**
+   * Load any relationships that this resource might have.
+   *
+   * @param {array} relationships
+   * @returns void
+   */
+  loadRelationships = (relationships) => {
+    Object.keys(relationships).map((relationship) => {
+      const models = relationships[relationship];
+
+      Object.keys(models).map((model) => {
+        axios
+          .get('/panel/api/resources/' + models[model].table)
+          .then((response) => {
+            this.setState((prevState) => {
+              return {
+                ...prevState.relationships,
+                relationships: {
+                  [relationship]: {
+                    [model]: response.data
+                  }
+                }
+              }
+            })
+          }, (error) => {
+            console.log(error);
+          });
+      })
+    })
   }
 
   /**
