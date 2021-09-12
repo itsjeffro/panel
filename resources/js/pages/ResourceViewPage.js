@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 import DetailComponent from "../fields/DetailComponent";
+import ResourceTable from "../components/ResourceTable";
 
 class ResourceViewPage extends React.Component {
   constructor(props) {
@@ -9,6 +10,8 @@ class ResourceViewPage extends React.Component {
 
     this.state = {
       resource: null,
+      relationships: {},
+      isDropdownBulkShown: false,
     };
   }
 
@@ -18,12 +21,58 @@ class ResourceViewPage extends React.Component {
     axios
       .get('/panel/api/resources/' + params.resource + '/' + params.id)
       .then(response => {
+        const relationships = response.data.relationships;
+
+        this.loadRelationships(relationships);
+
         this.setState({resource: response.data});
       });
   }
 
+  /**
+   * Toggle bulk dropdown menu.
+   */
+  onDropdownBulkClick() {
+    this.setState(prevState => {
+      return {
+        isDropdownBulkShown: !prevState.isDropdownBulkShown,
+      }
+    });
+  }
+
+  /**
+   * Load any relationships that this resource might have.
+   *
+   * @param {array} relationships
+   * @returns void
+   */
+  loadRelationships(relationships) {
+    Object.keys(relationships).map((relationship) => {
+      const models = relationships[relationship];
+
+      Object.keys(models).map((model) => {
+        axios
+          .get('/panel/api/resources/' + models[model].table)
+          .then((response) => {
+            this.setState((prevState) => {
+              return {
+                ...prevState.relationships,
+                relationships: {
+                  [relationship]: {
+                    [model]: response.data
+                  }
+                }
+              }
+            })
+          }, (error) => {
+            console.log(error);
+          });
+      })
+    })
+  }
+
   render() {
-    const {resource} = this.state;
+    const { resource, relationships, isDropdownBulkShown } = this.state;
     const {
       match: {
         params,
@@ -42,41 +91,57 @@ class ResourceViewPage extends React.Component {
 
     return (
       <div className="content">
-        <div className="row">
-          <div className="col-md-6">
-            <div className="page-heading">
-              <h1>{resource.name.singular} Details</h1>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6">
+              <div className="page-heading">
+                <h1>{resource.name.singular} Details</h1>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="form-group text-md-right">
+                <Link
+                  className="btn btn-primary btn-sm"
+                  to={'/resources/' + params.resource + '/' + params.id + '/edit'}
+                >Edit</Link>
+              </div>
             </div>
           </div>
-          <div className="col-md-6">
-            <div className="form-group text-md-right">
-              <Link
-                className="btn btn-primary btn-sm"
-                to={'/resources/' + params.resource + '/' + params.id + '/edit'}
-              >Edit</Link>
-            </div>
-          </div>
-        </div>
 
-        <div className="card">
-          <div className="list-group list-group-flush">
-            {fields.map(field =>
-              <div className="list-group-item" key={field.column}>
-                <div className="row">
-                  <div className="col-xs-12 col-md-2">
-                    <strong>{field.name}</strong>
-                  </div>
-                  <div className="col-xs-12 col-md-10">
-                    <DetailComponent
-                      component={field.component}
-                      model={resource.model_data}
-                      field={field}
-                    />
+          <div className="card">
+            <div className="list-group list-group-flush">
+              { fields.map(field =>
+                <div className="list-group-item" key={field.column}>
+                  <div className="row">
+                    <div className="col-xs-12 col-md-2">
+                      <strong>{field.name}</strong>
+                    </div>
+                    <div className="col-xs-12 col-md-10">
+                      <DetailComponent
+                        component={field.component}
+                        model={resource.model_data}
+                        field={field}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              ) }
+            </div>
           </div>
+
+          { (relationships.hasMany ? Object.keys(relationships.hasMany) : []).map((model) => {
+            const resource = relationships.hasMany[model];
+
+            return (
+              <div key={resource.name.plural} className="mt-3">
+                <h3>{ resource.name.plural }</h3>
+                <ResourceTable
+                  onDeleteClick={ this.onDeleteClick }
+                  resourceName={ model }
+                />
+              </div>
+            )
+          }) }
         </div>
       </div>
     )

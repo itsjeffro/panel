@@ -229,61 +229,59 @@ class ResourceEditPage extends React.Component {
 
     return (
       <div className="content">
-        <div className="page-heading">
-          <h1>Edit {resource.name.singular}</h1>
-        </div>
+        <div className="container">
+          <div className="page-heading">
+            <h1>Edit {resource.name.singular}</h1>
+          </div>
 
-        { error.message.length ? <div className="alert alert-danger">{error.message}</div> : '' }
+          { error.message.length ? <div className="alert alert-danger">{error.message}</div> : '' }
 
-        <div className="card">
-          <form onSubmit={e => this.onHandleSubmit(e)} autoComplete="off">
-            <div className="list-group list-group-flush">
-              { fields.map((field) => (
-                <div className="list-group-item" key={field.column}>
-                  <div className="row">
-                    <div className="col-xs-12 col-md-2 pt-2">
-                      <strong>{field.name}</strong>
-                    </div>
-                    <div className="col-xs-12 col-md-7">
-                      <FieldComponent
-                        errors={ error.errors }
-                        field={ field }
-                        handleInputChange={ (e) => this.onInputChange(e) }
-                        resource={resource}
-                        options={ this.fieldOptions(relationships, field) }
-                        value={ this.fieldValue(resource, field) }
-                      />
+          <div className="card">
+            <form onSubmit={e => this.onHandleSubmit(e)} autoComplete="off">
+              <div className="list-group list-group-flush">
+                { fields.map((field) => (
+                  <div className="list-group-item" key={field.column}>
+                    <div className="row">
+                      <div className="col-xs-12 col-md-2 pt-2">
+                        <strong>{field.name}</strong>
+                      </div>
+                      <div className="col-xs-12 col-md-7">
+                        <FieldComponent
+                          errors={ error.errors }
+                          field={ field }
+                          handleInputChange={ (e) => this.onInputChange(e) }
+                          resource={resource}
+                          options={ this.fieldOptions(relationships, field) }
+                          value={ this.fieldValue(resource, field) }
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              )) }
-            </div>
-            <div className="card-footer text-right">
-              <button
-                className="btn btn-primary"
-                onClick={this.onHandleClick}
-              >Update {resource.name.singular}</button>
-            </div>
-          </form>
+                )) }
+              </div>
+              <div className="card-footer text-right">
+                <button
+                  className="btn btn-primary"
+                  onClick={this.onHandleClick}
+                >Update {resource.name.singular}</button>
+              </div>
+            </form>
+          </div>
+
+          { (relationships.hasMany ? Object.keys(relationships.hasMany) : []).map((model) => {
+            const resource = relationships.hasMany[model];
+
+            return (
+              <div key={resource.name.plural} className="mt-3">
+                <h3>{ resource.name.plural }</h3>
+                <ResourceTable
+                  onDeleteClick={ this.onDeleteClick }
+                  resourceName={ resource }
+                />
+              </div>
+            )
+          }) }
         </div>
-
-        { (relationships.hasMany ? Object.keys(relationships.hasMany) : []).map((model) => {
-          const resource = relationships.hasMany[model];
-
-          return (
-            <div key={resource.name.plural} className="mt-3">
-              <h3>{ resource.name.plural }</h3>
-              <ResourceTable
-                onPageClick={ this.onPageClick }
-                onDropdownBulkClick={ this.onDropdownBulkClick }
-                onDeleteClick={ this.onDeleteClick }
-                isDropdownBulkShown={ isDropdownBulkShown }
-                resource={ resource }
-                params={ params }
-              />
-            </div>
-          )
-        }) }
       </div>
     )
   }
