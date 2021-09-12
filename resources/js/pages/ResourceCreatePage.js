@@ -146,40 +146,42 @@ class ResourceCreatePage extends React.Component {
 
     return (
       <div className="content">
-        <div className="page-heading">
-          <h2>Create {resource.name.singular}</h2>
-        </div>
-
-        {error.message.length ? <div className="alert alert-danger">{error.message}</div> : ''}
-
-        <div className="card">
-          <div className="list-group list-group-flush">
-            {resourceFields.map(field =>
-              <div className="list-group-item" key={field.column}>
-                <div className="row">
-                  <div className="col-xs-12 col-md-2 pt-2">
-                    <strong>{field.name}</strong>
-                  </div>
-                  <div className="col-xs-12 col-md-7">
-                    <FieldComponent
-                      errors={ error.errors }
-                      field={ field }
-                      handleInputChange={ this.onInputChange }
-                      resource={ resource }
-                      options={ this.fieldOptions(relationships, field) }
-                      value={ this.fieldValue(resource, field) }
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
+        <div className="container">
+          <div className="page-heading">
+            <h2>Create {resource.name.singular}</h2>
           </div>
 
-          <div className="card-footer text-right">
-            <button
-              className="btn btn-primary"
-              onClick={this.onHandleClick}
-            >Save {name.singular}</button>
+          {error.message.length ? <div className="alert alert-danger">{error.message}</div> : ''}
+
+          <div className="card">
+            <div className="list-group list-group-flush">
+              {resourceFields.map(field =>
+                <div className="list-group-item" key={field.column}>
+                  <div className="row">
+                    <div className="col-xs-12 col-md-2 pt-2">
+                      <strong>{field.name}</strong>
+                    </div>
+                    <div className="col-xs-12 col-md-7">
+                      <FieldComponent
+                        errors={ error.errors }
+                        field={ field }
+                        handleInputChange={ this.onInputChange }
+                        resource={ resource }
+                        options={ this.fieldOptions(relationships, field) }
+                        value={ this.fieldValue(resource, field) }
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="card-footer text-right">
+              <button
+                className="btn btn-primary"
+                onClick={this.onHandleClick}
+              >Save {name.singular}</button>
+            </div>
           </div>
         </div>
       </div>
