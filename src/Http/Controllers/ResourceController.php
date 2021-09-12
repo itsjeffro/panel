@@ -58,9 +58,9 @@ class ResourceController extends Controller
     {
         try {
             $resourceManager = new ResourceManager($resource);
-            $resourceModel = new ModelUpdate($resourceManager, $request, $id);
+            $resourceModel = new ModelUpdate($resourceManager, $request);
 
-            $model = $resourceModel->update();
+            $model = $resourceModel->update($id);
 
             return response()->json($model);
         } catch (ModelNotFoundException $e) {
