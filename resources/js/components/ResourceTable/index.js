@@ -45,6 +45,8 @@ class ResourceTable extends React.Component {
 
     const endpointQuery = query.length ? '?' + query.join('&') : '';
 
+    this.setState({ isLoading: true });
+
     axios
       .get('/panel/api/resources/' + resourceName + endpointQuery)
       .then(response => {
@@ -57,7 +59,6 @@ class ResourceTable extends React.Component {
    */
   onDropdownBulkClick = () => {
     this.setState((prevState) => {
-      console.log(prevState);
       return { isDropdownBulkShown: !prevState.isDropdownBulkShown }
     });
   }
@@ -91,7 +92,7 @@ class ResourceTable extends React.Component {
 
   render() {
     const { onDeleteClick, resourceName } = this.props;
-    const { isLoading, resource } = this.state;
+    const { isDropdownBulkShown, isLoading, resource } = this.state;
 
     if (isLoading) {
       return <>Loading...</>
@@ -104,20 +105,24 @@ class ResourceTable extends React.Component {
             <Input
               type="text"
               placeholder="Search"
+              onChange={ this.onSearchChange }
             />
           </div>
           <div className="col-12 col-lg-9 text-right">
             <div className="dropdown d-inline-block mr-2">
-              <button className="btn btn-secondary dropdown-toggle" onClick={ this.onDropdownBulkClick }>Actions</button>
+              <button
+                className="btn btn-secondary dropdown-toggle"
+                onClick={ this.onDropdownBulkClick }
+              >Actions</button>
 
-              <div className={'dropdown-menu' + (this.isDropdownBulkShown ? ' show' : '')}>
+              <div className={'dropdown-menu' + (isDropdownBulkShown ? ' show' : '')}>
                 <a className="dropdown-item" href="#">Bulk Delete</a>
               </div>
             </div>
 
             <Link
               className="btn btn-primary"
-              to={'/resources/' + resource + '/create'}
+              to={'/resources/' + resourceName + '/create'}
             >{'Create ' + resource.name.singular}</Link>
           </div>
         </div>
