@@ -48,7 +48,11 @@ class ModelUpdate
         }
 
         foreach ($fields as $field) {
-            $column = $field->isRelationshipField ? $field->foreignKey : $field->column;
+            $column = $field->column;
+
+            if ($field->isRelationshipField) {
+                $column = $resourceModel->{$column}()->getForeignKeyName();
+            }
 
             $field->fillAttributeFromRequest($this->request, $model, $column);
         }
