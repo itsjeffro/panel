@@ -4,6 +4,7 @@ namespace Itsjeffro\Panel;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Itsjeffro\Panel\Fields\BelongsTo;
 use Itsjeffro\Panel\Fields\HasMany;
 
 class ResourceManager
@@ -22,6 +23,16 @@ class ResourceManager
      * @var string
      */
     const SHOW_ON_INDEX = 'showOnIndex';
+
+    /**
+     * Available relationship types.
+     *
+     * @var string[]
+     */
+    const RELATIONSHIPS_TYPES = [
+      BelongsTo::class,
+      HasMany::class,
+    ];
 
     /**
      * @var string
@@ -92,6 +103,8 @@ class ResourceManager
 
     /**
      * Return resource's fields along with indexes.
+     *
+     * @throws \Exception
      */
     public function getFields(string $showOn = ''): array
     {
@@ -107,15 +120,16 @@ class ResourceManager
             $relationshipResource = $this->getRelationshipResource($field->relation);
 
             if ($field->isRelationshipField) {
-                try {
-                    $relationMethod = $field->column;
-                    $relationshipModel = $this->resolveModel()->$relationMethod();
+                $modelClass = new $relationshipResource;
+                $relationshipModel = new $modelClass->model;
+                $relationshipName = $field->column;
 
-                    $field->foreignKey = $relationshipModel->getForeignKeyName();
-                    $field->relation = new $relationshipResource;
-                } catch (\BadMethodCallException $e) {
-                    throw new \Exception("Call to undefined relationship [$relationMethod] from model");
-                }
+                $field->relation = [
+                    'type' => lcfirst($field->component),
+                    'table' => $relationshipModel->getTable(),
+                    'title' => $modelClass->title,
+                    'foreign_key' => $this->resolveModel()->{$relationshipName}()->getForeignKeyName(),
+                ];
             }
 
             return $field;
@@ -143,16 +157,18 @@ class ResourceManager
     public function getRelationships(string $showOn = '', string $id = ''): array
     {
         $fields = array_filter($this->getFields($showOn), function ($field) {
-            return $field instanceof HasMany;
+            return in_array(get_class($field), self::RELATIONSHIPS_TYPES);
         });
 
         $relationshipFields = [];
 
         foreach ($fields as $field) {
-            $relationshipFields[] = [
-                'relationship' => $field->column,
-                'foreign_key' => $field->foreignKey,
-                'id' => $id,
+            $component = Str::camel($field->component);
+            $table = $field->relation['table'];
+
+            $relationshipFields[$component][$table] = [
+                'name' => $field->name,
+                'table' => $table,
             ];
         }
 
