@@ -10,6 +10,8 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/plugin-transform-arrow-functions": "^7.14.5",
     "@babel/preset-react": "^7.0.0",
     "axios": "^0.21.1",
     "bootstrap": "^4.0.0",
