@@ -134,7 +134,6 @@ class ResourceViewPage extends React.Component {
 
             return (
               <div key={resource.name.plural} className="mt-3">
-                <h3>{ resource.name.plural }</h3>
                 <ResourceTable
                   onDeleteClick={ this.onDeleteClick }
                   resourceName={ model }
