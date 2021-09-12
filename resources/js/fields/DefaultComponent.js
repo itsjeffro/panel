@@ -17,7 +17,7 @@ const DefaultComponent = (props) => {
           type="text"
           name={ column }
           value={ value }
-          onChange={ handleInputChange }
+          onChange={ (event) => handleInputChange(event) }
           placeholder={ field.name }
         />
 

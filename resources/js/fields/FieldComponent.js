@@ -11,15 +11,10 @@ const FieldComponent = (props) => {
     Textarea: TextareaField,
   };
 
-  const {
-    errors,
-    field,
-    handleInputChange,
-    value
-  } = props;
+  const { errors, field } = props;
 
   const ComponentName = components[field.component] || DefaultComponent;
-  const column = field.isRelationshipField ? field.foreignKey : field.column;
+  const column = field.isRelationshipField ? field.relation.foreign_key : field.column;
   const hasError = errors !== null && errors.hasOwnProperty(column);
   const messageError = errors !== null && errors.hasOwnProperty(column) ? errors[column][0] : '';
 

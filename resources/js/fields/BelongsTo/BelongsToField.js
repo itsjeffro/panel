@@ -6,7 +6,6 @@ const BelongsToField = (props) => {
     field,
     hasError,
     messageError,
-    resource,
     handleInputChange,
     value,
     options,
