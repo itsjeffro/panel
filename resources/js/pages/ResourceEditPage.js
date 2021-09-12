@@ -16,7 +16,7 @@ class ResourceEditPage extends React.Component {
         errors: {},
       },
       isUpdated: false,
-      relationships: [],
+      relationships: {},
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -25,6 +25,7 @@ class ResourceEditPage extends React.Component {
     this.onDeleteClick = this.onDeleteClick.bind(this);
     this.onDropdownBulkClick = this.onDropdownBulkClick.bind(this);
     this.loadRelationships = this.loadRelationships.bind(this);
+    this.fieldOptions = this.fieldOptions.bind(this);
   }
 
   componentWillMount() {
@@ -41,22 +42,34 @@ class ResourceEditPage extends React.Component {
       });
   }
 
+  /**
+   * Load any relationships that this resource might have.
+   *
+   * @param {array} relationships
+   * @returns void
+   */
   loadRelationships(relationships) {
-    relationships.map((relationship) => {
-      axios
-        .get('/panel/api/resources/' + relationship.relationship)
-        .then((response) => {
-          this.setState((prevState) => {
-            const relationships = [
-              ...prevState.relationships,
-              response.data,
-            ];
+    Object.keys(relationships).map((relationship) => {
+      const models = relationships[relationship];
 
-            return { relationships: relationships };
+      Object.keys(models).map((model) => {
+        axios
+          .get('/panel/api/resources/' + models[model].table)
+          .then((response) => {
+            this.setState((prevState) => {
+              return {
+                ...prevState.relationships,
+                relationships: {
+                  [relationship]: {
+                    [model]: response.data
+                  }
+                }
+              }
+            })
+          }, (error) => {
+            console.log(error);
           });
-        }, (error) => {
-          console.log(error);
-        });
+      })
     })
   }
 
@@ -146,6 +159,45 @@ class ResourceEditPage extends React.Component {
     });
   }
 
+  /**
+   * Return field options.
+   *
+   * @param {object} relationships
+   * @param {object} field
+   * @returns {*[]}
+   */
+  fieldOptions(relationships, field) {
+    if (field.isRelationshipField && Object.keys(relationships || {}).length) {
+      const modelTitle = field.relation.title;
+
+      let relationship = relationships[field.relation.type][field.relation.table]
+
+      return relationship.model_data.data.map((option) => ({
+        value: option.id,
+        label: option[modelTitle],
+      }))
+    }
+
+    return [];
+  }
+
+  /**
+   * Returns field value.
+   *
+   * @param {object} resource
+   * @param {object} field
+   * @returns {*}
+   */
+  fieldValue(resource, field) {
+    if (field.isRelationshipField) {
+      const foreignKey = field.relation.foreign_key;
+
+      return resource.model_data[foreignKey]
+    }
+
+    return resource.model_data[field.column]
+  }
+
   render() {
     const {
       error,
@@ -186,7 +238,7 @@ class ResourceEditPage extends React.Component {
         <div className="card">
           <form onSubmit={e => this.onHandleSubmit(e)} autoComplete="off">
             <div className="list-group list-group-flush">
-              {fields.map(field =>
+              { fields.map((field) => (
                 <div className="list-group-item" key={field.column}>
                   <div className="row">
                     <div className="col-xs-12 col-md-2 pt-2">
@@ -194,16 +246,17 @@ class ResourceEditPage extends React.Component {
                     </div>
                     <div className="col-xs-12 col-md-7">
                       <FieldComponent
-                        errors={error.errors}
-                        field={field}
-                        handleInputChange={e => this.onInputChange(e)}
+                        errors={ error.errors }
+                        field={ field }
+                        handleInputChange={ (e) => this.onInputChange(e) }
                         resource={resource}
-                        value={resource.model_data[field.isRelationshipField ? field.foreignKey : field.column]}
+                        options={ this.fieldOptions(relationships, field) }
+                        value={ this.fieldValue(resource, field) }
                       />
                     </div>
                   </div>
                 </div>
-              )}
+              )) }
             </div>
             <div className="card-footer text-right">
               <button
@@ -214,7 +267,10 @@ class ResourceEditPage extends React.Component {
           </form>
         </div>
 
-        { relationships.map((relationship) => {
+        { (relationships.hasMany ? Object.keys(relationships.hasMany) : []).map((model) => {
+          console.log(relationships.hasMany[model])
+          return <></>
+
           return (
             <div key={relationship.name.plural} className="mt-3">
               <h3>{ relationship.name.plural }</h3>
