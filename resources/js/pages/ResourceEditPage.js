@@ -268,18 +268,17 @@ class ResourceEditPage extends React.Component {
         </div>
 
         { (relationships.hasMany ? Object.keys(relationships.hasMany) : []).map((model) => {
-          console.log(relationships.hasMany[model])
-          return <></>
+          const resource = relationships.hasMany[model];
 
           return (
-            <div key={relationship.name.plural} className="mt-3">
-              <h3>{ relationship.name.plural }</h3>
+            <div key={resource.name.plural} className="mt-3">
+              <h3>{ resource.name.plural }</h3>
               <ResourceTable
                 onPageClick={ this.onPageClick }
                 onDropdownBulkClick={ this.onDropdownBulkClick }
                 onDeleteClick={ this.onDeleteClick }
                 isDropdownBulkShown={ isDropdownBulkShown }
-                resource={ relationship }
+                resource={ resource }
                 params={ params }
               />
             </div>
