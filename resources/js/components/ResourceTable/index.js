@@ -100,6 +100,10 @@ class ResourceTable extends React.Component {
 
     return (
       <>
+        <div className="page-heading">
+          <h2>{ resource.name.plural }</h2>
+        </div>
+
         <div className="form-group row">
           <div className="col-12 col-lg-3">
             <Input

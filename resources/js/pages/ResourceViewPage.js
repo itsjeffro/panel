@@ -95,7 +95,7 @@ class ResourceViewPage extends React.Component {
           <div className="row">
             <div className="col-md-6">
               <div className="page-heading">
-                <h1>{resource.name.singular} Details</h1>
+                <h2>{resource.name.singular} Details</h2>
               </div>
             </div>
             <div className="col-md-6">

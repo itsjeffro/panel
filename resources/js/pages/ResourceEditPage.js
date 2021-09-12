@@ -5,28 +5,15 @@ import FieldComponent from "../fields/FieldComponent";
 import ResourceTable from "../components/ResourceTable";
 
 class ResourceEditPage extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isDropdownBulkShown: false,
-      resource: null,
-      error: {
-        message: '',
-        errors: {},
-      },
-      isUpdated: false,
-      relationships: {},
-    };
-
-    this.onInputChange = this.onInputChange.bind(this);
-    this.onHandleSubmit = this.onHandleSubmit.bind(this);
-    this.onPageClick = this.onPageClick.bind(this);
-    this.onDeleteClick = this.onDeleteClick.bind(this);
-    this.onDropdownBulkClick = this.onDropdownBulkClick.bind(this);
-    this.loadRelationships = this.loadRelationships.bind(this);
-    this.fieldOptions = this.fieldOptions.bind(this);
-  }
+  state = {
+    resource: null,
+    error: {
+      message: '',
+      errors: {},
+    },
+    isUpdated: false,
+    relationships: {},
+  };
 
   componentWillMount() {
     const {params} = this.props.match;
@@ -48,7 +35,7 @@ class ResourceEditPage extends React.Component {
    * @param {array} relationships
    * @returns void
    */
-  loadRelationships(relationships) {
+  loadRelationships = (relationships) => {
     Object.keys(relationships).map((relationship) => {
       const models = relationships[relationship];
 
@@ -78,7 +65,7 @@ class ResourceEditPage extends React.Component {
    *
    * @param event
    */
-  onInputChange(event) {
+  onInputChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
 
@@ -98,7 +85,7 @@ class ResourceEditPage extends React.Component {
   /**
    * Process resource create request.
    */
-  onHandleSubmit(event) {
+  onHandleSubmit = (event) => {
     event.preventDefault();
 
     const {params} = this.props.match;
@@ -129,34 +116,14 @@ class ResourceEditPage extends React.Component {
   }
 
   /**
-   * Load paged results based on page click.
-   */
-  onPageClick(event, page) {
-    event.preventDefault();
-
-    // this.loadResources(page);
-  }
-
-  /**
    * Handle delete and reload resources.
    */
-  onDeleteClick(event, resource, id) {
+  onDeleteClick = (event, resource, id) => {
     // axios
     //   .delete('/panel/api/resources/' + resource + '/' + id)
     //   .then(response => {
     //     this.loadResources();
     //   });
-  }
-
-  /**
-   * Toggle bulk dropdown menu.
-   */
-  onDropdownBulkClick() {
-    this.setState(prevState => {
-      return {
-        isDropdownBulkShown: !prevState.isDropdownBulkShown,
-      }
-    });
   }
 
   /**
@@ -166,7 +133,7 @@ class ResourceEditPage extends React.Component {
    * @param {object} field
    * @returns {*[]}
    */
-  fieldOptions(relationships, field) {
+  fieldOptions = (relationships, field) => {
     if (field.isRelationshipField && Object.keys(relationships || {}).length) {
       const modelTitle = field.relation.title;
 
@@ -188,7 +155,7 @@ class ResourceEditPage extends React.Component {
    * @param {object} field
    * @returns {*}
    */
-  fieldValue(resource, field) {
+  fieldValue = (resource, field) => {
     if (field.isRelationshipField) {
       const foreignKey = field.relation.foreign_key;
 
@@ -203,7 +170,6 @@ class ResourceEditPage extends React.Component {
       error,
       isUpdated,
       resource,
-      isDropdownBulkShown,
       relationships,
     } = this.state;
 
@@ -231,7 +197,7 @@ class ResourceEditPage extends React.Component {
       <div className="content">
         <div className="container">
           <div className="page-heading">
-            <h1>Edit {resource.name.singular}</h1>
+            <h2>Edit {resource.name.singular}</h2>
           </div>
 
           { error.message.length ? <div className="alert alert-danger">{error.message}</div> : '' }
@@ -273,10 +239,9 @@ class ResourceEditPage extends React.Component {
 
             return (
               <div key={resource.name.plural} className="mt-3">
-                <h3>{ resource.name.plural }</h3>
                 <ResourceTable
                   onDeleteClick={ this.onDeleteClick }
-                  resourceName={ resource }
+                  resourceName={ model }
                 />
               </div>
             )
