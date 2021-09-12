@@ -8,29 +8,28 @@ const BelongsToField = (props) => {
     messageError,
     resource,
     handleInputChange,
-    value
+    value,
+    options,
   } = props;
 
-  const options = resource.relationships[field.column] || [];
+  const hasErrorClass = hasError ? ' is-invalid' : '';
+  const selected = value || '';
 
   return (
     <span>
       <select
-        className={'form-control' + (hasError ? ' is-invalid' : '')}
-        name={column}
-        onChange={e => handleInputChange(e)}
-        value={value}
+        className={ `form-control ${hasErrorClass}` }
+        name={ column }
+        value={ selected }
+        onChange={ (e) => handleInputChange(e) }
       >
-        <option value="">Choose {field.name}</option>
-        { options.map((relationship) =>
-          <option
-            key={relationship.id}
-            value={relationship.id}
-          >{ relationship[field.relation.title] }</option>
-        ) }
+        <option value="">Choose { field.name }</option>
+        { options.map((option) => (
+          <option key={ option.value } value={ option.value }>{ option.label }</option>
+        )) }
       </select>
 
-      {hasError ? <div className="invalid-feedback">{messageError}</div> : ''}
+      { hasError ? <div className="invalid-feedback">{ messageError }</div> : '' }
     </span>
   )
 };
