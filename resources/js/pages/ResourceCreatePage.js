@@ -146,7 +146,13 @@ class ResourceCreatePage extends React.Component {
    * @returns {*}
    */
   fieldValue(resource, field) {
-    return ''
+    if (field.isRelationshipField) {
+      const foreignKey = field.relation.foreign_key;
+
+      return this.state.newResource[foreignKey]
+    }
+
+    return this.state.newResource[field.column]
   }
 
   render() {
