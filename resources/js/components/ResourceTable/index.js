@@ -18,10 +18,10 @@ class ResourceTable extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { resourceName } = this.props;
-    const previousResource = prevProps.resourceName;
+    const {resourceUri} = this.props;
+    const previousResource = prevProps.resourceUri;
 
-    if (resourceName!== previousResource) {
+    if (resourceUri !== previousResource) {
       this.loadResources();
     }
   }
@@ -30,8 +30,8 @@ class ResourceTable extends React.Component {
    * @param page
    */
   loadResources = (page) => {
-    const { search } = this.state;
-    const { resourceName } = this.props;
+    const {search} = this.state;
+    const {resourceUri} = this.props;
 
     let query = [];
 
@@ -45,12 +45,12 @@ class ResourceTable extends React.Component {
 
     const endpointQuery = query.length ? '?' + query.join('&') : '';
 
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
 
     axios
-      .get('/panel/api/resources/' + resourceName + endpointQuery)
-      .then(response => {
-        this.setState({ isLoading: false, resource: response.data });
+      .get('/panel/api/resources/' + resourceUri + endpointQuery)
+      .then((response) => {
+        this.setState({isLoading: false, resource: response.data});
       });
   }
 
@@ -59,7 +59,7 @@ class ResourceTable extends React.Component {
    */
   onDropdownBulkClick = () => {
     this.setState((prevState) => {
-      return { isDropdownBulkShown: !prevState.isDropdownBulkShown }
+      return {isDropdownBulkShown: !prevState.isDropdownBulkShown}
     });
   }
 
@@ -90,18 +90,27 @@ class ResourceTable extends React.Component {
     })
   }
 
-  render() {
-    const { onDeleteClick, resourceName } = this.props;
-    const { isDropdownBulkShown, isLoading, resource } = this.state;
+  /**
+   * Handle delete and reload resources.
+   */
+  onDeleteClick = (event, resource, id) => {
+    const {resourceUri} = this.props;
 
-    if (isLoading) {
-      return <>Loading...</>
-    }
+    axios
+      .delete('/panel/api/resources/' + resourceUri + '/' + id)
+      .then((response) => {
+        this.loadResources();
+      });
+  }
+
+  render() {
+    const {resourceUri} = this.props;
+    const {isDropdownBulkShown, isLoading, resource} = this.state;
 
     return (
       <>
         <div className="page-heading">
-          <h2>{ resource.name.plural }</h2>
+          <h2>{resource ? resource.name.plural : ''}</h2>
         </div>
 
         <div className="form-group row">
@@ -109,15 +118,16 @@ class ResourceTable extends React.Component {
             <Input
               type="text"
               placeholder="Search"
-              onChange={ this.onSearchChange }
+              onChange={this.onSearchChange}
             />
           </div>
           <div className="col-12 col-lg-9 text-right">
             <div className="dropdown d-inline-block mr-2">
               <button
                 className="btn btn-secondary dropdown-toggle"
-                onClick={ this.onDropdownBulkClick }
-              >Actions</button>
+                onClick={this.onDropdownBulkClick}
+              >Actions
+              </button>
 
               <div className={'dropdown-menu' + (isDropdownBulkShown ? ' show' : '')}>
                 <a className="dropdown-item" href="#">Bulk Delete</a>
@@ -126,12 +136,12 @@ class ResourceTable extends React.Component {
 
             <Link
               className="btn btn-primary"
-              to={'/resources/' + resourceName + '/create'}
-            >{'Create ' + resource.name.singular}</Link>
+              to={'/resources/' + resourceUri + '/create'}
+            >{'Create ' + (resource ? resource.name.singular : '')}</Link>
           </div>
         </div>
 
-        <table className="table">
+        {isLoading ? 'Loading...' : <table className="table">
           <thead>
           <tr>
             <th width="1%">
@@ -164,26 +174,26 @@ class ResourceTable extends React.Component {
                 </td>
               )}
               <td className="text-right">
-                <Link className="btn btn-link" to={'/resources/' + resourceName + '/' + model.id}><span
+                <Link className="btn btn-link" to={'/resources/' + resourceUri + '/' + model.id}><span
                   className="typcn typcn-eye-outline"/></Link>{' '}
-                <Link className="btn btn-link" to={'/resources/' + resourceName + '/' + model.id + '/edit'}><span
+                <Link className="btn btn-link" to={'/resources/' + resourceUri + '/' + model.id + '/edit'}><span
                   className="typcn typcn-edit"/></Link>{' '}
                 <button
                   className="btn btn-link"
-                  onClick={(e) => onDeleteClick(e, resourceName, model.id)}
+                  onClick={(e) => this.onDeleteClick(e, resourceUri, model.id)}
                 ><span className="typcn typcn-trash"/></button>
               </td>
             </tr>
           )}
           </tbody>
-        </table>
+        </table>}
 
-        <Pagination
-          total={ resource.model_data.total }
-          per_page={ resource.model_data.per_page }
-          current_page={ resource.model_data.current_page }
-          handlePageClick={ this.onPageClick }
-        />
+        {isLoading ? '' : <Pagination
+          total={resource.model_data.total}
+          per_page={resource.model_data.per_page}
+          current_page={resource.model_data.current_page}
+          handlePageClick={this.onPageClick}
+        />}
       </>
     )
   }
