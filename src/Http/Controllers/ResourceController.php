@@ -7,10 +7,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Itsjeffro\Panel\ModelCreate;
-use Itsjeffro\Panel\ModelDelete;
-use Itsjeffro\Panel\ModelResults;
-use Itsjeffro\Panel\ModelUpdate;
+use Itsjeffro\Panel\Services\ResourceHandler;
 use Itsjeffro\Panel\ResourceManager;
 
 class ResourceController extends Controller
@@ -23,15 +20,16 @@ class ResourceController extends Controller
     public function index(Request $request, string $resource): JsonResponse
     {
         $resourceManager = new ResourceManager($resource);
-        $resourceModel = new ModelResults($resourceManager, $request);
+        $handler = new ResourceHandler($resourceManager);
+        $models = $handler->index($request);
 
-        return response()->json($resourceModel->get());
+        return response()->json($models);
     }
 
     /**
      * Retrieve a single model from a given resource.
      */
-    public function show(Request $request, string $resource, string $id): JsonResponse
+    public function show(string $resource, string $id): JsonResponse
     {
         try {
             $resourceManager = new ResourceManager($resource);
@@ -58,9 +56,8 @@ class ResourceController extends Controller
     {
         try {
             $resourceManager = new ResourceManager($resource);
-            $resourceModel = new ModelUpdate($resourceManager, $request);
-
-            $model = $resourceModel->update($id);
+            $handler = new ResourceHandler($resourceManager);
+            $model = $handler->update($request, $id);
 
             return response()->json($model);
         } catch (ModelNotFoundException $e) {
@@ -80,9 +77,9 @@ class ResourceController extends Controller
     {
         try {
             $resourceManager = new ResourceManager($resource);
-            $resourceModel = new ModelCreate($resourceManager, $request);
 
-            $model = $resourceModel->create();
+            $handler = new ResourceHandler($resourceManager);
+            $model = $handler->create($request);
 
             return response()->json($model, 201);
         } catch (QueryException $e) {
@@ -99,9 +96,8 @@ class ResourceController extends Controller
     {
         try {
             $resourceManager = new ResourceManager($resource);
-            $resourceModel = new ModelDelete($resourceManager, $id);
-
-            $resourceModel->delete();
+            $handler = new ResourceHandler($resourceManager);
+            $handler->delete($id);
 
             return response()->json(null, 204);
         } catch (ModelNotFoundException $e) {
