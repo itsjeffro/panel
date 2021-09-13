@@ -116,17 +116,6 @@ class ResourceEditPage extends React.Component {
   }
 
   /**
-   * Handle delete and reload resources.
-   */
-  onDeleteClick = (event, resource, id) => {
-    // axios
-    //   .delete('/panel/api/resources/' + resource + '/' + id)
-    //   .then(response => {
-    //     this.loadResources();
-    //   });
-  }
-
-  /**
    * Return field options.
    *
    * @param {object} relationships
@@ -238,10 +227,10 @@ class ResourceEditPage extends React.Component {
             const resource = relationships.hasMany[model];
 
             return (
-              <div key={resource.name.plural} className="mt-3">
+              <div key={resource.name.plural} className="mt-5">
                 <ResourceTable
                   onDeleteClick={ this.onDeleteClick }
-                  resourceName={ model }
+                  resourceUri={ model }
                 />
               </div>
             )

@@ -133,10 +133,10 @@ class ResourceViewPage extends React.Component {
             const resource = relationships.hasMany[model];
 
             return (
-              <div key={resource.name.plural} className="mt-3">
+              <div key={resource.name.plural} className="mt-5">
                 <ResourceTable
                   onDeleteClick={ this.onDeleteClick }
-                  resourceName={ model }
+                  resourceUri={ model }
                 />
               </div>
             )
