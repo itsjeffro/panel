@@ -10,16 +10,28 @@ class ResourceViewPage extends React.Component {
 
     this.state = {
       resource: null,
-      relationships: {},
-      isDropdownBulkShown: false,
+      relationships: {}
     };
   }
 
   componentWillMount() {
     const {params} = this.props.match;
 
+    this.loadResource(params.resource, params.id)
+  }
+
+  componentDidUpdate(prevProps) {
+    const {params} = this.props.match;
+    const previousResource = prevProps.match.params.resource;
+
+    if (params.resource !== previousResource) {
+      this.loadResource(params.resource, params.id);
+    }
+  }
+
+  loadResource = (resourceUri, id) => {
     axios
-      .get('/panel/api/resources/' + params.resource + '/' + params.id)
+      .get('/panel/api/resources/' + resourceUri + '/' + id)
       .then(response => {
         const relationships = response.data.relationships;
 
@@ -27,17 +39,6 @@ class ResourceViewPage extends React.Component {
 
         this.setState({resource: response.data});
       });
-  }
-
-  /**
-   * Toggle bulk dropdown menu.
-   */
-  onDropdownBulkClick() {
-    this.setState(prevState => {
-      return {
-        isDropdownBulkShown: !prevState.isDropdownBulkShown,
-      }
-    });
   }
 
   /**
@@ -72,7 +73,7 @@ class ResourceViewPage extends React.Component {
   }
 
   render() {
-    const { resource, relationships, isDropdownBulkShown } = this.state;
+    const { resource, relationships } = this.state;
     const {
       match: {
         params,
@@ -135,7 +136,6 @@ class ResourceViewPage extends React.Component {
             return (
               <div key={resource.name.plural} className="mt-5">
                 <ResourceTable
-                  onDeleteClick={ this.onDeleteClick }
                   resourceUri={ model }
                 />
               </div>
