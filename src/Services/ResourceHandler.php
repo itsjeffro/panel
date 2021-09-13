@@ -6,15 +6,18 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Itsjeffro\Panel\ResourceManager;
+use Itsjeffro\Panel\Services\ResourceModel;
 
 class ResourceHandler
 {
+    /**
+     * @var ResourceModel
+     */
     private $resourceManager;
 
-    public function __construct(ResourceManager $resourceManager)
+    public function __construct(ResourceModel $resourceModel)
     {
-        $this->resourceManager = $resourceManager;
+        $this->resourceManager = $resourceModel;
     }
 
     /**
@@ -45,7 +48,7 @@ class ResourceHandler
 
         return [
             'name' => $this->resourceManager->getResourceName(),
-            'fields' => $this->resourceManager->getFields(ResourceManager::SHOW_ON_INDEX),
+            'fields' => $this->resourceManager->getFields(ResourceModel::SHOW_ON_INDEX),
             'model_data' => $models->paginate(),
         ];
     }

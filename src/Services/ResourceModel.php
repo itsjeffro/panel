@@ -1,13 +1,14 @@
 <?php
 
-namespace Itsjeffro\Panel;
+namespace Itsjeffro\Panel\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Itsjeffro\Panel\Fields\BelongsTo;
 use Itsjeffro\Panel\Fields\HasMany;
+use Itsjeffro\Panel\Panel;
 
-class ResourceManager
+class ResourceModel
 {
     /**
      * @var string
@@ -41,12 +42,13 @@ class ResourceManager
 
     /**
      * ResourceManager constructor.
-     *
-     * @param string $resource
      */
-    public function __construct(string $resource)
+    public function __construct(string $resourceName)
     {
-        $this->resourceClass = $this->classNameFromResource(Panel::getResources(), $resource);
+        $this->resourceClass = $this->classNameFromResource(
+            Panel::getResources(),
+            $resourceName
+        );
     }
 
     /**
@@ -152,7 +154,7 @@ class ResourceManager
     }
 
     /**
-     * Return list of models based on the relationships from the main resource.
+     * Returns the resource model's relationships.
      */
     public function getRelationships(string $showOn = '', string $id = ''): array
     {
@@ -188,7 +190,7 @@ class ResourceManager
     }
 
     /**
-     * Resolved associated model class from resource.
+     * Resolves resource as it's model.
      *
      * @return mixed
      * @throws \Exception
