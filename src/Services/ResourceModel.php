@@ -80,7 +80,7 @@ class ResourceModel
     }
 
     /**
-     * Return name of resource from class.
+     * Return singular and plural values for resource. Eg. "post" and "posts".
      */
     public function getResourceName(): array
     {
@@ -190,7 +190,7 @@ class ResourceModel
     }
 
     /**
-     * Resolves resource as it's model.
+     * Resolves the model from the resource.
      *
      * @return mixed
      * @throws \Exception
