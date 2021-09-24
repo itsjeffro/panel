@@ -2,29 +2,18 @@
 
 namespace Itsjeffro\Panel\Services;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Itsjeffro\Panel\Block;
+use Itsjeffro\Panel\Contracts\ResourceInterface;
 use Itsjeffro\Panel\Fields\BelongsTo;
+use Itsjeffro\Panel\Fields\Field;
 use Itsjeffro\Panel\Fields\HasMany;
 use Itsjeffro\Panel\Panel;
 
 class ResourceModel
 {
-    /**
-     * @var string
-     */
-    const SHOW_ON_CREATE = 'showOnCreate';
-
-    /**
-     * @var string
-     */
-    const SHOW_ON_UPDATE = 'showOnUpdate';
-
-    /**
-     * @var string
-     */
-    const SHOW_ON_INDEX = 'showOnIndex';
-
     /**
      * Available relationship types.
      *
@@ -80,48 +69,33 @@ class ResourceModel
     }
 
     /**
-     * Return singular and plural values for resource. Eg. "post" and "posts".
-     */
-    public function getResourceName(): array
-    {
-        $model = explode('\\', $this->getResourceClass()->model);
-        $name = end($model);
-
-        return [
-            'singular' => $name,
-            'plural' => Str::plural($name),
-        ];
-    }
-
-    /**
      * Return resource's full class name.
-     *
-     * @return mixed
      */
-    public function getResourceClass()
+    public function getResourceClass(): ResourceInterface
     {
         return (new $this->resourceClass);
     }
 
     /**
-     * Return resource's fields along with indexes.
+     * Return resource's grouped fields along.
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function getFields(string $showOn = ''): array
+    public function getGroupedFields(string $visibility = ''): array
     {
-        $fields = $this->getResourceClass()->fields();
+        $resource = $this->getResourceClass();
+        $fields = $resource->fields();
 
-        if ($showOn) {
-            $fields = array_filter($this->getResourceClass()->fields(), function ($field) use ($showOn) {
-                return $field->{$showOn};
-            });
-        }
+        $groups = [
+            'general' => [
+                'name' => $resource->modelName() . ' Details',
+                'fields' => [],
+            ],
+        ];
 
-        return array_map(function ($field) use ($showOn) {
-            $relationshipResource = $this->getRelationshipResource($field->relation);
-
-            if ($field->isRelationshipField) {
+        foreach ($fields as $field) {
+            if (property_exists($field, 'isRelationshipField') && $field->isRelationshipField) {
+                $relationshipResource = $this->getRelationshipResource($field->relation);
                 $modelClass = new $relationshipResource;
                 $relationshipModel = new $modelClass->model;
                 $relationshipName = $field->column;
@@ -134,8 +108,55 @@ class ResourceModel
                 ];
             }
 
-            return $field;
-        }, $fields, []);
+            if ($field instanceof Block) {
+                $groupKey = strtolower($field->getName());
+
+                if (!isset($groups[$groupKey]['name'])) {
+                    $groups[$groupKey]['name'] = $field->getName();
+                }
+
+                $groups[$groupKey]['fields'] = $field->getFields();
+            } elseif ($field instanceof HasMany) {
+                $groupKey = strtolower($field->getName());
+
+                if (!isset($groups[$groupKey]['name'])) {
+                    $groups[$groupKey]['name'] = $field->getName();
+                }
+
+                $groups[$groupKey]['fields'] = $field;
+            } else {
+                $groupKey = 'general';
+
+                $groups[$groupKey]['fields'][] = $field;
+            }
+        }
+
+        return $groups;
+    }
+
+    /**
+     * Returns a flat list of the resource's defined fields.
+     */
+    public function getFields(string $visibility = ''): array
+    {
+        $resource = $this->getResourceClass();
+        $fields = [];
+
+        foreach ($resource->fields() as $resourceField) {
+            if ($resourceField instanceof Block) {
+                foreach ($resourceField->getFields() as $blockField) {
+                    $fields[] = $blockField;
+                }
+            } else {
+                $fields[] = $resourceField;
+            }
+        }
+
+        $fields = array_filter($fields, function (Field $field) use ($visibility) {
+            return in_array($visibility, $field->visibility);
+        });
+
+        return $fields;
     }
 
     /**
@@ -145,7 +166,9 @@ class ResourceModel
     {
         // Exclude hasMany fields as they will be passed with the relationships property in the controllers.
         $relationshipFields = array_filter($this->getFields(), function ($field) {
-            return $field->isRelationshipField && !$field instanceof HasMany;
+            return $field instanceof Field &&
+                $field->isRelationshipField &&
+                !$field instanceof HasMany;
         });
 
         return array_map(function ($field) {
@@ -159,7 +182,7 @@ class ResourceModel
     public function getRelationships(string $showOn = '', string $id = ''): array
     {
         $fields = array_filter($this->getFields($showOn), function ($field) {
-            return in_array(get_class($field), self::RELATIONSHIPS_TYPES);
+            return $field instanceof Field && in_array(get_class($field), self::RELATIONSHIPS_TYPES);
         });
 
         $relationshipFields = [];
@@ -193,7 +216,7 @@ class ResourceModel
      * Resolves the model from the resource.
      *
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public function resolveModel()
     {
@@ -201,7 +224,7 @@ class ResourceModel
         $model = app()->make($resource->model);
 
         if (!$model instanceof Model) {
-            throw new \Exception('Class is not an instance of Model');
+            throw new Exception('Class is not an instance of Model');
         }
 
         return $model;
