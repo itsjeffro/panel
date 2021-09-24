@@ -5,27 +5,17 @@ namespace Itsjeffro\Panel\Fields;
 class Text extends Field
 {
     /**
-     * @var bool
-     */
-    public $showOnCreate = true;
-
-    /**
-     * @var bool
-     */
-    public $showOnUpdate = true;
-
-    /**
-     * @var bool
-     */
-    public $showOnDetail = true;
-
-    /**
-     * @var bool
-     */
-    public $showOnIndex = true;
-
-    /**
      * @var string
      */
     public $component = 'Text';
+
+    /**
+     * {@inheritdoc}
+     */
+    public $visibility = [
+        self::SHOW_ON_DETAIL,
+        self::SHOW_ON_INDEX,
+        self::SHOW_ON_UPDATE,
+        self::SHOW_ON_CREATE,
+    ];
 }

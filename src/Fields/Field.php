@@ -7,6 +7,14 @@ use Illuminate\Http\Request;
 abstract class Field
 {
     /**
+     * Visibility.
+     */
+    const SHOW_ON_CREATE = 'SHOW_ON_CREATE';
+    const SHOW_ON_DETAIL = 'SHOW_ON_DETAIL';
+    const SHOW_ON_INDEX = 'SHOW_ON_INDEX';
+    const SHOW_ON_UPDATE = 'SHOW_ON_UPDATE';
+
+    /**
      * @var string
      */
     public $name = '';
@@ -27,26 +35,6 @@ abstract class Field
     public $isRelationshipField = false;
 
     /**
-     * @var bool
-     */
-    public $showOnIndex = false;
-    
-    /**
-     * @var bool
-     */
-    public $showOnDetail = false;
-    
-    /**
-     * @var bool
-     */
-    public $showOnCreate = false;
-    
-    /**
-     * @var bool
-     */
-    public $showOnUpdate = false;
-
-    /**
      * @var string
      */
     public $component = 'Text';
@@ -65,6 +53,11 @@ abstract class Field
      * @var array
      */
     public $rulesOnUpdate = [];
+
+    /**
+     * @var string[]
+     */
+    public $visibility = [];
 
     /**
      * Field constructor.
@@ -108,10 +101,11 @@ abstract class Field
      */
     public function index(): self
     {
-        $this->showOnIndex = true;
-        $this->showOnDetail = true;
-        $this->showOnCreate = true;
-        $this->showOnUpdate = true;
+        $this->addVisibility(static::SHOW_ON_INDEX);
+        $this->addVisibility(static::SHOW_ON_DETAIL);
+        $this->addVisibility(static::SHOW_ON_CREATE);
+        $this->addVisibility(static::SHOW_ON_UPDATE);
+
         return $this;
     }
 
@@ -122,7 +116,8 @@ abstract class Field
      */
     public function hideFromIndex(): self
     {
-        $this->showOnIndex = false;
+        $this->removeVisibility(static::SHOW_ON_INDEX);
+
         return $this;
     }
 
@@ -133,7 +128,8 @@ abstract class Field
      */
     public function hideFromDetail(): self
     {
-        $this->showOnDetail = false;
+        $this->removeVisibility(static::SHOW_ON_DETAIL);
+
         return $this;
     }
 
@@ -144,7 +140,8 @@ abstract class Field
      */
     public function hideFromCreate(): self
     {
-        $this->showOnCreate = false;
+        $this->removeVisibility(static::SHOW_ON_CREATE);
+
         return $this;
     }
 
@@ -155,7 +152,8 @@ abstract class Field
      */
     public function hideFromUpdate(): self
     {
-        $this->showOnUpdate = false;
+        $this->removeVisibility(static::SHOW_ON_UPDATE);
+
         return $this;
     }
 
@@ -166,7 +164,8 @@ abstract class Field
      */
     public function showOnIndex(): self
     {
-        $this->showOnIndex = true;
+        $this->addVisibility(static::SHOW_ON_INDEX);
+
         return $this;
     }
 
@@ -177,7 +176,8 @@ abstract class Field
      */
     public function showOnDetail(): self
     {
-        $this->showOnDetail = true;
+        $this->addVisibility(static::SHOW_ON_DETAIL);
+
         return $this;
     }
 
@@ -188,7 +188,8 @@ abstract class Field
      */
     public function showOnCreate(): self
     {
-        $this->showOnCreate = true;
+        $this->addVisibility(static::SHOW_ON_CREATE);
+
         return $this;
     }
 
@@ -199,7 +200,8 @@ abstract class Field
      */
     public function showOnUpdate(): self
     {
-        $this->showOnUpdate = true;
+        $this->addVisibility(static::SHOW_ON_UPDATE);
+
         return $this;
     }
     
@@ -259,5 +261,37 @@ abstract class Field
         if ($request->exists($field)) {
             $model->{$field} = $request->input($field);
         }
+    }
+
+    /**
+     * Returns name of the field.
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Add field visibility.
+     */
+    protected function addVisibility(string $visibility): self
+    {
+        if (!in_array($visibility, $this->visibility)) {
+            array_push($this->visibility, $visibility);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove field visibility.
+     */
+    protected function removeVisibility(string $visibilityToRemove):self
+    {
+        $this->visibility = array_filter($this->visibility, function ($visibility) use ($visibilityToRemove) {
+            return $visibility !== $visibilityToRemove;
+        }, []);
+
+        return $this;
     }
 }

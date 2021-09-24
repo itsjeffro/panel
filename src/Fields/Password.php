@@ -7,19 +7,17 @@ use Illuminate\Http\Request;
 class Password extends Field
 {
     /**
-     * @var bool
-     */
-    public $showOnCreate = true;
-
-    /**
-     * @var bool
-     */
-    public $showOnUpdate = true;
-
-    /**
      * @var string
      */
     public $component = 'Password';
+
+    /**
+     * {@inheritdoc}
+     */
+    public $visibility = [
+        self::SHOW_ON_CREATE,
+        self::SHOW_ON_UPDATE,
+    ];
 
     /**
      * Fill attribute from request.

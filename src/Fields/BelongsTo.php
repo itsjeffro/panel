@@ -5,32 +5,22 @@ namespace Itsjeffro\Panel\Fields;
 class BelongsTo extends Field
 {
     /**
-     * @var bool
+     * {@inheritdoc}
      */
     public $isRelationshipField = true;
 
     /**
-     * @var bool
-     */
-    public $showOnCreate = true;
-
-    /**
-     * @var bool
-     */
-    public $showOnUpdate = true;
-
-    /**
-     * @var bool
-     */
-    public $showOnDetail = true;
-
-    /**
-     * @var bool
-     */
-    public $showOnIndex = true;
-
-    /**
-     * @var string
+     * {@inheritdoc}
      */
     public $component = 'BelongsTo';
+
+    /**
+     * {@inheritdoc}
+     */
+    public $visibility = [
+      self::SHOW_ON_UPDATE,
+      self::SHOW_ON_CREATE,
+      self::SHOW_ON_DETAIL,
+      self::SHOW_ON_INDEX,
+    ];
 }
