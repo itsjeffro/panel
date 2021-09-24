@@ -20,8 +20,8 @@ class ResourceController extends Controller
      */
     public function index(Request $request, string $resourceName): JsonResponse
     {
-        $resourceManager = new ResourceModel($resourceName);
-        $handler = new ResourceHandler($resourceManager);
+        $resourceModel = new ResourceModel($resourceName);
+        $handler = new ResourceHandler($resourceModel);
         $models = $handler->index($request);
 
         return response()->json($models);
@@ -34,15 +34,9 @@ class ResourceController extends Controller
     {
         try {
             $resourceModel = new ResourceModel($resourceName);
-            $model = $resourceModel->resolveModel();
-            $with = $resourceModel->getWith();
+            $handler = new ResourceHandler($resourceModel);
 
-            return response()->json([
-                'name' => $resourceModel->getResourceName(),
-                'fields' => $resourceModel->getFields(),
-                'model_data' => $model::with($with)->find($id),
-                'relationships' => $resourceModel->getRelationships('', $id),
-            ]);
+            return response()->json($handler->show($id));
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
         }
