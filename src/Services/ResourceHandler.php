@@ -4,20 +4,19 @@ namespace Itsjeffro\Panel\Services;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Itsjeffro\Panel\Services\ResourceModel;
+use Itsjeffro\Panel\Fields\Field;
 
 class ResourceHandler
 {
     /**
      * @var ResourceModel
      */
-    private $resourceManager;
+    private $resourceModel;
 
     public function __construct(ResourceModel $resourceModel)
     {
-        $this->resourceManager = $resourceModel;
+        $this->resourceModel = $resourceModel;
     }
 
     /**
@@ -27,9 +26,9 @@ class ResourceHandler
      */
     public function index(Request $request): array
     {
-        $resource = $this->resourceManager->getResourceClass();
-        $model = $this->resourceManager->resolveModel();
-        $with = $this->resourceManager->getWith();
+        $resource = $this->resourceModel->getResourceClass();
+        $model = $this->resourceModel->resolveModel();
+        $with = $this->resourceModel->getWith();
 
         $relations = $request->get('relation', []);
         $models = $model::with($with)->orderBy('id', 'desc');
@@ -47,9 +46,34 @@ class ResourceHandler
         }
 
         return [
-            'name' => $this->resourceManager->getResourceName(),
-            'fields' => $this->resourceManager->getFields(ResourceModel::SHOW_ON_INDEX),
+            'name' => [
+                'singular' => $resource->modelName(),
+                'plural' => $resource->modelPluralName(),
+            ],
+            'fields' => $this->resourceModel->getFields(Field::SHOW_ON_INDEX),
             'model_data' => $models->paginate(),
+        ];
+    }
+
+    /**
+     * Returns a single resource's data response.
+     *
+     * @throws \Exception
+     */
+    public function show(string $id): array
+    {
+        $resource = $this->resourceModel->getResourceClass();
+        $model = $this->resourceModel->resolveModel();
+        $with = $this->resourceModel->getWith();
+
+        return [
+            'name' => [
+                'singular' => $resource->modelName(),
+                'plural' => $resource->modelPluralName(),
+            ],
+            'fields' => $this->resourceModel->getGroupedFields(Field::SHOW_ON_DETAIL),
+            'model_data' => $model::with($with)->find($id),
+            'relationships' => $this->resourceModel->getRelationships('', $id),
         ];
     }
 
@@ -62,7 +86,7 @@ class ResourceHandler
     public function create(Request $request)
     {
         $resourceValidator = new ResourceValidator();
-        $resourceModel = $this->resourceManager->resolveModel();
+        $resourceModel = $this->resourceModel->resolveModel();
 
         $fields = $this->fields('showOnCreate');
         $validationRules = $resourceValidator->getValidationRules($resourceModel, $fields);
@@ -91,14 +115,14 @@ class ResourceHandler
     /**
      * Validate and update model.
      *
-     * @return JsonResponse
+     * @return mixed
      * @throws ModelNotFoundException
      * @throws \Exception
      */
     public function update(Request $request, string $id)
     {
         $resourceValidator = new ResourceValidator();
-        $resourceModel = $this->resourceManager->resolveModel();
+        $resourceModel = $this->resourceModel->resolveModel();
         $model = $resourceModel::find($id);
 
         if (!$model) {
@@ -135,7 +159,7 @@ class ResourceHandler
      */
     public function delete(string $id): void
     {
-        $resourceModel = $this->resourceManager->resolveModel();
+        $resourceModel = $this->resourceModel->resolveModel();
         $model = $resourceModel::find($id);
 
         if (!is_object($model)) {
@@ -152,7 +176,7 @@ class ResourceHandler
      */
     protected function fields(string $showOnMethod): array
     {
-        $fields = $this->resourceManager->getFields();
+        $fields = $this->resourceModel->getFields();
 
         $fields = array_filter($fields, function ($field) use ($showOnMethod) {
             return $field->{$showOnMethod};
