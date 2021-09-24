@@ -4,6 +4,7 @@ namespace Itsjeffro\Panel\Services;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Itsjeffro\Panel\Block;
 use Itsjeffro\Panel\Contracts\ResourceInterface;
@@ -115,7 +116,7 @@ class ResourceModel
                     $groups[$groupKey]['name'] = $field->getName();
                 }
 
-                $groups[$groupKey]['fields'] = $field->getFields();
+                $groups[$groupKey]['fields'] = $field->fields();
             } elseif ($field instanceof HasMany) {
                 $groupKey = strtolower($field->getName());
 
@@ -123,7 +124,7 @@ class ResourceModel
                     $groups[$groupKey]['name'] = $field->getName();
                 }
 
-                $groups[$groupKey]['fields'] = $field;
+                $groups[$groupKey]['fields'][] = $field;
             } else {
                 $groupKey = 'general';
 
@@ -137,43 +138,44 @@ class ResourceModel
     /**
      * Returns a flat list of the resource's defined fields.
      */
-    public function getFields(string $visibility = ''): array
+    public function getFields(string $visibility = ''): Collection
     {
         $resource = $this->getResourceClass();
-        $fields = [];
+        $fields = new Collection();
 
         foreach ($resource->fields() as $resourceField) {
             if ($resourceField instanceof Block) {
-                foreach ($resourceField->getFields() as $blockField) {
-                    $fields[] = $blockField;
+                foreach ($resourceField->fields() as $blockField) {
+                    $fields->add($blockField);
                 }
             } else {
-                $fields[] = $resourceField;
+                $fields->add($resourceField);
             }
         }
 
-        $fields = array_filter($fields, function (Field $field) use ($visibility) {
+        if (!$visibility) {
+            return $fields;
+        }
+
+        return $fields->filter(function ($field) use ($visibility) {
             return in_array($visibility, $field->visibility);
         });
-
-        return $fields;
     }
 
     /**
-     * Return the model relationships that should be eager loaded via the with() method.
+     * Return the model relationships that should be eager loaded via the with() method. Exclude
+     * hasMany fields as they will be passed with the relationships property in the controllers.
      */
-    public function getWith(): array
+    public function getWith(): Collection
     {
-        // Exclude hasMany fields as they will be passed with the relationships property in the controllers.
-        $relationshipFields = array_filter($this->getFields(), function ($field) {
-            return $field instanceof Field &&
-                $field->isRelationshipField &&
-                !$field instanceof HasMany;
-        });
+        $relationshipFields = $this->getFields()
+            ->filter(function ($field) {
+                return $field instanceof Field && $field->isRelationshipField && !$field instanceof HasMany;
+            });
 
-        return array_map(function ($field) {
+        return $relationshipFields->map(function ($field) {
             return $field->column;
-        }, $relationshipFields, []);
+        });
     }
 
     /**
@@ -181,15 +183,16 @@ class ResourceModel
      */
     public function getRelationships(string $showOn = '', string $id = ''): array
     {
-        $fields = array_filter($this->getFields($showOn), function ($field) {
-            return $field instanceof Field && in_array(get_class($field), self::RELATIONSHIPS_TYPES);
-        });
+        $fields = $this->getFields($showOn)
+            ->filter(function ($field) {
+                return $field instanceof Field &&in_array(get_class($field), self::RELATIONSHIPS_TYPES);
+            });
 
         $relationshipFields = [];
 
         foreach ($fields as $field) {
             $component = Str::camel($field->component);
-            $table = $field->relation['table'];
+            $table = is_array($field->relation) ? $field->relation['table'] : '';
 
             $relationshipFields[$component][$table] = [
                 'name' => $field->name,
