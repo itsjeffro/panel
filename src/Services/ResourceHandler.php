@@ -28,7 +28,7 @@ class ResourceHandler
     {
         $resource = $this->resourceModel->getResourceClass();
         $model = $this->resourceModel->resolveModel();
-        $with = $this->resourceModel->getWith();
+        $with = $this->resourceModel->getWith()->toArray();
 
         $relations = $request->get('relation', []);
         $models = $model::with($with)->orderBy('id', 'desc');
@@ -64,16 +64,15 @@ class ResourceHandler
     {
         $resource = $this->resourceModel->getResourceClass();
         $model = $this->resourceModel->resolveModel();
-        $with = $this->resourceModel->getWith();
+        $with = $this->resourceModel->getWith()->toArray();
 
         return [
             'name' => [
                 'singular' => $resource->modelName(),
                 'plural' => $resource->modelPluralName(),
             ],
-            'fields' => $this->resourceModel->getGroupedFields(Field::SHOW_ON_DETAIL),
-            'model_data' => $model::with($with)->find($id),
-            'relationships' => $this->resourceModel->getRelationships('', $id),
+            'groups' => $this->resourceModel->getGroupedFields(Field::SHOW_ON_DETAIL),
+            'model_data' => $model::with($with)->find($id)
         ];
     }
 
