@@ -30,7 +30,7 @@ class Block
         return $this->blockName;
     }
 
-    public function getFields(): array
+    public function fields(): array
     {
         return $this->fields;
     }
