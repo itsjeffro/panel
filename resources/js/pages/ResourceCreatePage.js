@@ -22,41 +22,12 @@ class ResourceCreatePage extends React.Component {
     axios
       .get('/panel/api/resources/' + params.resource + '/fields')
       .then((response) => {
-        // this.loadRelationships(relationships);
+        const fields = this.getFieldsFromResource(response.data);
+
+        this.getRelationshipsFromFields(fields);
 
         this.setState({ resource: response.data });
       });
-  }
-
-  /**
-   * Load any relationships that this resource might have.
-   *
-   * @param {array} relationships
-   * @returns void
-   */
-  loadRelationships = (relationships) => {
-    Object.keys(relationships).map((relationship) => {
-      const models = relationships[relationship];
-
-      Object.keys(models).map((model) => {
-        axios
-          .get('/panel/api/resources/' + models[model].table)
-          .then((response) => {
-            this.setState((prevState) => {
-              return {
-                ...prevState.relationships,
-                relationships: {
-                  [relationship]: {
-                    [model]: response.data
-                  }
-                }
-              }
-            })
-          }, (error) => {
-            console.log(error);
-          });
-      })
-    })
   }
 
   /**
@@ -168,6 +139,37 @@ class ResourceCreatePage extends React.Component {
     });
 
     return fields;
+  }
+
+  /**
+   * Load any relationships that this resource might have.
+   *
+   * @param {any[]} fields
+   * @returns void
+   */
+  getRelationshipsFromFields = (fields) => {
+    const relationshipFields = fields.filter((field) => field.isRelationshipField);
+
+    relationshipFields.map((relationshipFields) => {
+      const relation = relationshipFields.relation;
+
+      axios
+        .get(`/panel/api/resources/${relation.table}`)
+        .then((response) => {
+          this.setState((prevState) => {
+            return {
+              ...prevState.relationships,
+              relationships: {
+                [relation.type]: {
+                  [relation.table]: response.data
+                }
+              }
+            }
+          })
+        }, (error) => {
+          console.log(error);
+        });
+    })
   }
 
   render() {

@@ -30,37 +30,6 @@ class ResourceEditPage extends React.Component {
   }
 
   /**
-   * Load any relationships that this resource might have.
-   *
-   * @param {array} fields
-   * @returns void
-   */
-  getRelationshipsFromFields = (fields) => {
-    const relationshipFields = fields.filter((field) => field.isRelationshipField);
-
-    relationshipFields.map((relationshipFields) => {
-      const relation = relationshipFields.relation;
-
-      axios
-        .get(`/panel/api/resources/${relation.table}`)
-        .then((response) => {
-          this.setState((prevState) => {
-            return {
-              ...prevState.relationships,
-              relationships: {
-                [relation.type]: {
-                  [relation.table]: response.data
-                }
-              }
-            }
-          })
-        }, (error) => {
-          console.log(error);
-        });
-    })
-  }
-
-  /**
    * Update the request data from input, textarea, select changes.
    *
    * @param event
@@ -169,6 +138,37 @@ class ResourceEditPage extends React.Component {
     });
 
     return fields;
+  }
+
+  /**
+   * Load any relationships that this resource might have.
+   *
+   * @param {any[]} fields
+   * @returns void
+   */
+  getRelationshipsFromFields = (fields) => {
+    const relationshipFields = fields.filter((field) => field.isRelationshipField);
+
+    relationshipFields.map((relationshipFields) => {
+      const relation = relationshipFields.relation;
+
+      axios
+        .get(`/panel/api/resources/${relation.table}`)
+        .then((response) => {
+          this.setState((prevState) => {
+            return {
+              ...prevState.relationships,
+              relationships: {
+                [relation.type]: {
+                  [relation.table]: response.data
+                }
+              }
+            }
+          })
+        }, (error) => {
+          console.log(error);
+        });
+    })
   }
 
   render() {
