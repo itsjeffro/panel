@@ -31,7 +31,7 @@ class ResourceTable extends React.Component {
    */
   loadResources = (page) => {
     const {search} = this.state;
-    const {resourceUri} = this.props;
+    const {resourceUri, uriQuery} = this.props;
 
     let query = [];
 
@@ -41,6 +41,10 @@ class ResourceTable extends React.Component {
 
     if (search) {
       query.push('search=' + search);
+    }
+
+    if (uriQuery) {
+      query.push(`${uriQuery}`)
     }
 
     const endpointQuery = query.length ? '?' + query.join('&') : '';
