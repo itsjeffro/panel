@@ -21,9 +21,9 @@ class ResourceEditPage extends React.Component {
     axios
       .get('/panel/api/resources/' + params.resource + '/' + params.id)
       .then(response => {
-        const relationships = response.data.relationships;
+        const fields = this.getFieldsFromResource(response.data);
 
-        this.loadRelationships(relationships);
+        this.getRelationshipsFromFields(fields);
 
         this.setState({ resource: response.data });
       });
@@ -32,31 +32,31 @@ class ResourceEditPage extends React.Component {
   /**
    * Load any relationships that this resource might have.
    *
-   * @param {array} relationships
+   * @param {array} fields
    * @returns void
    */
-  loadRelationships = (relationships) => {
-    Object.keys(relationships).map((relationship) => {
-      const models = relationships[relationship];
+  getRelationshipsFromFields = (fields) => {
+    const relationshipFields = fields.filter((field) => field.isRelationshipField);
 
-      Object.keys(models).map((model) => {
-        axios
-          .get('/panel/api/resources/' + models[model].table)
-          .then((response) => {
-            this.setState((prevState) => {
-              return {
-                ...prevState.relationships,
-                relationships: {
-                  [relationship]: {
-                    [model]: response.data
-                  }
+    relationshipFields.map((relationshipFields) => {
+      const relation = relationshipFields.relation;
+
+      axios
+        .get(`/panel/api/resources/${relation.table}`)
+        .then((response) => {
+          this.setState((prevState) => {
+            return {
+              ...prevState.relationships,
+              relationships: {
+                [relation.type]: {
+                  [relation.table]: response.data
                 }
               }
-            })
-          }, (error) => {
-            console.log(error);
-          });
-      })
+            }
+          })
+        }, (error) => {
+          console.log(error);
+        });
     })
   }
 
@@ -154,6 +154,23 @@ class ResourceEditPage extends React.Component {
     return resource.model_data[field.column]
   }
 
+  /**
+   * Return fields.
+   */
+  getFieldsFromResource = (resource) => {
+    const groups = Object.keys(resource.groups || []);
+
+    let fields = [];
+
+    groups.map((groupKey) => {
+      resource.groups[groupKey].fields.map((field) => {
+        fields.push(field)
+      })
+    });
+
+    return fields;
+  }
+
   render() {
     const {
       error,
@@ -178,10 +195,6 @@ class ResourceEditPage extends React.Component {
       )
     }
 
-    const fields = resource.fields.filter(field => {
-      return field.showOnUpdate;
-    });
-
     return (
       <div className="content">
         <div className="container">
@@ -194,8 +207,8 @@ class ResourceEditPage extends React.Component {
           <div className="card">
             <form onSubmit={e => this.onHandleSubmit(e)} autoComplete="off">
               <div className="list-group list-group-flush">
-                { fields.map((field) => (
-                  <div className="list-group-item" key={field.column}>
+                { this.getFieldsFromResource(resource).map((field) => (
+                  <div className="list-group-item" key={ field.column }>
                     <div className="row">
                       <div className="col-xs-12 col-md-2 pt-2">
                         <strong>{field.name}</strong>
@@ -218,23 +231,10 @@ class ResourceEditPage extends React.Component {
                 <button
                   className="btn btn-primary"
                   onClick={this.onHandleClick}
-                >Update {resource.name.singular}</button>
+                >{ `Update ${resource.name.singular}` }</button>
               </div>
             </form>
           </div>
-
-          { (relationships.hasMany ? Object.keys(relationships.hasMany) : []).map((model) => {
-            const resource = relationships.hasMany[model];
-
-            return (
-              <div key={resource.name.plural} className="mt-5">
-                <ResourceTable
-                  onDeleteClick={ this.onDeleteClick }
-                  resourceUri={ model }
-                />
-              </div>
-            )
-          }) }
         </div>
       </div>
     )

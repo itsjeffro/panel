@@ -97,7 +97,6 @@ class ResourceViewPage extends React.Component {
               </div>
             )
           })}
-
         </div>
       </div>
     )
