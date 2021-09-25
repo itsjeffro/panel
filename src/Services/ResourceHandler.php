@@ -36,15 +36,15 @@ class ResourceHandler
         $models = $model::with($with)->orderBy('id', 'desc');
 
         foreach ($relations as $relation => $id) {
-            $models = $models->whereHas($relation, function (Builder $query) use ($id) {
-                $query->where('id', $id);
-            });
+            $models = $models->where($relation, $id);
         }
 
         if ($request->exists('search')) {
-            foreach ($resource->search as $column) {
-                $models->orWhere($column, 'LIKE', $request->input('search').'%');
-            }
+            $models = $models->where(function ($query) use ($resource, $request) {
+                foreach ($resource->search as $column) {
+                    $query->orWhere($column, 'LIKE', $request->input('search').'%');
+                }
+            });
         }
 
         return [
