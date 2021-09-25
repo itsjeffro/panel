@@ -88,7 +88,7 @@ class ResourceController extends Controller
         try {
             $resourceModel = new ResourceModel($resourceName);
             $handler = new ResourceHandler($resourceModel);
-            $model = $handler->create($request);
+            $model = $handler->store($request);
 
             return response()->json($model, 201);
         } catch (QueryException $e) {
