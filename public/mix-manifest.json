@@ -1,9 +1,9 @@
 {
     "/app.js": "/app.js",
     "/app.css": "/app.css",
-    "/Users/jeffro/Desktop/projects/personal/itsjeffro.com/public/vendor/panel/app.css": "/Users/jeffro/Desktop/projects/personal/itsjeffro.com/public/vendor/panel/app.css",
-    "/Users/jeffro/Desktop/projects/personal/itsjeffro.com/public/vendor/panel/app.js": "/Users/jeffro/Desktop/projects/personal/itsjeffro.com/public/vendor/panel/app.js",
-    "/Users/jeffro/Desktop/projects/personal/itsjeffro.com/public/vendor/panel/app.js.LICENSE.txt": "/Users/jeffro/Desktop/projects/personal/itsjeffro.com/public/vendor/panel/app.js.LICENSE.txt",
-    "/Users/jeffro/Desktop/projects/personal/itsjeffro.com/public/vendor/panel/favicon.ico": "/Users/jeffro/Desktop/projects/personal/itsjeffro.com/public/vendor/panel/favicon.ico",
-    "/Users/jeffro/Desktop/projects/personal/itsjeffro.com/public/vendor/panel/mix-manifest.json": "/Users/jeffro/Desktop/projects/personal/itsjeffro.com/public/vendor/panel/mix-manifest.json"
+    "/public/vendor/panel/app.css": "/public/vendor/panel/app.css",
+    "/public/vendor/panel/app.js": "/public/vendor/panel/app.js",
+    "/public/vendor/panel/app.js.LICENSE.txt": "/public/vendor/panel/app.js.LICENSE.txt",
+    "/public/vendor/panel/favicon.ico": "/public/vendor/panel/favicon.ico",
+    "/public/vendor/panel/mix-manifest.json": "/public/vendor/panel/mix-manifest.json"
 }
