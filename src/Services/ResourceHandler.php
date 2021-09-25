@@ -60,7 +60,7 @@ class ResourceHandler
      *
      * @throws \Exception
      */
-    public function show(string $id): array
+    public function show(string $id, string $visibility): array
     {
         $resource = $this->resourceModel->getResourceClass();
         $model = $resource->resolveModel();
@@ -71,7 +71,7 @@ class ResourceHandler
                 'singular' => $resource->modelName(),
                 'plural' => $resource->modelPluralName(),
             ],
-            'groups' => $this->resourceModel->getGroupedFields(Field::SHOW_ON_DETAIL),
+            'groups' => $this->resourceModel->getGroupedFields($visibility),
             'model_data' => $model::with($with)->find($id)
         ];
     }
@@ -82,7 +82,7 @@ class ResourceHandler
      * @return mixed
      * @throws \Exception
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $resourceValidator = new ResourceValidator();
         $resource = $this->resourceModel->getResourceClass();
