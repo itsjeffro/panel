@@ -159,8 +159,8 @@ class ResourceHandler
      */
     public function delete(string $id): void
     {
-        $resourceModel = $this->resourceModel->resolveModel();
-        $model = $resourceModel::find($id);
+        $resource = $this->resourceModel->getResourceClass();
+        $model = $resource->resolveModel()->find($id);
 
         if (!$model) {
             throw new ModelNotFoundException();
