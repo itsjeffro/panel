@@ -22,9 +22,7 @@ class ResourceCreatePage extends React.Component {
     axios
       .get('/panel/api/resources/' + params.resource + '/fields')
       .then((response) => {
-        const relationships = response.data.relationships;
-
-        this.loadRelationships(relationships);
+        // this.loadRelationships(relationships);
 
         this.setState({ resource: response.data });
       });
@@ -155,6 +153,23 @@ class ResourceCreatePage extends React.Component {
     return this.state.newResource[field.column]
   }
 
+  /**
+   * Return fields.
+   */
+  getFieldsFromResource = (resource) => {
+    const groups = Object.keys(resource.groups || []);
+
+    let fields = [];
+
+    groups.map((groupKey) => {
+      resource.groups[groupKey].fields.map((field) => {
+        fields.push(field)
+      })
+    });
+
+    return fields;
+  }
+
   render() {
     const {
       match: {
@@ -184,8 +199,6 @@ class ResourceCreatePage extends React.Component {
       )
     }
 
-    let resourceFields = resource.fields;
-
     return (
       <div className="content">
         <div className="container">
@@ -197,7 +210,7 @@ class ResourceCreatePage extends React.Component {
 
           <div className="card">
             <div className="list-group list-group-flush">
-              {resourceFields.map(field =>
+              { this.getFieldsFromResource(resource).map((field) =>
                 <div className="list-group-item" key={field.column}>
                   <div className="row">
                     <div className="col-xs-12 col-md-2 pt-2">
@@ -215,7 +228,7 @@ class ResourceCreatePage extends React.Component {
                     </div>
                   </div>
                 </div>
-              )}
+              ) }
             </div>
 
             <div className="card-footer text-right">
