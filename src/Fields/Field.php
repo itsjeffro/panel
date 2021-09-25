@@ -85,7 +85,7 @@ abstract class Field
         $classSegments = explode('\\', $childClass);
 
         $name = empty($name) ? end($classSegments) : $name;
-        $nameColumn = empty($nameColumn) ? strtolower($name) : $nameColumn;
+        $nameColumn = empty($nameColumn) ? Str::snake($name) : $nameColumn;
 
         return new $childClass($name, $nameColumn, $resourceNamespace);
     }
@@ -286,7 +286,7 @@ abstract class Field
     {
         $this->visibility = array_filter($this->visibility, function ($visibility) use ($visibilityToRemove) {
             return $visibility !== $visibilityToRemove;
-        }, []);
+        });
 
         return $this;
     }
