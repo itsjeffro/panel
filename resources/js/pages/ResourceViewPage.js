@@ -56,6 +56,16 @@ class ResourceViewPage extends React.Component {
           { Object.keys(resource.groups).map((groupKey, index) => {
             const group = resource.groups[groupKey];
 
+            if (group.hasOwnProperty('relation')) {
+              return (
+                <div className="page-heading">
+                  <ResourceTable
+                    resourceUri={ group.relation.table }
+                  />
+                </div>
+              )
+            }
+
             if (group.fields.length === 0) {
               return <></>
             }
@@ -80,7 +90,7 @@ class ResourceViewPage extends React.Component {
 
                 <div className="card mb-4">
                   <div className="list-group list-group-flush">
-                    { group.fields.map((field) =>
+                    { group.fields.map((field) => (
                       <div className="list-group-item" key={field.column}>
                         <div className="row">
                           <div className="col-xs-12 col-md-2">
@@ -95,7 +105,7 @@ class ResourceViewPage extends React.Component {
                           </div>
                         </div>
                       </div>
-                    ) }
+                    )) }
                   </div>
                 </div>
               </div>
