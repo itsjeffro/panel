@@ -1,10 +1,12 @@
 import React from 'react';
 import BelongsToIndex from "./BelongsTo/BelongsToIndex";
+import MorphToManyIndex from "./MorphToMany/IndexField";
 import TextareaIndex from "./Textarea/TextareaIndex";
 
 const IndexComponent = (props) => {
   const components = {
     BelongsTo: BelongsToIndex,
+    MorphToMany: MorphToManyIndex,
     Textarea: TextareaIndex,
   };
 

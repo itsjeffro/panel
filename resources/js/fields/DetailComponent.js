@@ -1,10 +1,12 @@
 import React from 'react';
 import BelongsToDetail from "./BelongsTo/BelongsToDetail";
+import MorphToManyDetail from "./MorphToMany/DetailField";
 import TextareaDetail from "./Textarea/TextareaDetail";
 
 const DetailComponent = (props) => {
   const components = {
     BelongsTo: BelongsToDetail,
+    MorphToMany: MorphToManyDetail,
     Textarea: TextareaDetail,
   };
 

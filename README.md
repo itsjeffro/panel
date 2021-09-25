@@ -37,66 +37,10 @@ provider in the providers array in your config/app.php configuration file:
 App\Providers\PanelServiceProvider::class,
 ```
 
-## Resources
-Resources allow for mapping to your applications model.
+## Documentation
 
-You may generate a new resource by using the panel:resource console command.
-
-```bash
-php artisan panel:resource User
-```
-
-## Fields
-
-When a resource is generated, it will contain an ID field to begin with. You may use any of the fields below by adding them
-to the fields method inside your generated resource.
-
-- ID
-- Password
-- Text
-- Textarea
-
-```php
-public function fields()
-{
-    return [
-        ID::make(),
-        Text::make('Title'),
-    ];
-}
-```
-
-### Field Visibility
-
-- showOnIndex()
-- showOnDisplay()
-- showOnCreate()
-- showOnUpdate()
-- hideOnIndex()
-- hideOnDisplay()
-- hideOnCreate()
-- hideOnUpdate()
-
-## Relationships
-
-### BelongsTo
-
-```php
-<?php
-
-use Itsjeffro\Panel\Resource;
-use Itsjeffro\Panel\Fields\BelongsTo;
-
-class Comment extends  Resource
-{
-    public function fields(): array
-    {
-        return [
-            BelongsTo::make('Posts'),
-        ];
-    }
-}
-```
+- [Resources](./docs/resources.md)
+- [Fields](./docs/fields.md)
 
 ## Roadmap
 
