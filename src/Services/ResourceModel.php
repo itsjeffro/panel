@@ -11,6 +11,7 @@ use Itsjeffro\Panel\Contracts\ResourceInterface;
 use Itsjeffro\Panel\Fields\BelongsTo;
 use Itsjeffro\Panel\Fields\Field;
 use Itsjeffro\Panel\Fields\HasMany;
+use Itsjeffro\Panel\Fields\MorphToMany;
 use Itsjeffro\Panel\Panel;
 
 class ResourceModel
@@ -211,6 +212,15 @@ class ResourceModel
         $relationshipResource = new $field->resourceNamespace;
         $relationshipModel = new $relationshipResource->model;
         $relationshipColumn = $field->column;
+
+        if ($field instanceof MorphToMany) {
+            return [
+                'type' => lcfirst($field->component),
+                'table' => $relationshipModel->getTable(),
+                'title' => $relationshipResource->title,
+                'related_pivot_key' => $model->{$relationshipColumn}()->getRelatedPivotKeyName(),
+            ];
+        }
 
         return [
             'type' => lcfirst($field->component),
