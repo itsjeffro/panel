@@ -137,7 +137,7 @@ class ResourceModel
     {
         $resource = $this->getResourceClass();
         $model = $resource->resolveModel();
-        $fields = new Collection();
+        $fields = new Collection([]);
 
         foreach ($resource->fields() as $resourceField) {
             if (property_exists($resourceField, 'isRelationshipField') && $resourceField->isRelationshipField) {
@@ -153,13 +153,13 @@ class ResourceModel
             }
         }
 
-        if (!$visibility) {
-            return $fields;
+        if ($visibility) {
+            $fields = $fields->filter(function ($field) use ($visibility) {
+                return in_array($visibility, $field->visibility);
+            });
         }
 
-        return $fields->filter(function ($field) use ($visibility) {
-            return in_array($visibility, $field->visibility);
-        });
+        return $fields->values();
     }
 
     /**
