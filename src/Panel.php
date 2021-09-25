@@ -19,7 +19,9 @@ class Panel
      */
     public static function getResources(): array
     {
-        return array_map(function ($resource) {
+        $resources = collect(self::$resources);
+
+        return $resources->map(function ($resource) {
             $resourcePath = $resource;
             $resource = explode('\\', $resource);
             $name = Str::plural(end($resource));
@@ -29,7 +31,14 @@ class Panel
                 'slug' => Str::kebab($name),
                 'path' => $resourcePath,
             ];
-        }, self::$resources);
+        })
+        ->filter(function ($resource) {
+            $resource = $resource['path'];
+
+            return $resource::$displayInNavigation;
+        })
+        ->values()
+        ->toArray();
     }
 
     /**

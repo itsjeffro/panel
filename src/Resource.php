@@ -10,6 +10,13 @@ use Itsjeffro\Panel\Contracts\ResourceInterface;
 abstract class Resource implements ResourceInterface
 {
     /**
+     * Determines if the resource should appear in the menu.
+     *
+     * @var bool
+     */
+    public static $displayInNavigation = true;
+
+    /**
      * Return resource's defined fields.
      */
     abstract public function fields(): array;
