@@ -85,7 +85,7 @@ abstract class Field
         $classSegments = explode('\\', $childClass);
 
         $name = empty($name) ? end($classSegments) : $name;
-        $nameColumn = empty($nameColumn) ? Str::snake($name) : $nameColumn;
+        $nameColumn = empty($nameColumn) ? Str::snake(strtolower($name)) : $nameColumn;
 
         return new $childClass($name, $nameColumn, $resourceNamespace);
     }
