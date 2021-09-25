@@ -5,6 +5,7 @@ namespace Itsjeffro\Panel\Services;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Itsjeffro\Panel\Fields\Field;
 
 class ResourceHandler
@@ -88,7 +89,7 @@ class ResourceHandler
         $resource = $this->resourceModel->getResourceClass();
         $model = $resource->resolveModel();
 
-        $fields = $this->fields('showOnCreate');
+        $fields = $this->fields(Field::SHOW_ON_CREATE)->toArray();
         $validationRules = $resourceValidator->getValidationRules($model, $fields);
 
         if ($validationRules) {
@@ -127,7 +128,7 @@ class ResourceHandler
             throw new ModelNotFoundException();
         }
 
-        $fields = $this->fields('showOnUpdate');
+        $fields = $this->fields(Field::SHOW_ON_UPDATE)->toArray();
         $validationRules = $resourceValidator->getValidationRules($model, $fields);
 
         if ($validationRules) {
@@ -172,17 +173,16 @@ class ResourceHandler
      *
      * @throws \Exception
      */
-    protected function fields(string $showOnMethod): array
+    protected function fields(string $visibility): Collection
     {
-        $fields = $this->resourceModel->getFields();
-
-        $fields = array_filter($fields, function ($field) use ($showOnMethod) {
-            return $field->{$showOnMethod};
-        });
-
-        return array_map(function ($field) {
-            $field->rules = $field->rules + $field->rulesOnUpdate;
-            return $field;
-        }, $fields, []);
+        return $this->resourceModel
+            ->getFields()
+            ->filter(function ($field) use ($visibility) {
+                return $field instanceof Field && in_array($visibility, $field->visibility);
+            })
+            ->map(function ($field) {
+                $field->rules = $field->rules + $field->rulesOnCreate;
+                return $field;
+            });
     }
 }
