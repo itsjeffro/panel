@@ -25,11 +25,17 @@ class Block
         $this->fields = $fields;
     }
 
+    /**
+     * Returns block's title name.
+     */
     public function getName(): string
     {
         return $this->blockName;
     }
 
+    /**
+     * Returns block's fields.
+     */
     public function fields(): array
     {
         return $this->fields;
