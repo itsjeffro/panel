@@ -86,7 +86,7 @@ class ResourceModel
     {
         $resource = $this->getResourceClass();
         $model = $resource->resolveModel();
-        $fields = $resource->fields();
+        $fields = $this->filterFieldsByVisibility($visibility, $resource->fields());
 
         $groups = [
             'general' => [
@@ -97,16 +97,7 @@ class ResourceModel
 
         foreach ($fields as $field) {
             if (property_exists($field, 'isRelationshipField') && $field->isRelationshipField) {
-                $relationshipResource = new $field->resourceNamespace;
-                $relationshipModel = new $relationshipResource->model;
-                $relationshipName = $field->column;
-
-                $field->relation = [
-                    'type' => lcfirst($field->component),
-                    'table' => $relationshipModel->getTable(),
-                    'title' => $relationshipResource->title,
-                    'foreign_key' => $model->{$relationshipName}()->getForeignKeyName(),
-                ];
+                $field->relation = $this->resourceRelationship($model, $field);
             }
 
             if ($field instanceof Block) {
@@ -116,7 +107,7 @@ class ResourceModel
                     $groups[$groupKey]['name'] = $field->getName();
                 }
 
-                $groups[$groupKey]['fields'] = $field->fields();
+                $groups[$groupKey]['fields'] = $this->filterFieldsByVisibility($visibility, $field->fields());
             } elseif ($field instanceof HasMany) {
                 $groupKey = strtolower($field->getName());
 
@@ -146,16 +137,7 @@ class ResourceModel
 
         foreach ($resource->fields() as $resourceField) {
             if (property_exists($resourceField, 'isRelationshipField') && $resourceField->isRelationshipField) {
-                $relationshipResource = new $resourceField->resourceNamespace;
-                $relationshipModel = new $relationshipResource->model;
-                $relationshipColumn = $resourceField->column;
-
-                $resourceField->relation = [
-                    'type' => lcfirst($resourceField->component),
-                    'table' => $relationshipModel->getTable(),
-                    'title' => $relationshipResource->title,
-                    'foreign_key' => $model->{$relationshipColumn}()->getForeignKeyName(),
-                ];
+                $resourceField->relation = $this->resourceRelationship($model, $resourceField);
             }
 
             if ($resourceField instanceof Block) {
@@ -215,5 +197,38 @@ class ResourceModel
         }
 
         return $relationshipFields;
+    }
+
+    /**
+     * Returns resource's relationship.
+     */
+    protected function resourceRelationship($model, $field): array
+    {
+        $relationshipResource = new $field->resourceNamespace;
+        $relationshipModel = new $relationshipResource->model;
+        $relationshipColumn = $field->column;
+
+        return [
+            'type' => lcfirst($field->component),
+            'table' => $relationshipModel->getTable(),
+            'title' => $relationshipResource->title,
+            'foreign_key' => $model->{$relationshipColumn}()->getForeignKeyName(),
+        ];
+    }
+
+    /**
+     * Returns fields based on its specified visibility.
+     */
+    protected function filterFieldsByVisibility(string $visibility, array $fields): Collection
+    {
+        $fields = collect($fields);
+
+        if (!$visibility) {
+            return $fields;
+        }
+
+        return $fields->filter(function ($field) use ($visibility) {
+            return $field instanceof Block || ($field instanceof Field && in_array($visibility, $field->visibility));
+        });
     }
 }
