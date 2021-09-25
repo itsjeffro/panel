@@ -85,6 +85,7 @@ class ResourceModel
     public function getGroupedFields(string $visibility = ''): array
     {
         $resource = $this->getResourceClass();
+        $model = $resource->resolveModel();
         $fields = $resource->fields();
 
         $groups = [
@@ -96,16 +97,15 @@ class ResourceModel
 
         foreach ($fields as $field) {
             if (property_exists($field, 'isRelationshipField') && $field->isRelationshipField) {
-                $relationshipResource = $this->getRelationshipResource($field->relation);
-                $modelClass = new $relationshipResource;
-                $relationshipModel = new $modelClass->model;
+                $relationshipResource = new $field->resourceNamespace;
+                $relationshipModel = new $relationshipResource->model;
                 $relationshipName = $field->column;
 
                 $field->relation = [
                     'type' => lcfirst($field->component),
                     'table' => $relationshipModel->getTable(),
-                    'title' => $modelClass->title,
-                    'foreign_key' => $this->resolveModel()->{$relationshipName}()->getForeignKeyName(),
+                    'title' => $relationshipResource->title,
+                    'foreign_key' => $model->{$relationshipName}()->getForeignKeyName(),
                 ];
             }
 
@@ -141,9 +141,23 @@ class ResourceModel
     public function getFields(string $visibility = ''): Collection
     {
         $resource = $this->getResourceClass();
+        $model = $resource->resolveModel();
         $fields = new Collection();
 
         foreach ($resource->fields() as $resourceField) {
+            if (property_exists($resourceField, 'isRelationshipField') && $resourceField->isRelationshipField) {
+                $relationshipResource = new $resourceField->resourceNamespace;
+                $relationshipModel = new $relationshipResource->model;
+                $relationshipColumn = $resourceField->column;
+
+                $resourceField->relation = [
+                    'type' => lcfirst($resourceField->component),
+                    'table' => $relationshipModel->getTable(),
+                    'title' => $relationshipResource->title,
+                    'foreign_key' => $model->{$relationshipColumn}()->getForeignKeyName(),
+                ];
+            }
+
             if ($resourceField instanceof Block) {
                 foreach ($resourceField->fields() as $blockField) {
                     $fields->add($blockField);
@@ -201,35 +215,5 @@ class ResourceModel
         }
 
         return $relationshipFields;
-    }
-
-    /**
-     * Return relationship resource class.
-     */
-    public function getRelationshipResource(string $relation): string
-    {
-        if (strpos($relation, '\\') !== false) {
-            return $relation;
-        }
-
-        return $this->getResourceNamespace().'\\'.$relation;
-    }
-
-    /**
-     * Resolves the model from the resource.
-     *
-     * @return mixed
-     * @throws Exception
-     */
-    public function resolveModel()
-    {
-        $resource = $this->getResourceClass();
-        $model = app()->make($resource->model);
-
-        if (!$model instanceof Model) {
-            throw new Exception('Class is not an instance of Model');
-        }
-
-        return $model;
     }
 }
