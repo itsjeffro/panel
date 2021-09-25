@@ -115,7 +115,11 @@ class ResourceModel
                     $groups[$groupKey]['name'] = $field->getName();
                 }
 
-                $groups[$groupKey]['fields'][] = $field;
+                $groups[$groupKey] = [
+                    'fields' => [],
+                    'name' => $field->name,
+                    'relation' => $field->relation,
+                ];
             } else {
                 $groupKey = 'general';
 

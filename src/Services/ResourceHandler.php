@@ -2,6 +2,7 @@
 
 namespace Itsjeffro\Panel\Services;
 
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class ResourceHandler
     /**
      * Return built data response.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function index(Request $request): array
     {
@@ -59,7 +60,7 @@ class ResourceHandler
     /**
      * Returns a single resource's data response.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function show(string $id, string $visibility): array
     {
@@ -81,7 +82,7 @@ class ResourceHandler
      * Create resource.
      *
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public function store(Request $request)
     {
@@ -116,7 +117,7 @@ class ResourceHandler
      *
      * @return mixed
      * @throws ModelNotFoundException
-     * @throws \Exception
+     * @throws Exception
      */
     public function update(Request $request, string $id)
     {
@@ -154,14 +155,14 @@ class ResourceHandler
      * Delete resource.
      *
      * @throws ModelNotFoundException
-     * @throws \Exception
+     * @throws Exception
      */
     public function delete(string $id): void
     {
         $resourceModel = $this->resourceModel->resolveModel();
         $model = $resourceModel::find($id);
 
-        if (!is_object($model)) {
+        if (!$model) {
             throw new ModelNotFoundException();
         }
 
@@ -171,7 +172,7 @@ class ResourceHandler
     /**
      * Get updatable fields.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function fields(string $visibility): Collection
     {
