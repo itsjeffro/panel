@@ -27,7 +27,7 @@ class ResourceHandler
     public function index(Request $request): array
     {
         $resource = $this->resourceModel->getResourceClass();
-        $model = $this->resourceModel->resolveModel();
+        $model = $resource->resolveModel();
         $with = $this->resourceModel->getWith()->toArray();
 
         $relations = $request->get('relation', []);
@@ -63,7 +63,7 @@ class ResourceHandler
     public function show(string $id): array
     {
         $resource = $this->resourceModel->getResourceClass();
-        $model = $this->resourceModel->resolveModel();
+        $model = $resource->resolveModel();
         $with = $this->resourceModel->getWith()->toArray();
 
         return [
@@ -85,22 +85,21 @@ class ResourceHandler
     public function create(Request $request)
     {
         $resourceValidator = new ResourceValidator();
-        $resourceModel = $this->resourceModel->resolveModel();
+        $resource = $this->resourceModel->getResourceClass();
+        $model = $resource->resolveModel();
 
         $fields = $this->fields('showOnCreate');
-        $validationRules = $resourceValidator->getValidationRules($resourceModel, $fields);
+        $validationRules = $resourceValidator->getValidationRules($model, $fields);
 
         if ($validationRules) {
             $request->validate($validationRules);
         }
 
-        $model = new $resourceModel;
-
         foreach ($fields as $field) {
             $column = $field->column;
 
             if ($field->isRelationshipField) {
-                $column = $resourceModel->{$column}()->getForeignKeyName();
+                $column = $model->{$column}()->getForeignKeyName();
             }
 
             $field->fillAttributeFromRequest($request, $model, $column);
@@ -121,15 +120,15 @@ class ResourceHandler
     public function update(Request $request, string $id)
     {
         $resourceValidator = new ResourceValidator();
-        $resourceModel = $this->resourceModel->resolveModel();
-        $model = $resourceModel::find($id);
+        $resource = $this->resourceModel->getResourceClass();
+        $model = $resource->resolveModel()->find($id);
 
         if (!$model) {
             throw new ModelNotFoundException();
         }
 
         $fields = $this->fields('showOnUpdate');
-        $validationRules = $resourceValidator->getValidationRules($resourceModel, $fields);
+        $validationRules = $resourceValidator->getValidationRules($model, $fields);
 
         if ($validationRules) {
             $request->validate($validationRules);
@@ -139,7 +138,7 @@ class ResourceHandler
             $column = $field->column;
 
             if ($field->isRelationshipField) {
-                $column = $resourceModel->{$column}()->getForeignKeyName();
+                $column = $model->{$column}()->getForeignKeyName();
             }
 
             $field->fillAttributeFromRequest($request, $model, $column);
