@@ -13,7 +13,7 @@
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/plugin-transform-arrow-functions": "^7.14.5",
     "@babel/preset-react": "^7.0.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "bootstrap": "^4.0.0",
     "cross-env": "^5.1",
     "laravel-mix": "^6.0.31",
