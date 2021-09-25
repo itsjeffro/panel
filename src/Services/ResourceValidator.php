@@ -7,7 +7,7 @@ class ResourceValidator
     /**
      * Get validation rules for updatable fields.
      */
-    public function getValidationRules($resourceModel, array $fields): array
+    public function getValidationRules($model, array $fields): array
     {
         $rules = [];
 
@@ -15,7 +15,7 @@ class ResourceValidator
             $column = $field->column;
 
             if ($field->isRelationshipField) {
-                $column = $resourceModel->{$column}()->getForeignKeyName();
+                $column = $model->{$column}()->getForeignKeyName();
             }
 
             if ($field->rules) {
