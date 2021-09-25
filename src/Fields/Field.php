@@ -3,6 +3,8 @@
 namespace Itsjeffro\Panel\Fields;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Itsjeffro\Panel\Panel;
 
 abstract class Field
 {
@@ -27,7 +29,12 @@ abstract class Field
     /**
      * @var string
      */
-    public $relation = '';
+    public $resourceNamespace = '';
+
+    /**
+     * @var object|null
+     */
+    public $relation = null;
 
     /**
      * @var bool
@@ -61,37 +68,28 @@ abstract class Field
 
     /**
      * Field constructor.
-     *
-     * @param string $name
-     * @param string $column
-     * @param string $relation
      */
-    public function __construct(string $name = '', string $column = '', string $relation = '')
+    public function __construct(?string $name = null, ?string $column = null, ?string $resourceNamespace = null)
     {
         $this->name = $name;
         $this->column = $column;
-        $this->relation = $relation;
+        $this->resourceNamespace = $resourceNamespace;
     }
 
     /**
      * Instantiate a new instance of the child class utilising
      * methods from the extended Field class to use.
-     *
-     * @param string $name
-     * @param string $column
-     * @param string $relation
-     * @return \Itsjeffro\Panel\Fields\Field
      */
-    public static function make(string $name = '', string $column = '', string $relation = ''): Field
+    public static function make(?string $name = null, ?string $column = null, ?string $resourceNamespace = null): Field
     {
         $childClass = static::class;
         $classSegments = explode('\\', $childClass);
 
         $name = empty($name) ? end($classSegments) : $name;
         $column = empty($column) ? strtolower($name) : $column;
-        $relation = empty($relation) ? $name : $relation;
+        $resourceNamespace = self::namespaceResource($name, $resourceNamespace);
 
-        return new $childClass($name, $column, $relation);
+        return new $childClass($name, $column, $resourceNamespace);
     }
     
     /**
@@ -293,5 +291,14 @@ abstract class Field
         }, []);
 
         return $this;
+    }
+
+    protected static function namespaceResource(?string $name, ?string $namespaceResource): string
+    {
+        if ($namespaceResource) {
+            return $namespaceResource;
+        }
+
+        return 'App\\Panel\\' . Str::singular($name);
     }
 }
