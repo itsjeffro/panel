@@ -176,7 +176,11 @@ class ResourceCreatePage extends React.Component {
 
     if (resource === null) {
       return (
-        <div>Loading...</div>
+        <div className="content">
+          <div className="container">
+            Loading...
+          </div>
+        </div>
       )
     }
 

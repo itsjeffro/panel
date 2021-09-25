@@ -42,7 +42,11 @@ class ResourceViewPage extends React.Component {
 
     if (typeof resource === 'object' && resource === null) {
       return (
-        <div>Loading...</div>
+        <div className="content">
+          <div className="container">
+            Loading...
+          </div>
+        </div>
       )
     }
 

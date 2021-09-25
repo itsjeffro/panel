@@ -19,7 +19,7 @@ class ResourceEditPage extends React.Component {
     const {params} = this.props.match;
 
     axios
-      .get('/panel/api/resources/' + params.resource + '/' + params.id)
+      .get('/panel/api/resources/' + params.resource + '/' + params.id + '/edit')
       .then(response => {
         const fields = this.getFieldsFromResource(response.data);
 
@@ -191,7 +191,11 @@ class ResourceEditPage extends React.Component {
 
     if (typeof resource === 'object' && resource === null) {
       return (
-        <div>Loading...</div>
+        <div className="content">
+          <div className="container">
+            Loading...
+          </div>
+        </div>
       )
     }
 
