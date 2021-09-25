@@ -4,7 +4,6 @@ namespace Itsjeffro\Panel\Fields;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Itsjeffro\Panel\Panel;
 
 abstract class Field
 {
@@ -69,27 +68,26 @@ abstract class Field
     /**
      * Field constructor.
      */
-    public function __construct(?string $name = null, ?string $column = null, ?string $resourceNamespace = null)
+    public function __construct(?string $name = null, ?string $nameColumn = null, ?string $resourceNamespace = null)
     {
         $this->name = $name;
-        $this->column = $column;
-        $this->resourceNamespace = $resourceNamespace;
+        $this->column = $nameColumn;
+        $this->resourceNamespace = $this->namespaceResource($name, $resourceNamespace);
     }
 
     /**
      * Instantiate a new instance of the child class utilising
      * methods from the extended Field class to use.
      */
-    public static function make(?string $name = null, ?string $column = null, ?string $resourceNamespace = null): Field
+    public static function make(?string $name = null, ?string $nameColumn = null, ?string $resourceNamespace = null): Field
     {
         $childClass = static::class;
         $classSegments = explode('\\', $childClass);
 
         $name = empty($name) ? end($classSegments) : $name;
-        $column = empty($column) ? strtolower($name) : $column;
-        $resourceNamespace = self::namespaceResource($name, $resourceNamespace);
+        $nameColumn = empty($nameColumn) ? strtolower($name) : $nameColumn;
 
-        return new $childClass($name, $column, $resourceNamespace);
+        return new $childClass($name, $nameColumn, $resourceNamespace);
     }
     
     /**
@@ -293,7 +291,10 @@ abstract class Field
         return $this;
     }
 
-    protected static function namespaceResource(?string $name, ?string $namespaceResource): string
+    /**
+     * Returns resource's full namespace.
+     */
+    protected function namespaceResource(?string $name, ?string $namespaceResource): string
     {
         if ($namespaceResource) {
             return $namespaceResource;
