@@ -8,6 +8,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Itsjeffro\Panel\Fields\Field;
 use Itsjeffro\Panel\Services\ResourceHandler;
 use Itsjeffro\Panel\Services\ResourceModel;
 
@@ -36,7 +37,22 @@ class ResourceController extends Controller
             $resourceModel = new ResourceModel($resourceName);
             $handler = new ResourceHandler($resourceModel);
 
-            return response()->json($handler->show($id));
+            return response()->json($handler->show($id, Field::SHOW_ON_DETAIL));
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Retrieve a single model to edit.
+     */
+    public function edit(string $resourceName, string $id): JsonResponse
+    {
+        try {
+            $resourceModel = new ResourceModel($resourceName);
+            $handler = new ResourceHandler($resourceModel);
+
+            return response()->json($handler->show($id, Field::SHOW_ON_UPDATE));
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
         }
@@ -61,7 +77,6 @@ class ResourceController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
-
 
     /**
      * Create a new model for a given resource.
