@@ -42,12 +42,12 @@ use Itsjeffro\Panel\Fields\BelongsTo;
 BelongsTo::make('User'),
 ```
 
-### BelongsToMany
+### MorphToMany
 
 ```php
-use Itsjeffro\Panel\Fields\BelongsToMany;
+use Itsjeffro\Panel\Fields\MorphToMany;
 
-BelongsToMany::make('Roles'),
+MorphToMany::make('Roles'),
 ```
 
 ### HasMany

@@ -46,10 +46,6 @@ App\Providers\PanelServiceProvider::class,
 
 Since this is a project I plan to use quite often, there will be additional features I would like to add when needed.
 
-### Relationships
-
-- [ ] HasMany
-
 #### Fields
 
 - [ ] WYSIWYG
