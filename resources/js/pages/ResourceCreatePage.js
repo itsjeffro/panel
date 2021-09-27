@@ -1,7 +1,7 @@
 import React from 'react';
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
-import FieldComponent from "../fields/FieldComponent";
+import FormFieldComponent from "../fields/FormFieldComponent";
 
 class ResourceCreatePage extends React.Component {
   state = {
@@ -34,9 +34,10 @@ class ResourceCreatePage extends React.Component {
    * Update the request data from input, textarea, select changes.
    *
    * @param event
+   * @param {string} column
    */
-  onInputChange = (event) => {
-    const name = event.target.name;
+  onInputChange = (event, column) => {
+    const name = column;
     const value = event.target.value;
 
     this.setState(prevState => {
@@ -114,11 +115,18 @@ class ResourceCreatePage extends React.Component {
    * @param {object} field
    * @returns {*}
    */
-  fieldValue(resource, field) {
-    if (field.isRelationshipField) {
-      const foreignKey = field.relation.foreign_key;
+  fieldValue = (resource, field) => {
+    if (field.component === 'BelongsTo') {
+      const foreignKey = field.relation.column;
 
       return this.state.newResource[foreignKey]
+    }
+
+    if (field.component === 'MorphToMany') {
+      const table = field.relation.table;
+      const relatedPivotKey = field.relation.column;
+
+      return this.state.newResource[table].map((row) => row.pivot[relatedPivotKey])
     }
 
     return this.state.newResource[field.column]
@@ -219,7 +227,7 @@ class ResourceCreatePage extends React.Component {
                       <strong>{field.name}</strong>
                     </div>
                     <div className="col-xs-12 col-md-7">
-                      <FieldComponent
+                      <FormFieldComponent
                         errors={ error.errors }
                         field={ field }
                         handleInputChange={ this.onInputChange }

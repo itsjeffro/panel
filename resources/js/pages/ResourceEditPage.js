@@ -1,8 +1,7 @@
 import React from 'react';
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
-import FieldComponent from "../fields/FieldComponent";
-import ResourceTable from "../components/ResourceTable";
+import FormFieldComponent from "../fields/FormFieldComponent";
 
 class ResourceEditPage extends React.Component {
   state = {
@@ -33,10 +32,13 @@ class ResourceEditPage extends React.Component {
    * Update the request data from input, textarea, select changes.
    *
    * @param event
+   * @param {string} column
    */
-  onInputChange = (event) => {
-    const name = event.target.name;
+  onInputChange = (event, column) => {
+    const name = column;
     const value = event.target.value;
+
+    console.log(name, value);
 
     this.setState(prevState => {
       let resource = {
@@ -114,10 +116,17 @@ class ResourceEditPage extends React.Component {
    * @returns {*}
    */
   fieldValue = (resource, field) => {
-    if (field.isRelationshipField) {
-      const foreignKey = field.relation.foreign_key;
+    if (field.component === 'BelongsTo') {
+      const foreignKey = field.relation.column;
 
       return resource.model_data[foreignKey]
+    }
+
+    if (field.component === 'MorphToMany') {
+      const table = field.relation.table;
+      const relatedPivotKey = field.relation.column;
+
+      return resource.model_data[table].map((row) => row.pivot[relatedPivotKey])
     }
 
     return resource.model_data[field.column]
@@ -218,10 +227,10 @@ class ResourceEditPage extends React.Component {
                         <strong>{field.name}</strong>
                       </div>
                       <div className="col-xs-12 col-md-7">
-                        <FieldComponent
+                        <FormFieldComponent
                           errors={ error.errors }
                           field={ field }
-                          handleInputChange={ (e) => this.onInputChange(e) }
+                          handleInputChange={ this.onInputChange }
                           resource={resource}
                           options={ this.fieldOptions(relationships, field) }
                           value={ this.fieldValue(resource, field) }
