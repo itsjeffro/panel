@@ -8,7 +8,7 @@ const BelongsToDetail = (props) => {
   } = props;
 
   const value = model ? model[field.column][field.relation.title] : null;
-  const id = model ? model[field.relation.foreign_key] : null;
+  const id = model ? model[field.relation.column] : null;
   const table = field.relation.table;
 
   return (

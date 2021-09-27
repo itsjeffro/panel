@@ -18,9 +18,9 @@ const BelongsToField = (props) => {
     <span>
       <select
         className={ `form-control ${hasErrorClass}` }
-        name={ column }
+        name={ field.column }
         value={ selected }
-        onChange={ (e) => handleInputChange(e) }
+        onChange={ (e) => handleInputChange(e, field.relation.column) }
       >
         <option value="">Choose { field.name }</option>
         { options.map((option) => (
