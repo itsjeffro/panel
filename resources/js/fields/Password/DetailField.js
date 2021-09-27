@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PasswordDetail = (props) => {
+const DetailField = (props) => {
   const {name} = props;
 
   return (
@@ -9,4 +9,4 @@ const PasswordDetail = (props) => {
 
 };
 
-export default PasswordDetail;
+export default DetailField;

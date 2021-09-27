@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PasswordIndex = (props) => {
+const IndexField = (props) => {
   const {name} = props;
 
   return (
@@ -8,4 +8,4 @@ const PasswordIndex = (props) => {
   )
 };
 
-export default PasswordIndex;
+export default IndexField;

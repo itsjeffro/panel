@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PasswordField = (props) => {
+const FormField = (props) => {
   const {
     field,
     hasError,
@@ -24,4 +24,4 @@ const PasswordField = (props) => {
   )
 };
 
-export default PasswordField;
+export default FormField;
