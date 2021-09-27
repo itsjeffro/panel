@@ -218,7 +218,7 @@ class ResourceModel
                 'type' => lcfirst($field->component),
                 'table' => $relationshipModel->getTable(),
                 'title' => $relationshipResource->title,
-                'related_pivot_key' => $model->{$relationshipColumn}()->getRelatedPivotKeyName(),
+                'column' => $model->{$relationshipColumn}()->getRelatedPivotKeyName(),
             ];
         }
 
@@ -226,7 +226,7 @@ class ResourceModel
             'type' => lcfirst($field->component),
             'table' => $relationshipModel->getTable(),
             'title' => $relationshipResource->title,
-            'foreign_key' => $model->{$relationshipColumn}()->getForeignKeyName(),
+            'column' => $model->{$relationshipColumn}()->getForeignKeyName(),
         ];
     }
 
