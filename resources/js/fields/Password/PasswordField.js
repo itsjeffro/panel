@@ -2,7 +2,6 @@ import React from 'react';
 
 const PasswordField = (props) => {
   const {
-    column,
     field,
     hasError,
     messageError,
@@ -12,15 +11,15 @@ const PasswordField = (props) => {
   return (
     <span>
       <input
-        className={'form-control' + (hasError ? ' is-invalid' : '')}
+        className={ 'form-control' + (hasError ? ' is-invalid' : '') }
         type="password"
-        name={column}
-        onChange={e => handleInputChange(e)}
-        autoComplete={'new-' + column}
-        placeholder={field.name}
+        name={ field.column }
+        onChange={ (e) => handleInputChange(e, field.column) }
+        autoComplete={ 'new-' + field.column }
+        placeholder={ field.name }
       />
 
-      {hasError ? <div className="invalid-feedback">{messageError}</div> : ''}
+      { hasError ? <div className="invalid-feedback">{messageError}</div> : '' }
     </span>
   )
 };

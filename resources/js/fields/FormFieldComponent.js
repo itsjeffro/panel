@@ -5,7 +5,7 @@ import MorphToMany from './MorphToMany/FormField';
 import TextareaField from './Textarea/TextareaField';
 import FormField from "./Text/FormField";
 
-const FieldComponent = (props) => {
+const FormFieldComponent = (props) => {
   const components = {
     Password: PasswordField,
     BelongsTo: BelongsToField,
@@ -19,15 +19,17 @@ const FieldComponent = (props) => {
   const column = field.column;
   const hasError = errors !== null && errors.hasOwnProperty(column);
   const messageError = errors !== null && errors.hasOwnProperty(column) ? errors[column][0] : '';
+  const value = props.value || '';
 
   return (
     <ComponentName
       {...props}
       column={column}
+      value={ value }
       hasError={hasError}
       messageError={messageError}
     />
   )
 }
 
-export default FieldComponent;
+export default FormFieldComponent;

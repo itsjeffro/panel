@@ -2,7 +2,6 @@ import React from 'react';
 
 const TextareaField = (props) => {
   const {
-    column,
     field,
     hasError,
     messageError,
@@ -14,8 +13,8 @@ const TextareaField = (props) => {
     <span>
       <textarea
         className={'form-control' + (hasError ? ' is-invalid' : '')}
-        name={column}
-        onChange={e => handleInputChange(e)}
+        name={ field.column }
+        onChange={(e) => handleInputChange(e, field.column)}
         placeholder={field.name}
         defaultValue={value}
       />
