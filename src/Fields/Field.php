@@ -66,6 +66,13 @@ abstract class Field
     public $visibility = [];
 
     /**
+     * Field value.
+     *
+     * @var mixed
+     */
+    public $value = null;
+
+    /**
      * Field constructor.
      */
     public function __construct(?string $name = null, ?string $nameColumn = null, ?string $resourceNamespace = null)
@@ -265,6 +272,18 @@ abstract class Field
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Set field value.
+     *
+     * @param mixed $value
+     */
+    public function setValue($value): self
+    {
+        $this->value = $value;
+
+        return $this;
     }
 
     /**
