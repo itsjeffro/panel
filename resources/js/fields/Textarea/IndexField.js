@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TextareaDetail = (props) => {
+const IndexField = (props) => {
   const {
     model,
     field,
@@ -9,7 +9,6 @@ const TextareaDetail = (props) => {
   return (
     <span>{model[field.column]}</span>
   )
-
 };
 
-export default TextareaDetail;
+export default IndexField;

@@ -126,7 +126,7 @@ class ResourceCreatePage extends React.Component {
       const table = field.relation.table;
       const relatedPivotKey = field.relation.column;
 
-      return this.state.newResource[table].map((row) => row.pivot[relatedPivotKey])
+      return (this.state.newResource[table] || []).map((row) => row.pivot[relatedPivotKey])
     }
 
     return this.state.newResource[field.column]

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 
-const BelongsToDetail = (props) => {
+const DetailField = (props) => {
   const {
     model,
     field
@@ -16,4 +16,4 @@ const BelongsToDetail = (props) => {
   )
 }
 
-export default BelongsToDetail;
+export default DetailField;

@@ -151,7 +151,7 @@ class ResourceTable extends React.Component {
             <th width="1%">
               <input type="checkbox"/>
             </th>
-            {resource.fields.map((field) =>
+            {resource.model_data.data[0].fields.map((field) =>
               <th key={field.column}>{field.name}</th>
             )}
             <th className="text-right">
@@ -162,18 +162,17 @@ class ResourceTable extends React.Component {
 
           <tbody>
           {(resource.model_data.data).map((model) =>
-            <tr key={model.id}>
+            <tr>
               <td width="1%">
                 <div className="form-check form-check-inline">
                   <input className="form-check-input" type="checkbox"/>
                 </div>
               </td>
-              {resource.fields.map((field) =>
-                <td key={model.id + '-' + field.column}>
+              {model.fields.map((field) =>
+                <td>
                   <IndexComponent
-                    component={field.component}
-                    model={model}
-                    field={field}
+                    model={ model }
+                    field={ field }
                   />
                 </td>
               )}

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BelongsToField = (props) => {
+const FormField = (props) => {
   const {
     column,
     field,
@@ -33,4 +33,4 @@ const BelongsToField = (props) => {
   )
 };
 
-export default BelongsToField;
+export default FormField;

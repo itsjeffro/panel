@@ -1,25 +1,23 @@
 import React from 'react';
-import BelongsToIndex from "./BelongsTo/BelongsToIndex";
-import MorphToManyIndex from "./MorphToMany/IndexField";
-import TextareaIndex from "./Textarea/TextareaIndex";
+import BelongsToField from "./BelongsTo/IndexField";
+import HasManyField from "./HasMany/IndexField";
+import MorphToManyField from "./MorphToMany/IndexField";
+import TextareaField from "./Textarea/IndexField";
+import TextField from "./Text/IndexField";
 
 const IndexComponent = (props) => {
   const components = {
-    BelongsTo: BelongsToIndex,
-    MorphToMany: MorphToManyIndex,
-    Textarea: TextareaIndex,
+    BelongsTo: BelongsToField,
+    MorphToMany: MorphToManyField,
+    Textarea: TextareaField,
+    HasMany: HasManyField,
   };
 
-  const {
-    component,
-    model,
-    field
-  } = props;
-
-  const ComponentName = components[component];
+  const { field } = props;
+  const ComponentName = components[field.component];
 
   if (typeof ComponentName == 'undefined') {
-    return <span>{model[field.column]}</span>;
+    return <TextField field={ field } />
   }
 
   return <ComponentName {...props} />

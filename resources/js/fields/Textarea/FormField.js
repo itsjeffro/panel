@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TextareaField = (props) => {
+const FormField = (props) => {
   const {
     field,
     hasError,
@@ -24,4 +24,4 @@ const TextareaField = (props) => {
   )
 };
 
-export default TextareaField;
+export default FormField;
