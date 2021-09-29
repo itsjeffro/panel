@@ -47,13 +47,20 @@ class ResourceHandler
             });
         }
 
+        $indexResults = $models->paginate();
+
+        $indexResults->getCollection()->transform(function ($item) use ($resource) {
+            return [
+                'fields' => $this->resourceModel->getResourceIndexFields($item),
+            ];
+        });
+
         return [
             'name' => [
                 'singular' => $resource->modelName(),
                 'plural' => $resource->modelPluralName(),
             ],
-            'fields' => $this->resourceModel->getFields(Field::SHOW_ON_INDEX),
-            'model_data' => $models->paginate(),
+            'model_data' => $indexResults,
         ];
     }
 
@@ -179,7 +186,7 @@ class ResourceHandler
         return $this->resourceModel
             ->getFields()
             ->filter(function ($field) use ($visibility) {
-                return $field instanceof Field && in_array($visibility, $field->visibility);
+                return $field instanceof Field && $field->hasVisibility($visibility);
             })
             ->map(function ($field) {
                 $field->rules = $field->rules + $field->rulesOnCreate;

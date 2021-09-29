@@ -61,16 +61,16 @@ abstract class Field
     public $rulesOnUpdate = [];
 
     /**
-     * @var string[]
-     */
-    public $visibility = [];
-
-    /**
      * Field value.
      *
      * @var mixed
      */
     public $value = null;
+
+    /**
+     * @var string[]
+     */
+    public $visibility = [];
 
     /**
      * Field constructor.
@@ -284,6 +284,11 @@ abstract class Field
         $this->value = $value;
 
         return $this;
+    }
+
+    public function hasVisibility(string $visibility): bool
+    {
+        return in_array($visibility, $this->visibility);
     }
 
     /**

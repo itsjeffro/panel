@@ -164,6 +164,47 @@ class ResourceModel
     }
 
     /**
+     * Returns only the resource's index fields.
+     */
+    public function getResourceIndexFields($model): Collection
+    {
+        return $this->getResourceFields($model)
+            ->filter(function ($field) {
+                return $field->hasVisibility(Field::SHOW_ON_INDEX);
+            })
+            ->values();
+    }
+
+    /**
+     * Return all resource's fields.
+     */
+    public function getResourceFields($model): Collection
+    {
+        $resource = $this->getResourceClass();
+        $fields = new Collection([]);
+
+        foreach ($resource->fields() as $resourceField) {
+            if ($resourceField instanceof Block) {
+                foreach ($resourceField->fields() as $blockField) {
+                    $fieldColumn = $blockField->column;
+
+                    $blockField->setValue($model->{$fieldColumn});
+
+                    $fields->add($blockField);
+                }
+            } else {
+                $fieldColumn = $resourceField->column;
+
+                $resourceField->setValue($model->{$fieldColumn});
+
+                $fields->add($resourceField);
+            }
+        }
+
+        return $fields;
+    }
+
+    /**
      * Return the model relationships that should be eager loaded via the with() method. Exclude
      * hasMany fields as they will be passed with the relationships property in the controllers.
      */
@@ -177,31 +218,6 @@ class ResourceModel
         return $relationshipFields->map(function ($field) {
             return $field->column;
         });
-    }
-
-    /**
-     * Returns the resource model's relationships.
-     */
-    public function getRelationships(string $showOn = '', string $id = ''): array
-    {
-        $fields = $this->getFields($showOn)
-            ->filter(function ($field) {
-                return $field instanceof Field &&in_array(get_class($field), self::RELATIONSHIPS_TYPES);
-            });
-
-        $relationshipFields = [];
-
-        foreach ($fields as $field) {
-            $component = Str::camel($field->component);
-            $table = is_array($field->relation) ? $field->relation['table'] : '';
-
-            $relationshipFields[$component][$table] = [
-                'name' => $field->name,
-                'table' => $table,
-            ];
-        }
-
-        return $relationshipFields;
     }
 
     /**
@@ -242,7 +258,7 @@ class ResourceModel
         }
 
         return $fields->filter(function ($field) use ($visibility) {
-            return $field instanceof Block || ($field instanceof Field && in_array($visibility, $field->visibility));
+            return $field instanceof Block || ($field instanceof Field && $field->hasVisibility($visibility));
         });
     }
 }
