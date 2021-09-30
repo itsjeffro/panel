@@ -177,13 +177,13 @@ class ResourceTable extends React.Component {
                 </td>
               )}
               <td className="text-right">
-                <Link className="btn btn-link" to={'/resources/' + resourceUri + '/' + model.id}><span
+                <Link className="btn btn-link" to={'/resources/' + resourceUri + '/' + model.resourceId}><span
                   className="typcn typcn-eye-outline"/></Link>{' '}
-                <Link className="btn btn-link" to={'/resources/' + resourceUri + '/' + model.id + '/edit'}><span
+                <Link className="btn btn-link" to={'/resources/' + resourceUri + '/' + model.resourceId + '/edit'}><span
                   className="typcn typcn-edit"/></Link>{' '}
                 <button
                   className="btn btn-link"
-                  onClick={(e) => this.onDeleteClick(e, resourceUri, model.id)}
+                  onClick={(e) => this.onDeleteClick(e, resourceUri, model.resourceId)}
                 ><span className="typcn typcn-trash"/></button>
               </td>
             </tr>

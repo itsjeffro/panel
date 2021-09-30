@@ -4,7 +4,7 @@ const IndexField = (props) => {
   const { field } = props;
 
   return (
-    <span>{ JSON.stringify(field.value) }</span>
+    <span>{ field.value }</span>
   )
 };
 

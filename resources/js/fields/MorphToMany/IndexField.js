@@ -5,7 +5,7 @@ const IndexField = (props) => {
 
   return (
     <span>
-      { JSON.stringify(field.value) }
+      { field.value.join(', ') }
     </span>
   )
 };
