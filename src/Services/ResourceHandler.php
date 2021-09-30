@@ -4,6 +4,7 @@ namespace Itsjeffro\Panel\Services;
 
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -51,6 +52,7 @@ class ResourceHandler
 
         $indexResults->getCollection()->transform(function ($item) use ($resource) {
             return [
+                'resourceId' => $item->getKey(),
                 'fields' => $this->resourceModel->getResourceIndexFields($item),
             ];
         });

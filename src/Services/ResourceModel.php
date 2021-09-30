@@ -98,7 +98,7 @@ class ResourceModel
 
         foreach ($fields as $field) {
             if (property_exists($field, 'isRelationshipField') && $field->isRelationshipField) {
-                $field->relation = $this->resourceRelationship($model, $field);
+                $field->relation = $this->resourceValue($model, $field);
             }
 
             if ($field instanceof Block) {
@@ -137,14 +137,9 @@ class ResourceModel
     public function getFields(string $visibility = ''): Collection
     {
         $resource = $this->getResourceClass();
-        $model = $resource->resolveModel();
         $fields = new Collection([]);
 
         foreach ($resource->fields() as $resourceField) {
-            if (property_exists($resourceField, 'isRelationshipField') && $resourceField->isRelationshipField) {
-                $resourceField->relation = $this->resourceRelationship($model, $resourceField);
-            }
-
             if ($resourceField instanceof Block) {
                 foreach ($resourceField->fields() as $blockField) {
                     $fields->add($blockField);
@@ -193,9 +188,9 @@ class ResourceModel
                     $fields->add($blockField);
                 }
             } else {
-                $fieldColumn = $resourceField->column;
-
-                $resourceField->setValue($model->{$fieldColumn});
+                $resourceField->setValue(
+                    $this->resourceValue($model, $resourceField)
+                );
 
                 $fields->add($resourceField);
             }
@@ -222,28 +217,31 @@ class ResourceModel
 
     /**
      * Returns resource's relationship.
+     *
+     * @return mixed
      */
-    protected function resourceRelationship($model, $field): array
+    protected function resourceValue($model, Field $field)
     {
-        $relationshipResource = new $field->resourceNamespace;
-        $relationshipModel = new $relationshipResource->model;
-        $relationshipColumn = $field->column;
+        $fieldColumn = $field->column;
 
         if ($field instanceof MorphToMany) {
-            return [
-                'type' => lcfirst($field->component),
-                'table' => $relationshipModel->getTable(),
-                'title' => $relationshipResource->title,
-                'column' => $model->{$relationshipColumn}()->getRelatedPivotKeyName(),
-            ];
+            $relationshipResource = new $field->resourceNamespace;
+            $resourceTitle = $relationshipResource->title;
+            $items = collect($model->{$fieldColumn});
+
+            return $items->map(function ($item) use ($resourceTitle) {
+                return $item->{$resourceTitle};
+            });
         }
 
-        return [
-            'type' => lcfirst($field->component),
-            'table' => $relationshipModel->getTable(),
-            'title' => $relationshipResource->title,
-            'column' => $model->{$relationshipColumn}()->getForeignKeyName(),
-        ];
+        if ($field instanceof BelongsTo) {
+            $relationshipResource = new $field->resourceNamespace;
+            $resourceTitle = $relationshipResource->title;
+
+            return $model->{$fieldColumn}->{$resourceTitle};
+        }
+
+        return $model->{$fieldColumn};
     }
 
     /**
