@@ -56,18 +56,18 @@ class ResourceViewPage extends React.Component {
           { Object.keys(resource.groups).map((groupKey, index) => {
             const group = resource.groups[groupKey];
 
-            if (group.hasOwnProperty('relation')) {
+            if (group.component === 'HasMany') {
               return (
                 <div className="page-heading">
                   <ResourceTable
-                    resourceUri={group.relation.table}
-                    uriQuery={ `relation[${group.relation.column}]=${resource.model_data.id}` }
+                    resourceUri={ group.resourceName }
+                    // uriQuery={ `relation[${group.relation.foreign_key}]=${resource.model_data.id}` }
                   />
                 </div>
               )
             }
 
-            if (group.fields.length === 0) {
+            if (typeof group.resourceFields == 'undefined' || group.resourceFields.length === 0) {
               return <></>
             }
 
@@ -91,17 +91,18 @@ class ResourceViewPage extends React.Component {
 
                 <div className="card mb-4">
                   <div className="list-group list-group-flush">
-                    { group.fields.map((field) => (
-                      <div className="list-group-item" key={field.column}>
+                    { group.resourceFields.map((resourceField) => (
+                      <div className="list-group-item" key={ resourceField.resourceId }>
                         <div className="row">
                           <div className="col-xs-12 col-md-2">
-                            <strong>{field.name}</strong>
+                            <strong>{ resourceField.field.name }</strong>
                           </div>
                           <div className="col-xs-12 col-md-10">
                             <DetailComponent
-                              component={field.component}
-                              model={resource.model_data}
-                              field={field}
+                              component={ resourceField.component }
+                              field={ resourceField.field }
+                              resourceId={ resourceField.resourceId }
+                              resourceName={ resourceField.resourceName }
                             />
                           </div>
                         </div>

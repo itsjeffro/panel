@@ -1,10 +1,10 @@
 import React from 'react';
 
 const DetailField = (props) => {
-  const {name} = props;
+  const { name } = props;
 
   return (
-    <span>{name}</span>
+    <span>{ name }</span>
   )
 
 };

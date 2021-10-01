@@ -2,17 +2,10 @@ import React from 'react';
 import {Link} from "react-router-dom";
 
 const DetailField = (props) => {
-  const {
-    model,
-    field
-  } = props;
-
-  const value = model ? model[field.column][field.relation.title] : null;
-  const id = model ? model[field.relation.column] : null;
-  const table = field.relation.table;
+  const { resource, resourceName, resourceId, field } = props;
 
   return (
-    <span><Link to={ `/resources/${table}/${id}` }>{ value }</Link></span>
+    <span><Link to={ `/resources/${resourceName}/${resourceId}` }>{ field.value }</Link></span>
   )
 }
 

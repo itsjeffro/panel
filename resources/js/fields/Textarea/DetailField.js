@@ -1,13 +1,10 @@
 import React from 'react';
 
 const DetailField = (props) => {
-  const {
-    model,
-    field,
-  } = props;
+  const { field } = props;
 
   return (
-    <span>{model[field.column]}</span>
+    <span>{ field.value }</span>
   )
 
 };

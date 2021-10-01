@@ -12,14 +12,13 @@ const DetailComponent = (props) => {
 
   const {
     component,
-    model,
     field
   } = props;
 
   const ComponentName = components[component];
 
   if (typeof ComponentName == 'undefined') {
-    return <span>{model[field.column]}</span>;
+    return <span>{ field.value }</span>;
   }
 
   return <ComponentName {...props} />

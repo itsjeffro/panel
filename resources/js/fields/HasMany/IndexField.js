@@ -1,10 +1,10 @@
 import React from 'react';
 
 const IndexField = (props) => {
-  const { field } = props;
+  const { resourceName, field } = props;
 
   return (
-    <span>{ JSON.stringify(field.value) }</span>
+    <span>{ field.value }</span>
   )
 };
 

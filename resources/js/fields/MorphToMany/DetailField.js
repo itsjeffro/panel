@@ -1,16 +1,11 @@
 import React from 'react';
 
 const DetailField = (props) => {
-  const {
-    model,
-    field
-  } = props;
+  const { field } = props;
 
   return (
     <span>
-      { model[field.column].map((row) => {
-        return row[field.relation.title]
-      }).join(', ')}
+      { (field.value || []).join(', ') }
     </span>
   )
 }
