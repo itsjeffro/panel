@@ -3,8 +3,6 @@
 namespace Itsjeffro\Panel\Services;
 
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -74,16 +72,17 @@ class ResourceHandler
     public function show(string $id, string $visibility): array
     {
         $resource = $this->resourceModel->getResourceClass();
-        $model = $resource->resolveModel();
-        $with = $this->resourceModel->getWith()->toArray();
+
+        $with = $this->resourceModel
+            ->getWith()
+            ->toArray();
+
+        $model = $resource->resolveModel()
+            ->with($with)
+            ->find($id);
 
         return [
-            'name' => [
-                'singular' => $resource->modelName(),
-                'plural' => $resource->modelPluralName(),
-            ],
-            'groups' => $this->resourceModel->getGroupedFields($visibility),
-            'model_data' => $model::with($with)->find($id)
+            'groups' => $this->resourceModel->getResourceDetailFields($model),
         ];
     }
 

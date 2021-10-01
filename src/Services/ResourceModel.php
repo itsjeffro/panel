@@ -79,59 +79,6 @@ class ResourceModel
     }
 
     /**
-     * Return resource's grouped fields along.
-     *
-     * @throws Exception
-     */
-    public function getGroupedFields(string $visibility = ''): array
-    {
-        $resource = $this->getResourceClass();
-        $model = $resource->resolveModel();
-        $fields = $this->filterFieldsByVisibility($visibility, $resource->fields());
-
-        $groups = [
-            'general' => [
-                'name' => $resource->modelName() . ' Details',
-                'fields' => [],
-            ],
-        ];
-
-        foreach ($fields as $field) {
-            if (property_exists($field, 'isRelationshipField') && $field->isRelationshipField) {
-                $field->relation = $this->resourceValue($model, $field);
-            }
-
-            if ($field instanceof Block) {
-                $groupKey = strtolower($field->getName());
-
-                if (!isset($groups[$groupKey]['name'])) {
-                    $groups[$groupKey]['name'] = $field->getName();
-                }
-
-                $groups[$groupKey]['fields'] = $this->filterFieldsByVisibility($visibility, $field->fields());
-            } elseif ($field instanceof HasMany) {
-                $groupKey = strtolower($field->getName());
-
-                if (!isset($groups[$groupKey]['name'])) {
-                    $groups[$groupKey]['name'] = $field->getName();
-                }
-
-                $groups[$groupKey] = [
-                    'fields' => [],
-                    'name' => $field->name,
-                    'relation' => $field->relation,
-                ];
-            } else {
-                $groupKey = 'general';
-
-                $groups[$groupKey]['fields'][] = $field;
-            }
-        }
-
-        return $groups;
-    }
-
-    /**
      * Returns a flat list of the resource's defined fields.
      */
     public function getFields(string $visibility = ''): Collection
@@ -159,15 +106,98 @@ class ResourceModel
     }
 
     /**
+     * Return resource's grouped fields along.
+     *
+     * @throws Exception
+     */
+    public function getResourceDetailFields($model): array
+    {
+        $resource = $this->getResourceClass();
+        $fields = $this->getResourceFields($model);
+
+        $groups = [
+            'general' => [
+                'name' => $resource->modelName() . ' Details',
+                'resourceFields' => [],
+            ],
+        ];
+
+        foreach ($fields as $field) {
+            if ($field instanceof Block) {
+                $groupKey = strtolower($field->getName());
+
+                if (!isset($groups[$groupKey]['name'])) {
+                    $groups[$groupKey]['name'] = $field->getName();
+                }
+
+                $blockFields = $this->filterFieldsByVisibility(Field::SHOW_ON_DETAIL, $field->fields());
+
+                $groups[$groupKey]['resourceFields'] = $blockFields->map(function ($blockField) use ($model) {
+                    return [
+                        'component' => $blockField->component,
+                        'field' => $blockField,
+                        'resourceId' => $model->getKey(),
+                        'resourceName' => $model->getTable(),
+                    ];
+                });
+            } elseif ($field instanceof HasMany) {
+                $groupKey = strtolower($field->getName());
+
+                if (!isset($groups[$groupKey]['name'])) {
+                    $groups[$groupKey]['name'] = $field->getName();
+                }
+
+                $groups[$groupKey] = [
+                    'component' => $field->component,
+                    'resourceName' => $field->column,
+                ];
+            } else {
+                $groupKey = 'general';
+
+                $field->setValue($this->resourceValue($model, $field));
+
+                $groups[$groupKey]['resourceFields'][] = [
+                    'component' => $field->component,
+                    'field' => [
+                        'attribute' => $field->column,
+                        'name' => $field->name,
+                        'value' => $field->value,
+                    ],
+                    'resourceId' => $model->getKey(),
+                    'resourceName' => $model->getTable(),
+                ];
+            }
+        }
+
+        return $groups;
+    }
+
+    /**
      * Returns only the resource's index fields.
      */
     public function getResourceIndexFields($model): Collection
     {
-        return $this->getResourceFields($model)
+        $resourceFields = $this->getResourceFields($model)
             ->filter(function ($field) {
                 return $field->hasVisibility(Field::SHOW_ON_INDEX);
             })
             ->values();
+
+        $fields = collect([]);
+
+        foreach ($resourceFields as $resourceField) {
+            $resourceField->setValue(
+                $this->resourceValue($model, $resourceField)
+            );
+
+            $fields->add([
+                'attribute' => $resourceField->column,
+                'name' => $resourceField->name,
+                'value' => $resourceField->value,
+            ]);
+        }
+
+        return $fields;
     }
 
     /**
@@ -176,27 +206,17 @@ class ResourceModel
     public function getResourceFields($model): Collection
     {
         $resource = $this->getResourceClass();
-        $fields = new Collection([]);
+        $resourceFields = new Collection([]);
 
         foreach ($resource->fields() as $resourceField) {
             if ($resourceField instanceof Block) {
-                foreach ($resourceField->fields() as $blockField) {
-                    $fieldColumn = $blockField->column;
-
-                    $blockField->setValue($model->{$fieldColumn});
-
-                    $fields->add($blockField);
-                }
+                $resourceFields->push(...$resourceField->fields());
             } else {
-                $resourceField->setValue(
-                    $this->resourceValue($model, $resourceField)
-                );
-
-                $fields->add($resourceField);
+                $resourceFields->add($resourceField);
             }
         }
 
-        return $fields;
+        return $resourceFields;
     }
 
     /**
