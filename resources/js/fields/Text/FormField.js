@@ -14,9 +14,9 @@ const FormField = (props) => {
         <input
           className={ 'form-control' + (hasError ? ' is-invalid' : '') }
           type="text"
-          name={ field.column }
+          name={ field.attribute }
           value={ value }
-          onChange={ (event) => handleInputChange(event, field.column) }
+          onChange={ (event) => handleInputChange(event, field.attribute) }
           placeholder={ field.name }
         />
 
