@@ -33,7 +33,7 @@ class ResourceViewPage extends React.Component {
   }
 
   render() {
-    const { resource, relationships } = this.state;
+    const {resource, relationships} = this.state;
     const {
       match: {
         params,
@@ -53,12 +53,12 @@ class ResourceViewPage extends React.Component {
     return (
       <div className="content">
         <div className="container">
-          { Object.keys(resource.groups).map((groupKey, index) => {
+          {Object.keys(resource.groups).map((groupKey, index) => {
             const group = resource.groups[groupKey];
 
             if (group.component === 'HasMany') {
               return (
-                <div className="page-heading">
+                <div key={ group.resourceName } className="page-heading">
                   <ResourceTable
                     resourceUri={ group.resourceName }
                     // uriQuery={ `relation[${group.relation.foreign_key}]=${resource.model_data.id}` }
@@ -72,42 +72,42 @@ class ResourceViewPage extends React.Component {
             }
 
             return (
-              <div key={ groupKey }>
+              <div key={'group-' + groupKey}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="page-heading">
-                      <h2>{ group.name }</h2>
+                      <h2>{group.name}</h2>
                     </div>
                   </div>
                   <div className="col-md-6">
-                    { index === 0 ? <div className="form-group text-md-right">
+                    {index === 0 ? <div className="form-group text-md-right">
                       <Link
                         className="btn btn-primary btn-sm"
                         to={'/resources/' + params.resource + '/' + params.id + '/edit'}
                       >Edit</Link>
-                    </div> : '' }
+                    </div> : ''}
                   </div>
                 </div>
 
                 <div className="card mb-4">
                   <div className="list-group list-group-flush">
-                    { group.resourceFields.map((resourceField) => (
-                      <div className="list-group-item" key={ resourceField.resourceId }>
+                    {group.resourceFields.map((resourceField) => (
+                      <div className="list-group-item" key={ 'field-' + resourceField.field.attribute }>
                         <div className="row">
                           <div className="col-xs-12 col-md-2">
-                            <strong>{ resourceField.field.name }</strong>
+                            <strong>{resourceField.field.name}</strong>
                           </div>
                           <div className="col-xs-12 col-md-10">
                             <DetailComponent
-                              component={ resourceField.component }
-                              field={ resourceField.field }
-                              resourceId={ resourceField.resourceId }
-                              resourceName={ resourceField.resourceName }
+                              component={resourceField.component}
+                              field={resourceField.field}
+                              resourceId={resourceField.resourceId}
+                              resourceName={resourceField.resourceName}
                             />
                           </div>
                         </div>
                       </div>
-                    )) }
+                    ))}
                   </div>
                 </div>
               </div>
