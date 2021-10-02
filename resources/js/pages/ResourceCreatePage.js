@@ -19,13 +19,16 @@ class ResourceCreatePage extends React.Component {
   componentWillMount() {
     const {params} = this.props.match;
 
+    this.loadResource(params.resource, params.id);
+  }
+
+  /**
+   * Load resource's fields.
+   */
+  loadResource = (resource, resourceId) => {
     axios
-      .get('/panel/api/resources/' + params.resource + '/fields')
+      .get('/panel/api/resources/' + resource + '/fields')
       .then((response) => {
-        const fields = this.getFieldsFromResource(response.data);
-
-        this.getRelationshipsFromFields(fields);
-
         this.setState({ resource: response.data });
       });
   }
@@ -109,44 +112,22 @@ class ResourceCreatePage extends React.Component {
   }
 
   /**
-   * Returns field value.
-   *
-   * @param {object} resource
-   * @param {object} field
-   * @returns {*}
-   */
-  fieldValue = (resource, field) => {
-    if (field.component === 'BelongsTo') {
-      const foreignKey = field.relation.column;
-
-      return this.state.newResource[foreignKey]
-    }
-
-    if (field.component === 'MorphToMany') {
-      const table = field.relation.table;
-      const relatedPivotKey = field.relation.column;
-
-      return (this.state.newResource[table] || []).map((row) => row.pivot[relatedPivotKey])
-    }
-
-    return this.state.newResource[field.column]
-  }
-
-  /**
    * Return fields.
    */
   getFieldsFromResource = (resource) => {
     const groups = Object.keys(resource.groups || []);
 
-    let fields = [];
+    let resourceFields = [];
 
     groups.map((groupKey) => {
-      resource.groups[groupKey].fields.map((field) => {
-        fields.push(field)
+      (resource.groups[groupKey].resourceFields || []).map((resourceField) => {
+        resourceFields.push(resourceField)
       })
     });
 
-    return fields;
+    console.log(resourceFields)
+
+    return resourceFields;
   }
 
   /**
@@ -220,25 +201,26 @@ class ResourceCreatePage extends React.Component {
 
           <div className="card">
             <div className="list-group list-group-flush">
-              { this.getFieldsFromResource(resource).map((field) =>
-                <div className="list-group-item" key={field.column}>
+              { this.getFieldsFromResource(resource).map((resourceField) => (
+                <div className="list-group-item" key={ 'field-' + resourceField.field.attribute }>
                   <div className="row">
                     <div className="col-xs-12 col-md-2 pt-2">
-                      <strong>{field.name}</strong>
+                      <strong>{ resourceField.field.name }</strong>
                     </div>
                     <div className="col-xs-12 col-md-7">
                       <FormFieldComponent
+                        component={ resourceField.component }
                         errors={ error.errors }
-                        field={ field }
+                        field={ resourceField.field }
                         handleInputChange={ this.onInputChange }
                         resource={ resource }
-                        options={ this.fieldOptions(relationships, field) }
-                        value={ this.fieldValue(resource, field) }
+                        options={ this.fieldOptions(relationships, resourceField.field) }
+                        value={ resourceField.field.value }
                       />
                     </div>
                   </div>
                 </div>
-              ) }
+              )) }
             </div>
 
             <div className="card-footer text-right">

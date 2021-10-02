@@ -13,21 +13,21 @@ const FormFieldComponent = (props) => {
     Textarea: TextareaField,
   };
 
-  const { errors, field } = props;
+  const { component, errors, field } = props;
 
-  const ComponentName = components[field.component] || TextField;
-  const column = field.column;
+  const ComponentName = components[component] || TextField;
+  const column = field.attribute;
   const hasError = errors !== null && errors.hasOwnProperty(column);
   const messageError = errors !== null && errors.hasOwnProperty(column) ? errors[column][0] : '';
   const value = props.value || '';
 
   return (
     <ComponentName
-      {...props}
-      column={column}
+      { ...props }
+      column={ column }
       value={ value }
-      hasError={hasError}
-      messageError={messageError}
+      hasError={ hasError }
+      messageError={ messageError }
     />
   )
 }

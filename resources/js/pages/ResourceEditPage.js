@@ -118,6 +118,7 @@ class ResourceEditPage extends React.Component {
    */
   getFieldsFromResource = (resource) => {
     const groups = Object.keys(resource.groups || []);
+
     let fields = [];
 
     groups.map((groupKey) => {
@@ -198,10 +199,10 @@ class ResourceEditPage extends React.Component {
           { error.message.length ? <div className="alert alert-danger">{error.message}</div> : '' }
 
           <div className="card">
-            <form onSubmit={e => this.onHandleSubmit(e)} autoComplete="off">
+            <form onSubmit={ (event) => this.onHandleSubmit(event)} autoComplete="off">
               <div className="list-group list-group-flush">
                 { this.getFieldsFromResource(resource).map((field) => (
-                  <div className="list-group-item" key={ field.column }>
+                  <div className="list-group-item" key={ 'field-' + field.attribute }>
                     <div className="row">
                       <div className="col-xs-12 col-md-2 pt-2">
                         <strong>{field.name}</strong>
