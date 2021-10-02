@@ -17,13 +17,16 @@ class ResourceEditPage extends React.Component {
   componentWillMount() {
     const {params} = this.props.match;
 
+    this.loadResource(params.resource, params.id);
+  }
+
+  /**
+   * Load resource's fields.
+   */
+  loadResource = (resource, resourceId) => {
     axios
-      .get('/panel/api/resources/' + params.resource + '/' + params.id + '/edit')
-      .then(response => {
-        const fields = this.getFieldsFromResource(response.data);
-
-        this.getRelationshipsFromFields(fields);
-
+      .get('/panel/api/resources/' + resource + '/' + resourceId + '/edit')
+      .then((response) => {
         this.setState({ resource: response.data });
       });
   }
@@ -109,40 +112,17 @@ class ResourceEditPage extends React.Component {
   }
 
   /**
-   * Returns field value.
-   *
-   * @param {object} resource
-   * @param {object} field
-   * @returns {*}
-   */
-  fieldValue = (resource, field) => {
-    if (field.component === 'BelongsTo') {
-      const foreignKey = field.relation.column;
-
-      return resource.model_data[foreignKey]
-    }
-
-    if (field.component === 'MorphToMany') {
-      const table = field.relation.table;
-      const relatedPivotKey = field.relation.column;
-
-      return resource.model_data[table].map((row) => row.pivot[relatedPivotKey])
-    }
-
-    return resource.model_data[field.column]
-  }
-
-  /**
    * Return fields.
+   *
+   * @returns {any[]}
    */
   getFieldsFromResource = (resource) => {
     const groups = Object.keys(resource.groups || []);
-
     let fields = [];
 
     groups.map((groupKey) => {
-      resource.groups[groupKey].fields.map((field) => {
-        fields.push(field)
+      (resource.groups[groupKey].resourceFields || []).map((resourceField) => {
+        fields.push(resourceField.field)
       })
     });
 
@@ -212,7 +192,7 @@ class ResourceEditPage extends React.Component {
       <div className="content">
         <div className="container">
           <div className="page-heading">
-            <h2>Edit {resource.name.singular}</h2>
+            <h2>Edit</h2>
           </div>
 
           { error.message.length ? <div className="alert alert-danger">{error.message}</div> : '' }
@@ -231,9 +211,9 @@ class ResourceEditPage extends React.Component {
                           errors={ error.errors }
                           field={ field }
                           handleInputChange={ this.onInputChange }
-                          resource={resource}
+                          resource={ resource }
                           options={ this.fieldOptions(relationships, field) }
-                          value={ this.fieldValue(resource, field) }
+                          value={ field.value }
                         />
                       </div>
                     </div>
@@ -244,7 +224,7 @@ class ResourceEditPage extends React.Component {
                 <button
                   className="btn btn-primary"
                   onClick={this.onHandleClick}
-                >{ `Update ${resource.name.singular}` }</button>
+                >{ `Update` }</button>
               </div>
             </form>
           </div>

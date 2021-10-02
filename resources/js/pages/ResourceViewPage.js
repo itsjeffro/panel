@@ -24,6 +24,9 @@ class ResourceViewPage extends React.Component {
     }
   }
 
+  /**
+   * Loads resource.
+   */
   loadResource = (resourceUri, id) => {
     axios
       .get('/panel/api/resources/' + resourceUri + '/' + id)
@@ -33,7 +36,7 @@ class ResourceViewPage extends React.Component {
   }
 
   render() {
-    const {resource, relationships} = this.state;
+    const { resource } = this.state;
     const {
       match: {
         params,
