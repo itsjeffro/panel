@@ -3,9 +3,7 @@
 namespace Itsjeffro\Panel\Services;
 
 use Exception;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Itsjeffro\Panel\Block;
 use Itsjeffro\Panel\Contracts\ResourceInterface;
 use Itsjeffro\Panel\Fields\BelongsTo;
@@ -16,16 +14,6 @@ use Itsjeffro\Panel\Panel;
 
 class ResourceModel
 {
-    /**
-     * Available relationship types.
-     *
-     * @var string[]
-     */
-    const RELATIONSHIPS_TYPES = [
-      BelongsTo::class,
-      HasMany::class,
-    ];
-
     /**
      * @var string
      */
@@ -133,12 +121,7 @@ class ResourceModel
                 $blockFields = $this->filterFieldsByVisibility(Field::SHOW_ON_DETAIL, $field->fields());
 
                 $groups[$groupKey]['resourceFields'] = $blockFields->map(function ($blockField) use ($model) {
-                    return [
-                        'component' => $blockField->component,
-                        'field' => $blockField,
-                        'resourceId' => $model->getKey(),
-                        'resourceName' => $model->getTable(),
-                    ];
+                    return $this->prepareField($model, $blockField);
                 });
             } elseif ($field instanceof HasMany) {
                 $groupKey = strtolower($field->getName());
@@ -147,25 +130,11 @@ class ResourceModel
                     $groups[$groupKey]['name'] = $field->getName();
                 }
 
-                $groups[$groupKey] = [
-                    'component' => $field->component,
-                    'resourceName' => $field->column,
-                ];
+                $groups[$groupKey] = $this->prepareField($model, $field);
             } else {
                 $groupKey = 'general';
 
-                $field->setValue($this->resourceValue($model, $field));
-
-                $groups[$groupKey]['resourceFields'][] = [
-                    'component' => $field->component,
-                    'field' => [
-                        'attribute' => $field->column,
-                        'name' => $field->name,
-                        'value' => $field->value,
-                    ],
-                    'resourceId' => $model->getKey(),
-                    'resourceName' => $model->getTable(),
-                ];
+                $groups[$groupKey]['resourceFields'][] = $this->prepareField($model, $field);
             }
         }
 
@@ -186,15 +155,7 @@ class ResourceModel
         $fields = collect([]);
 
         foreach ($resourceFields as $resourceField) {
-            $resourceField->setValue(
-                $this->resourceValue($model, $resourceField)
-            );
-
-            $fields->add([
-                'attribute' => $resourceField->column,
-                'name' => $resourceField->name,
-                'value' => $resourceField->value,
-            ]);
+            $fields->add($this->prepareField($model, $resourceField));
         }
 
         return $fields;
@@ -235,21 +196,20 @@ class ResourceModel
         });
     }
 
-    /**
-     * Returns resource's relationship.
-     *
-     * @return mixed
-     */
-    protected function resourceValue($model, Field $field)
+    protected function prepareField($model, Field $field): array
     {
         $fieldColumn = $field->column;
+
+        $value = $model->{$fieldColumn};
+        $resourceId = $model->getKey();
+        $resourceName = $model->getTable();
 
         if ($field instanceof MorphToMany) {
             $relationshipResource = new $field->resourceNamespace;
             $resourceTitle = $relationshipResource->title;
             $items = collect($model->{$fieldColumn});
 
-            return $items->map(function ($item) use ($resourceTitle) {
+            $value = $items->map(function ($item) use ($resourceTitle) {
                 return $item->{$resourceTitle};
             });
         }
@@ -258,10 +218,29 @@ class ResourceModel
             $relationshipResource = new $field->resourceNamespace;
             $resourceTitle = $relationshipResource->title;
 
-            return $model->{$fieldColumn}->{$resourceTitle};
+            $value = $model->{$fieldColumn}->{$resourceTitle};
+            $resourceId = $model->{$fieldColumn}->getKey();
+            $resourceName = $relationshipResource->slug();
         }
 
-        return $model->{$fieldColumn};
+        if ($field instanceof HasMany) {
+            $relationshipResource = new $field->resourceNamespace;
+
+            $value = null;
+            $resourceId = null;
+            $resourceName = $relationshipResource->slug();
+        }
+
+        return [
+            'component' => $field->component,
+            'field' => [
+                'attribute' => $field->column,
+                'name' => $field->name,
+                'value' => $value,
+            ],
+            'resourceId' => $resourceId,
+            'resourceName' => $resourceName,
+        ];
     }
 
     /**
