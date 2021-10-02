@@ -101,7 +101,11 @@ class ResourceModel
     public function getResourceDetailFields($model): array
     {
         $resource = $this->getResourceClass();
-        $fields = $this->getResourceFields($model);
+
+        $fields =  collect($resource->fields())->filter(function ($field) {
+            return $field instanceof Block ||
+                ($field instanceof Field && $field->hasVisibility(Field::SHOW_ON_DETAIL));
+        });
 
         $groups = [
             'general' => [
@@ -196,6 +200,9 @@ class ResourceModel
         });
     }
 
+    /**
+     * Returns field data.
+     */
     protected function prepareField($model, Field $field): array
     {
         $fieldColumn = $field->column;
