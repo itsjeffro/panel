@@ -98,7 +98,7 @@ class ResourceModel
      *
      * @throws Exception
      */
-    public function getResourceDetailFields($model): array
+    public function getGroupedFields($model): array
     {
         $resource = $this->getResourceClass();
 

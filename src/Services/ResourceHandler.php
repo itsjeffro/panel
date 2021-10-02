@@ -82,7 +82,7 @@ class ResourceHandler
             ->find($id);
 
         return [
-            'groups' => $this->resourceModel->getResourceDetailFields($model),
+            'groups' => $this->resourceModel->getGroupedFields($model),
         ];
     }
 

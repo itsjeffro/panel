@@ -20,13 +20,14 @@ class ResourceFieldController extends Controller
     {
         $resourceModel = new ResourceModel($resourceName);
         $resource = $resourceModel->getResourceClass();
+        $model = $resource->resolveModel();
 
         return response()->json([
             'name' => [
                 'singular' => $resource->modelName(),
                 'plural' => $resource->modelPluralName(),
             ],
-            'groups' => $resourceModel->getGroupedFields(Field::SHOW_ON_CREATE),
+            'groups' => $resourceModel->getGroupedFields($model),
         ]);
     }
 }
