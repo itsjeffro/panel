@@ -21,14 +21,12 @@ class Panel
     {
         $resources = collect(self::$resources);
 
-        return $resources->map(function ($resource) {
-            $resourcePath = $resource;
-            $resource = explode('\\', $resource);
-            $name = Str::plural(end($resource));
+        return $resources->map(function ($resourcePath) {
+            $resource = new $resourcePath;
 
             return [
-                'name' => $name,
-                'slug' => Str::kebab($name),
+                'name' => $resource->name(),
+                'slug' => $resource->slug(),
                 'path' => $resourcePath,
             ];
         })

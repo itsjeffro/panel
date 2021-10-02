@@ -22,6 +22,25 @@ abstract class Resource implements ResourceInterface
     abstract public function fields(): array;
 
     /**
+     * Returns resource's name.
+     */
+    public function name(): string
+    {
+        $className = static::class;
+        $resource = explode('\\', $className);
+
+        return Str::plural(end($resource));
+    }
+
+    /**
+     * Returns resource's slug.
+     */
+    public function slug(): string
+    {
+        return Str::kebab($this->name());
+    }
+
+    /**
      * Returns resource's model name.
      */
     public function modelName(): string
