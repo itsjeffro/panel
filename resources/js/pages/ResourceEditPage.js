@@ -119,15 +119,15 @@ class ResourceEditPage extends React.Component {
   getFieldsFromResource = (resource) => {
     const groups = Object.keys(resource.groups || []);
 
-    let fields = [];
+    let resourceFields = [];
 
     groups.map((groupKey) => {
       (resource.groups[groupKey].resourceFields || []).map((resourceField) => {
-        fields.push(resourceField.field)
+        resourceFields.push(resourceField)
       })
     });
 
-    return fields;
+    return resourceFields;
   }
 
   /**
@@ -201,20 +201,21 @@ class ResourceEditPage extends React.Component {
           <div className="card">
             <form onSubmit={ (event) => this.onHandleSubmit(event)} autoComplete="off">
               <div className="list-group list-group-flush">
-                { this.getFieldsFromResource(resource).map((field) => (
-                  <div className="list-group-item" key={ 'field-' + field.attribute }>
+                { this.getFieldsFromResource(resource).map((resourceField) => (
+                  <div className="list-group-item" key={ 'field-' + resourceField.field.attribute }>
                     <div className="row">
                       <div className="col-xs-12 col-md-2 pt-2">
-                        <strong>{field.name}</strong>
+                        <strong>{ resourceField.field.name}</strong>
                       </div>
                       <div className="col-xs-12 col-md-7">
                         <FormFieldComponent
+                          component={ resourceField.component }
                           errors={ error.errors }
-                          field={ field }
+                          field={ resourceField.field }
                           handleInputChange={ this.onInputChange }
                           resource={ resource }
-                          options={ this.fieldOptions(relationships, field) }
-                          value={ field.value }
+                          options={ this.fieldOptions(relationships, resourceField.field) }
+                          value={ resourceField.field.value }
                         />
                       </div>
                     </div>

@@ -27,7 +27,7 @@ class ResourceCreatePage extends React.Component {
    */
   loadResource = (resource, resourceId) => {
     axios
-      .get('/panel/api/resources/' + resource + '/fields')
+      .get(`/panel/api/resources/${resource}/fields`)
       .then((response) => {
         this.setState({ resource: response.data });
       });
@@ -125,8 +125,6 @@ class ResourceCreatePage extends React.Component {
       })
     });
 
-    console.log(resourceFields)
-
     return resourceFields;
   }
 
@@ -215,7 +213,7 @@ class ResourceCreatePage extends React.Component {
                         handleInputChange={ this.onInputChange }
                         resource={ resource }
                         options={ this.fieldOptions(relationships, resourceField.field) }
-                        value={ resourceField.field.value }
+                        value={ this.state.newResource[resourceField.field.attribute] }
                       />
                     </div>
                   </div>

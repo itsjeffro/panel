@@ -14,7 +14,7 @@ const FormField = (props) => {
         className={ 'form-control' + (hasError ? ' is-invalid' : '') }
         type="password"
         name={ field.column }
-        onChange={ (e) => handleInputChange(e, field.column) }
+        onChange={ (e) => handleInputChange(e, field.attribute) }
         autoComplete={ 'new-' + field.column }
         placeholder={ field.name }
       />

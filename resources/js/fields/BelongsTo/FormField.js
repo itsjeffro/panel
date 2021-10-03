@@ -20,7 +20,7 @@ const FormField = (props) => {
         className={ `form-control ${hasErrorClass}` }
         name={ field.column }
         value={ selected }
-        onChange={ (e) => handleInputChange(e, field.relation.column) }
+        onChange={ (e) => handleInputChange(e, field.attribute) }
       >
         <option value="">Choose { field.name }</option>
         { options.map((option) => (
