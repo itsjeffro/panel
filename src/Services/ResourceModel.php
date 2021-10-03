@@ -98,13 +98,13 @@ class ResourceModel
      *
      * @throws Exception
      */
-    public function getGroupedFields($model): array
+    public function getGroupedFields($model, ?string $visibility = null): array
     {
         $resource = $this->getResourceClass();
 
-        $fields =  collect($resource->fields())->filter(function ($field) {
+        $fields =  collect($resource->fields())->filter(function ($field) use ($visibility) {
             return $field instanceof Block ||
-                ($field instanceof Field && $field->hasVisibility(Field::SHOW_ON_DETAIL));
+                ($field instanceof Field && $field->hasVisibility($visibility));
         });
 
         $groups = [
@@ -122,7 +122,7 @@ class ResourceModel
                     $groups[$groupKey]['name'] = $field->getName();
                 }
 
-                $blockFields = $this->filterFieldsByVisibility(Field::SHOW_ON_DETAIL, $field->fields());
+                $blockFields = $this->filterFieldsByVisibility($visibility, $field->fields());
 
                 $groups[$groupKey]['resourceFields'] = $blockFields->map(function ($blockField) use ($model) {
                     return $this->prepareField($model, $blockField);
@@ -225,8 +225,8 @@ class ResourceModel
             $relationshipResource = new $field->resourceNamespace;
             $resourceTitle = $relationshipResource->title;
 
-            $value = $model->{$fieldColumn}->{$resourceTitle};
-            $resourceId = $model->{$fieldColumn}->getKey();
+            $value = optional($model->{$fieldColumn})->{$resourceTitle};
+            $resourceId = optional($model->{$fieldColumn})->getKey();
             $resourceName = $relationshipResource->slug();
         }
 

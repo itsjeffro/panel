@@ -69,7 +69,7 @@ class ResourceHandler
      *
      * @throws Exception
      */
-    public function show(string $id, string $visibility): array
+    public function show(string $id): array
     {
         $resource = $this->resourceModel->getResourceClass();
 
@@ -82,7 +82,8 @@ class ResourceHandler
             ->find($id);
 
         return [
-            'groups' => $this->resourceModel->getGroupedFields($model),
+            'groups' => $this->resourceModel
+                ->getGroupedFields($model, Field::SHOW_ON_DETAIL),
         ];
     }
 
