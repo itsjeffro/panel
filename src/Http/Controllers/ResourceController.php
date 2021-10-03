@@ -50,9 +50,19 @@ class ResourceController extends Controller
     {
         try {
             $resourceModel = new ResourceModel($resourceName);
-            $handler = new ResourceHandler($resourceModel);
+            $resource = $resourceModel->getResourceClass();
 
-            return response()->json($handler->show($id, Field::SHOW_ON_UPDATE));
+            $with = $resourceModel
+                ->getWith()
+                ->toArray();
+
+            $model = $resource->resolveModel()
+                ->with($with)
+                ->find($id);
+
+            return response()->json([
+                'groups' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_UPDATE),
+            ]);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
         }
