@@ -27,7 +27,7 @@ class ResourceFieldController extends Controller
                 'singular' => $resource->modelName(),
                 'plural' => $resource->modelPluralName(),
             ],
-            'groups' => $resourceModel->getGroupedFields($model),
+            'groups' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_CREATE),
         ]);
     }
 }
