@@ -10,7 +10,7 @@ class ResourceCreatePage extends React.Component {
       errors: {},
     },
     isCreated: false,
-    newResource: {},
+    formData: {},
     newResourceId: null,
     resource: null,
     relationships: {},
@@ -37,31 +37,41 @@ class ResourceCreatePage extends React.Component {
    * Update the request data from input, textarea, select changes.
    *
    * @param event
-   * @param {string} column
+   * @param {string} attribute
    */
-  onInputChange = (event, column) => {
-    const name = column;
+  onInputChange = (event, attribute) => {
     const value = event.target.value;
 
-    this.setState(prevState => {
-      let newResource = {
-        ...prevState.newResource,
-        [name]: value
+    this.setState((prevState) => {
+      return {
+        formData: {
+          ...prevState.formData,
+          [attribute]: value
+        }
       };
-
-      return {newResource: newResource};
     });
+  }
+
+  onFormDataFill = (attribute, value) => {
+    this.setState((prevState) => {
+      return {
+        formData: {
+          ...prevState.formData,
+          [attribute]: value,
+        }
+      }
+    })
   }
 
   /**
    * Process resource create request.
    */
   onHandleClick = () => {
-    const {params} = this.props.match;
-    const {newResource} = this.state;
+    const { params } = this.props.match;
+    const { formData } = this.state;
 
     axios
-      .post('/panel/api/resources/' + params.resource, newResource)
+      .post('/panel/api/resources/' + params.resource, formData)
       .then(response => {
         this.setState({
           error: {
@@ -88,12 +98,11 @@ class ResourceCreatePage extends React.Component {
   /**
    * Return field options.
    *
-   * @param {object} relationships
-   * @param {object} field
+   * @param {object} resourceField
    * @returns {*[]}
    */
-  fieldOptions(relationships, field) {
-    if (field.isRelationshipField && Object.keys(relationships || {}).length) {
+  fieldOptions(resourceField) {
+    if (resourceField.component === 'BelongsTo') {
       const modelTitle = field.relation.title;
 
       let relationship = relationships[field.relation.type][field.relation.table]
@@ -128,37 +137,6 @@ class ResourceCreatePage extends React.Component {
     return resourceFields;
   }
 
-  /**
-   * Load any relationships that this resource might have.
-   *
-   * @param {any[]} fields
-   * @returns void
-   */
-  getRelationshipsFromFields = (fields) => {
-    const relationshipFields = fields.filter((field) => field.isRelationshipField);
-
-    relationshipFields.map((relationshipFields) => {
-      const relation = relationshipFields.relation;
-
-      axios
-        .get(`/panel/api/resources/${relation.table}`)
-        .then((response) => {
-          this.setState((prevState) => {
-            return {
-              ...prevState.relationships,
-              relationships: {
-                [relation.type]: {
-                  [relation.table]: response.data
-                }
-              }
-            }
-          })
-        }, (error) => {
-          console.log(error);
-        });
-    })
-  }
-
   render() {
     const {
       match: {
@@ -168,10 +146,10 @@ class ResourceCreatePage extends React.Component {
 
     const {
       error,
+      formData,
       isCreated,
       newResourceId,
-      resource,
-      relationships
+      resource
     } = this.state;
 
     if (isCreated) {
@@ -211,9 +189,10 @@ class ResourceCreatePage extends React.Component {
                         errors={ error.errors }
                         field={ resourceField.field }
                         handleInputChange={ this.onInputChange }
+                        handleFormDataFill={ this.onFormDataFill }
                         resource={ resource }
-                        options={ this.fieldOptions(relationships, resourceField.field) }
-                        value={ this.state.newResource[resourceField.field.attribute] }
+                        resourceName={ resourceField.resourceName }
+                        value={ formData[resourceField.field.attribute] }
                       />
                     </div>
                   </div>

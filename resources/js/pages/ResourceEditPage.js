@@ -6,12 +6,12 @@ import FormFieldComponent from "../fields/FormFieldComponent";
 class ResourceEditPage extends React.Component {
   state = {
     resource: null,
+    formData: {},
     error: {
       message: '',
       errors: {},
     },
     isUpdated: false,
-    relationships: {},
   };
 
   componentWillMount() {
@@ -34,26 +34,31 @@ class ResourceEditPage extends React.Component {
   /**
    * Update the request data from input, textarea, select changes.
    *
-   * @param event
-   * @param {string} column
+   * @param {object} event
+   * @param {string} attribute
    */
-  onInputChange = (event, column) => {
-    const name = column;
+  onInputChange = (event, attribute) => {
     const value = event.target.value;
 
-    console.log(name, value);
-
-    this.setState(prevState => {
-      let resource = {
-        ...prevState.resource,
-        model_data: {
-          ...prevState.resource.model_data,
-          [name]: value
+    this.setState((prevState) => {
+      return {
+        formData: {
+          ...prevState.formData,
+          [attribute]: value
         }
       };
-
-      return {resource: resource};
     });
+  }
+
+  onFormDataFill = (attribute, value) => {
+    this.setState((prevState) => {
+      return {
+        formData: {
+          ...prevState.formData,
+          [attribute]: value,
+        }
+      }
+    })
   }
 
   /**
@@ -90,28 +95,6 @@ class ResourceEditPage extends React.Component {
   }
 
   /**
-   * Return field options.
-   *
-   * @param {object} relationships
-   * @param {object} field
-   * @returns {*[]}
-   */
-  fieldOptions = (relationships, field) => {
-    if (field.isRelationshipField && Object.keys(relationships || {}).length) {
-      const modelTitle = field.relation.title;
-
-      let relationship = relationships[field.relation.type][field.relation.table]
-
-      return relationship.model_data.data.map((option) => ({
-        value: option.id,
-        label: option[modelTitle],
-      }))
-    }
-
-    return [];
-  }
-
-  /**
    * Return fields.
    *
    * @returns {any[]}
@@ -130,43 +113,12 @@ class ResourceEditPage extends React.Component {
     return resourceFields;
   }
 
-  /**
-   * Load any relationships that this resource might have.
-   *
-   * @param {any[]} fields
-   * @returns void
-   */
-  getRelationshipsFromFields = (fields) => {
-    const relationshipFields = fields.filter((field) => field.isRelationshipField);
-
-    relationshipFields.map((relationshipFields) => {
-      const relation = relationshipFields.relation;
-
-      axios
-        .get(`/panel/api/resources/${relation.table}`)
-        .then((response) => {
-          this.setState((prevState) => {
-            return {
-              ...prevState.relationships,
-              relationships: {
-                [relation.type]: {
-                  [relation.table]: response.data
-                }
-              }
-            }
-          })
-        }, (error) => {
-          console.log(error);
-        });
-    })
-  }
-
   render() {
     const {
       error,
       isUpdated,
       resource,
-      relationships,
+      formData,
     } = this.state;
 
     const {
@@ -213,9 +165,10 @@ class ResourceEditPage extends React.Component {
                           errors={ error.errors }
                           field={ resourceField.field }
                           handleInputChange={ this.onInputChange }
+                          handleFormDataFill={ this.onFormDataFill }
                           resource={ resource }
-                          options={ this.fieldOptions(relationships, resourceField.field) }
-                          value={ resourceField.field.value }
+                          resourceName={ resourceField.resourceName }
+                          value={ formData[resourceField.field.attribute] }
                         />
                       </div>
                     </div>
