@@ -2,7 +2,6 @@ import React from 'react';
 
 const FormField = (props) => {
   const {
-    column,
     field,
     hasError,
     messageError,

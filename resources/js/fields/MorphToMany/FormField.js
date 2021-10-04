@@ -31,7 +31,6 @@ class FormField extends React.Component {
 
   render() {
     const {
-      column,
       field,
       hasError,
       messageError,
@@ -46,7 +45,7 @@ class FormField extends React.Component {
       <span>
         <select
           className={ `form-control ${hasErrorClass}` }
-          name={ column }
+          name={ field.name }
           value={ selected }
           onChange={ (event) => handleInputChange(event, field.attribute) }
         >

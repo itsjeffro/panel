@@ -1,27 +1,35 @@
 import React from 'react';
 
-const FormField = (props) => {
-  const {
-    field,
-    hasError,
-    messageError,
-    handleInputChange,
-    value,
-  } = props;
+class FormField extends React.Component {
+  componentDidMount() {
+    const { handleFormDataFill, resourceName, field } = this.props;
 
-  return (
-    <span>
-      <textarea
-        className={'form-control' + (hasError ? ' is-invalid' : '')}
-        name={ field.column }
-        onChange={(e) => handleInputChange(e, field.column)}
-        placeholder={field.name}
-        defaultValue={value}
-      />
+    handleFormDataFill(field.attribute, field.value);
+  }
 
-      {hasError ? <div className="invalid-feedback">{messageError}</div> : ''}
-    </span>
-  )
-};
+  render() {
+    const {
+      field,
+      hasError,
+      messageError,
+      handleInputChange,
+      value,
+    } = this.props;
+
+    return (
+      <span>
+        <textarea
+          className={ 'form-control' + (hasError ? ' is-invalid' : '') }
+          name={ field.attribute }
+          onChange={(event) => handleInputChange(event, field.attribute)}
+          placeholder={ field.name }
+          defaultValue={ value }
+        />
+
+        { hasError ? <div className="invalid-feedback">{ messageError }</div> : '' }
+      </span>
+    )
+  }
+}
 
 export default FormField;
