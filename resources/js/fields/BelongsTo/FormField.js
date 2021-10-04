@@ -7,7 +7,9 @@ class FormField extends React.Component {
   }
 
   componentDidMount() {
-    const { resourceName } = this.props;
+    const { handleFormDataFill, resourceName, field } = this.props;
+
+    handleFormDataFill(field.attribute, field.value);
 
     this.loadOptions(resourceName);
   }
