@@ -217,15 +217,17 @@ class ResourceModel
             $items = collect($model->{$fieldColumn});
 
             $value = $items->map(function ($item) use ($resourceTitle) {
-                return $item->{$resourceTitle};
+                return $item->getKey();
             });
+
+            $resourceName = $relationshipResource->slug();
         }
 
         if ($field instanceof BelongsTo) {
             $relationshipResource = new $field->resourceNamespace;
             $resourceTitle = $relationshipResource->title;
 
-            $value = optional($model->{$fieldColumn})->{$resourceTitle};
+            $value = optional($model->{$fieldColumn})->getKey();
             $resourceId = optional($model->{$fieldColumn})->getKey();
             $resourceName = $relationshipResource->slug();
         }
