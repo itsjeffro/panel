@@ -1,37 +1,65 @@
 import React from 'react';
+import axios from "axios";
 
-const FormField = (props) => {
-  const {
-    column,
-    field,
-    hasError,
-    messageError,
-    handleInputChange,
-    value,
-    options,
-  } = props;
+class FormField extends React.Component {
+  state = {
+    options: []
+  }
 
-  const hasErrorClass = hasError ? ' is-invalid' : '';
-  const selected = value || '';
+  componentDidMount() {
+    const { handleFormDataFill, resourceName, field } = this.props;
 
-  return (
-    <span>
-      <select
-        className={ `form-control ${hasErrorClass}` }
-        name={ column }
-        value={ selected }
-        onChange={ (e) => handleInputChange(e, field.attribute) }
-        multiple={ true }
-      >
-        <option value="">Choose { field.name }</option>
-        { options.map((option) => (
-          <option key={ option.value } value={ option.value }>{ option.label }</option>
-        )) }
-      </select>
+    handleFormDataFill(field.attribute, field.value);
 
-      { hasError ? <div className="invalid-feedback">{ messageError }</div> : '' }
-    </span>
-  )
-};
+    this.loadOptions(resourceName);
+  }
+
+  loadOptions(resourceName) {
+    axios
+      .get(`/panel/api/resources/${resourceName}`)
+      .then((response) => {
+        const items = response.data.model_data.data.map((item) => ({
+          value: item.resourceId,
+          label: item.resourceId,
+        }));
+
+        this.setState({ options: items })
+      }, (error) => {
+        console.log(error);
+      });
+  }
+
+  render() {
+    const {
+      column,
+      field,
+      hasError,
+      messageError,
+      handleInputChange,
+      value,
+    } = this.props;
+
+    const hasErrorClass = hasError ? ' is-invalid' : '';
+    const selected = value || '';
+
+    return (
+      <span>
+        <select
+          className={ `form-control ${hasErrorClass}` }
+          name={ column }
+          value={ selected }
+          onChange={ (event) => handleInputChange(event, field.attribute) }
+        >
+          <option value="">Choose {field.name}</option>
+          { this.state.options.map((option) => (
+            <option key={ option.value } value={ option.value }>{ option.label }</option>
+          )) }
+        </select>
+
+        { hasError ? <div className="invalid-feedback">{messageError}</div> : '' }
+      </span>
+    )
+  }
+}
 
 export default FormField;
