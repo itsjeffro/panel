@@ -190,7 +190,7 @@ class ResourceCreatePage extends React.Component {
                         field={ resourceField.field }
                         handleInputChange={ this.onInputChange }
                         handleFormDataFill={ this.onFormDataFill }
-                        resource={ resource }
+                        resource={ resourceField.resource }
                         resourceName={ resourceField.resourceName }
                         value={ formData[resourceField.field.attribute] }
                       />
