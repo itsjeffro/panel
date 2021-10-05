@@ -1,7 +1,7 @@
 import React from 'react';
-import Drawer from "../components/Drawer";
+import Drawer from "../Drawer";
 
-const Layout = (props) => {
+const Index = (props) => {
   return (
     <div className="wrapper">
       <Drawer/>
@@ -16,4 +16,4 @@ const Layout = (props) => {
   )
 };
 
-export default Layout;
+export default Index;

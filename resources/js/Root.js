@@ -6,7 +6,7 @@ import ResourceIndexPage from './pages/ResourceIndexPage';
 import ResourceCreatePage from './pages/ResourceCreatePage';
 import ResourceEditPage from './pages/ResourceEditPage';
 import ResourceViewPage from './pages/ResourceViewPage';
-import Layout from "./containers/Layout";
+import Layout from "./components/Layout";
 
 class Root extends React.Component {
   render() {
