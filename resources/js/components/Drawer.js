@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from "react-router-dom";
+import { IconHome, IconTriangleSquareCircle } from '@tabler/icons';
 
 const Drawer = (props) => {
   const resources = window.panel.resources;
@@ -9,10 +10,10 @@ const Drawer = (props) => {
       <h2>Panel</h2>
       <ul>
         <li>
-          <Link to="/"><span className="typcn typcn-home-outline" />Dashboard</Link>
+          <Link to="/"><IconHome height={19} width={19} /> Dashboard</Link>
         </li>
         <li>
-          <a href="#"><span className="typcn typcn-th-large-outline" />Resources</a>
+          <a href="#"><IconTriangleSquareCircle height={19} width={19} /> Resources</a>
           <ul>
             {resources.map(resource =>
               <li key={resource.slug}>

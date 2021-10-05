@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import axios from 'axios';
 import DetailComponent from "../fields/DetailComponent";
 import ResourceTable from "../components/ResourceTable";
+import { IconEdit } from '@tabler/icons';
 
 class ResourceViewPage extends React.Component {
   state = {
@@ -85,9 +86,9 @@ class ResourceViewPage extends React.Component {
                   <div className="col-md-6">
                     {index === 0 ? <div className="form-group text-md-right">
                       <Link
-                        className="btn btn-primary btn-sm"
+                        className="btn btn-primary btn-sm btn-icon"
                         to={'/resources/' + params.resource + '/' + params.id + '/edit'}
-                      >Edit</Link>
+                      ><IconEdit /> Edit</Link>
                     </div> : ''}
                   </div>
                 </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import IndexComponent from "../../fields/IndexComponent";
 import {Link} from "react-router-dom";
 import Pagination from "../Pagination";
-import Input from "../Input";
+import { IconEye, IconEdit, IconTrash, IconPlus } from '@tabler/icons';
 import axios from "axios";
 
 class ResourceTable extends React.Component {
@@ -140,9 +140,9 @@ class ResourceTable extends React.Component {
             </div>
 
             <Link
-              className="btn btn-primary"
+              className="btn btn-primary btn-icon"
               to={'/resources/' + resourceUri + '/create'}
-            >{'Create ' + (resource ? resource.name.singular : '')}</Link>
+            ><IconPlus /> { 'Create ' + (resource ? resource.name.singular : '') }</Link>
           </div>
         </div>
 
@@ -183,14 +183,18 @@ class ResourceTable extends React.Component {
                 </td>
               )}
               <td className="text-right">
-                <Link className="btn btn-link" to={'/resources/' + resourceUri + '/' + model.resourceId}><span
-                  className="typcn typcn-eye-outline"/></Link>{' '}
-                <Link className="btn btn-link" to={'/resources/' + resourceUri + '/' + model.resourceId + '/edit'}><span
-                  className="typcn typcn-edit"/></Link>{' '}
+                <Link
+                  className="btn btn-link"
+                  to={'/resources/' + resourceUri + '/' + model.resourceId}
+                ><IconEye/></Link>{' '}
+                <Link
+                  className="btn btn-link"
+                  to={'/resources/' + resourceUri + '/' + model.resourceId + '/edit'}
+                ><IconEdit/></Link>{' '}
                 <button
                   className="btn btn-link"
                   onClick={(e) => this.onDeleteClick(e, resourceUri, model.resourceId)}
-                ><span className="typcn typcn-trash"/></button>
+                ><IconTrash/></button>
               </td>
             </tr>
           )}
