@@ -4,7 +4,6 @@
   min-width: 250px;
   width: 250px;
   &>ul>li>a {
-    color: #666;
     padding-top: 9px;
     padding-bottom: 9px;
   }
@@ -29,8 +28,12 @@
     padding: 0;
   }
   a {
+    color: #666;
     display: block;
     padding: 7px 15px;
+    &:hover {
+      color: #333;
+    }
   }
   .typcn {
     vertical-align: text-bottom;
