@@ -119,7 +119,8 @@ class ResourceTable extends React.Component {
 
         <div className="form-group row">
           <div className="col-12 col-lg-3">
-            <Input
+            <input
+              className="form-control form-control__search form-control--drop-shadow"
               type="text"
               placeholder="Search"
               onChange={this.onSearchChange}
