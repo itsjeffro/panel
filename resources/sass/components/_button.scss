@@ -3,6 +3,14 @@
   font-weight: 300;
   padding: 0.2rem 0.75rem;
 
+  &-link {
+    color: $font-color-primary;
+
+    &:hover {
+      color: $font-color-grey;
+    }
+  }
+
   &-primary {
     background-color: $bg-primary;
     border-color: $bg-primary;
