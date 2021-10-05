@@ -61,7 +61,7 @@ class ResourceModel
     /**
      * Return resource's full class name.
      */
-    public function getResourceClass(): ResourceInterface
+    public function resolveResource(): ResourceInterface
     {
         return (new $this->resourceClass);
     }
@@ -71,7 +71,7 @@ class ResourceModel
      */
     public function getFields(string $visibility = ''): Collection
     {
-        $resource = $this->getResourceClass();
+        $resource = $this->resolveResource();
         $fields = new Collection([]);
 
         foreach ($resource->fields() as $resourceField) {
@@ -100,7 +100,7 @@ class ResourceModel
      */
     public function getGroupedFields($model, ?string $visibility = null): array
     {
-        $resource = $this->getResourceClass();
+        $resource = $this->resolveResource();
 
         $fields =  collect($resource->fields())->filter(function ($field) use ($visibility) {
             return $field instanceof Block ||
@@ -170,7 +170,7 @@ class ResourceModel
      */
     public function getResourceFields($model): Collection
     {
-        $resource = $this->getResourceClass();
+        $resource = $this->resolveResource();
         $resourceFields = new Collection([]);
 
         foreach ($resource->fields() as $resourceField) {

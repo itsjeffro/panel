@@ -27,7 +27,7 @@ class ResourceHandler
      */
     public function index(Request $request): array
     {
-        $resource = $this->resourceModel->getResourceClass();
+        $resource = $this->resourceModel->resolveResource();
         $model = $resource->resolveModel();
         $with = $this->resourceModel->getWith()->toArray();
 
@@ -74,7 +74,7 @@ class ResourceHandler
     public function store(Request $request)
     {
         $resourceValidator = new ResourceValidator();
-        $resource = $this->resourceModel->getResourceClass();
+        $resource = $this->resourceModel->resolveResource();
         $model = $resource->resolveModel();
 
         $fields = $this->fields(Field::SHOW_ON_CREATE)->toArray();
@@ -109,7 +109,7 @@ class ResourceHandler
     public function update(Request $request, string $id)
     {
         $resourceValidator = new ResourceValidator();
-        $resource = $this->resourceModel->getResourceClass();
+        $resource = $this->resourceModel->resolveResource();
         $model = $resource->resolveModel()->find($id);
 
         if (!$model) {

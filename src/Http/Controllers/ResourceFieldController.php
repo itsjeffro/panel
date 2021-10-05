@@ -19,7 +19,7 @@ class ResourceFieldController extends Controller
     public function show(string $resourceName)
     {
         $resourceModel = new ResourceModel($resourceName);
-        $resource = $resourceModel->getResourceClass();
+        $resource = $resourceModel->resolveResource();
         $model = $resource->resolveModel();
 
         return response()->json([

@@ -35,7 +35,7 @@ class ResourceController extends Controller
     {
         try {
             $resourceModel = new ResourceModel($resourceName);
-            $resource = $resourceModel->getResourceClass();
+            $resource = $resourceModel->resolveResource();
 
             $with = $resourceModel
                 ->getWith()
@@ -60,7 +60,7 @@ class ResourceController extends Controller
     {
         try {
             $resourceModel = new ResourceModel($resourceName);
-            $resource = $resourceModel->getResourceClass();
+            $resource = $resourceModel->resolveResource();
 
             $with = $resourceModel
                 ->getWith()
@@ -129,7 +129,7 @@ class ResourceController extends Controller
     {
         try {
             $resourceModel = new ResourceModel($resourceName);
-            $resource = $resourceModel->getResourceClass();
+            $resource = $resourceModel->resolveResource();
             $model = $resource->resolveModel()->find($id);
 
             if (!$model) {
