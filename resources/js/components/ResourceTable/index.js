@@ -173,8 +173,11 @@ class ResourceTable extends React.Component {
               {model.resourceFields.map((resourceField) =>
                 <td key={ 'tr-' + model.resourceId + '-td-' + resourceField.field.attribute }>
                   <IndexComponent
-                    model={ model }
+                    component={ resourceField.component }
                     field={ resourceField.field }
+                    resource={ resourceField.resource }
+                    resourceId={ resourceField.resourceId }
+                    resourceName={ resourceField.resourceName }
                   />
                 </td>
               )}
