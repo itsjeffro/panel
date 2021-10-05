@@ -66,29 +66,6 @@ class ResourceHandler
     }
 
     /**
-     * Returns a single resource's data response.
-     *
-     * @throws Exception
-     */
-    public function show(string $id): array
-    {
-        $resource = $this->resourceModel->getResourceClass();
-
-        $with = $this->resourceModel
-            ->getWith()
-            ->toArray();
-
-        $model = $resource->resolveModel()
-            ->with($with)
-            ->find($id);
-
-        return [
-            'groups' => $this->resourceModel
-                ->getGroupedFields($model, Field::SHOW_ON_DETAIL),
-        ];
-    }
-
-    /**
      * Create resource.
      *
      * @return mixed
@@ -159,24 +136,6 @@ class ResourceHandler
         $model->save();
 
         return $model;
-    }
-
-    /**
-     * Delete resource.
-     *
-     * @throws ModelNotFoundException
-     * @throws Exception
-     */
-    public function delete(string $id): void
-    {
-        $resource = $this->resourceModel->getResourceClass();
-        $model = $resource->resolveModel()->find($id);
-
-        if (!$model) {
-            throw new ModelNotFoundException();
-        }
-
-        $model->delete();
     }
 
     /**

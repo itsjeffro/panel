@@ -35,9 +35,19 @@ class ResourceController extends Controller
     {
         try {
             $resourceModel = new ResourceModel($resourceName);
-            $handler = new ResourceHandler($resourceModel);
+            $resource = $resourceModel->getResourceClass();
 
-            return response()->json($handler->show($id, Field::SHOW_ON_DETAIL));
+            $with = $resourceModel
+                ->getWith()
+                ->toArray();
+
+            $model = $resource->resolveModel()
+                ->with($with)
+                ->find($id);
+
+            return response()->json([
+                'groups' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_DETAIL)
+            ]);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
         }
@@ -119,8 +129,14 @@ class ResourceController extends Controller
     {
         try {
             $resourceModel = new ResourceModel($resourceName);
-            $handler = new ResourceHandler($resourceModel);
-            $handler->delete($id);
+            $resource = $resourceModel->getResourceClass();
+            $model = $resource->resolveModel()->find($id);
+
+            if (!$model) {
+                throw new ModelNotFoundException();
+            }
+
+            $model->delete();
 
             return response()->json(null, 204);
         } catch (ModelNotFoundException $e) {
