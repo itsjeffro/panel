@@ -6,7 +6,10 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Itsjeffro\Panel\Fields\BelongsTo;
 use Itsjeffro\Panel\Fields\Field;
+use Itsjeffro\Panel\Fields\HasMany;
+use Itsjeffro\Panel\Fields\MorphToMany;
 
 class ResourceHandler
 {
@@ -126,7 +129,15 @@ class ResourceHandler
         foreach ($fields as $field) {
             $column = $field->column;
 
-            if ($field->isRelationshipField) {
+            if ($field instanceof MorphToMany) {
+                $column = $field->column;
+            }
+
+            if ($field instanceof HasMany) {
+                $column = $model->{$column};
+            }
+
+            if ($field instanceof BelongsTo) {
                 $column = $model->{$column}()->getForeignKeyName();
             }
 

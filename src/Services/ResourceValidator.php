@@ -2,6 +2,10 @@
 
 namespace Itsjeffro\Panel\Services;
 
+use Itsjeffro\Panel\Fields\BelongsTo;
+use Itsjeffro\Panel\Fields\HasMany;
+use Itsjeffro\Panel\Fields\MorphToMany;
+
 class ResourceValidator
 {
     /**
@@ -14,7 +18,15 @@ class ResourceValidator
         foreach ($fields as $field) {
             $column = $field->column;
 
-            if ($field->isRelationshipField) {
+            if ($field instanceof MorphToMany) {
+                $column = $model->{$column}();
+            }
+
+            if ($field instanceof HasMany) {
+                $column = $model->{$column}();
+            }
+
+            if ($field instanceof BelongsTo) {
                 $column = $model->{$column}()->getForeignKeyName();
             }
 
