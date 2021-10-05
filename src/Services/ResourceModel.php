@@ -206,6 +206,7 @@ class ResourceModel
     protected function prepareField($model, Field $field): array
     {
         $fieldColumn = $field->column;
+        $fieldAttribute = $fieldColumn;
 
         $value = $model->{$fieldColumn};
         $resource = $model->getTable();
@@ -215,9 +216,9 @@ class ResourceModel
         if ($field instanceof MorphToMany) {
             $relationshipResource = new $field->resourceNamespace;
             $resourceTitle = $relationshipResource->title;
-            $items = collect($model->{$fieldColumn});
 
-            $value = $items->map(function ($item) use ($resourceTitle) {
+            $items = collect($model->{$fieldColumn});
+            $value = $items->map(function ($item) {
                 return $item->getKey();
             });
             $resource = $relationshipResource->slug();
@@ -229,6 +230,7 @@ class ResourceModel
 
         if ($field instanceof BelongsTo) {
             $relationshipResource = new $field->resourceNamespace;
+            $fieldAttribute = $model->{$fieldColumn}()->getForeignKeyName();
 
             $value = optional($model->{$fieldColumn})->getKey();
             $resource = $relationshipResource->slug();
@@ -248,7 +250,7 @@ class ResourceModel
         return [
             'component' => $field->component,
             'field' => [
-                'attribute' => $field->column,
+                'attribute' => $fieldAttribute,
                 'name' => $field->name,
                 'value' => $value,
             ],
