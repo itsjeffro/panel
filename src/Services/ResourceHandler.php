@@ -51,6 +51,7 @@ class ResourceHandler
         $indexResults->getCollection()->transform(function ($item) use ($resource) {
             return [
                 'resourceId' => $item->getKey(),
+                'resourceName' => $item->{$resource->title},
                 'resourceFields' => $this->resourceModel->getResourceIndexFields($item),
             ];
         });

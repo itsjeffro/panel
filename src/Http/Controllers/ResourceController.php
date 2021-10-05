@@ -61,6 +61,10 @@ class ResourceController extends Controller
                 ->find($id);
 
             return response()->json([
+                'name' => [
+                    'singular' => $resource->modelName(),
+                    'plural' => $resource->modelPluralName(),
+                ],
                 'groups' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_UPDATE),
             ]);
         } catch (\Exception $e) {

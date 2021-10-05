@@ -208,36 +208,40 @@ class ResourceModel
         $fieldColumn = $field->column;
 
         $value = $model->{$fieldColumn};
+        $resource = $model->getTable();
         $resourceId = $model->getKey();
-        $resourceName = $model->getTable();
+        $resourceName = $value;
 
         if ($field instanceof MorphToMany) {
             $relationshipResource = new $field->resourceNamespace;
             $resourceTitle = $relationshipResource->title;
             $items = collect($model->{$fieldColumn});
 
-            $value = $items->map(function ($item) use ($resourceTitle) {
+            $resource = $relationshipResource->slug();
+            $resourceId = $items->map(function ($item) use ($resourceTitle) {
                 return $item->getKey();
             });
-
-            $resourceName = $relationshipResource->slug();
+            $resourceName = $items->map(function ($item) use ($resourceTitle) {
+                return $item->{$resourceTitle};
+            });
         }
 
         if ($field instanceof BelongsTo) {
             $relationshipResource = new $field->resourceNamespace;
-            $resourceTitle = $relationshipResource->title;
 
             $value = optional($model->{$fieldColumn})->getKey();
+            $resource = $relationshipResource->slug();
             $resourceId = optional($model->{$fieldColumn})->getKey();
-            $resourceName = $relationshipResource->slug();
+            $resourceName = optional($model->{$fieldColumn})->{$relationshipResource->title};
         }
 
         if ($field instanceof HasMany) {
             $relationshipResource = new $field->resourceNamespace;
 
             $value = null;
+            $resource = $relationshipResource->slug();
             $resourceId = null;
-            $resourceName = $relationshipResource->slug();
+            $resourceName = null;
         }
 
         return [
@@ -247,6 +251,7 @@ class ResourceModel
                 'name' => $field->name,
                 'value' => $value,
             ],
+            'resource' => $resource,
             'resourceId' => $resourceId,
             'resourceName' => $resourceName,
         ];
