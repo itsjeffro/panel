@@ -286,6 +286,9 @@ abstract class Field
         return $this;
     }
 
+    /**
+     * Determines field visibility.
+     */
     public function hasVisibility(string $visibility): bool
     {
         return in_array($visibility, $this->visibility);
