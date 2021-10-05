@@ -217,10 +217,11 @@ class ResourceModel
             $resourceTitle = $relationshipResource->title;
             $items = collect($model->{$fieldColumn});
 
-            $resource = $relationshipResource->slug();
-            $resourceId = $items->map(function ($item) use ($resourceTitle) {
+            $value = $items->map(function ($item) use ($resourceTitle) {
                 return $item->getKey();
             });
+            $resource = $relationshipResource->slug();
+            $resourceId = $value;
             $resourceName = $items->map(function ($item) use ($resourceTitle) {
                 return $item->{$resourceTitle};
             });
