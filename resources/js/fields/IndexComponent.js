@@ -4,6 +4,7 @@ import HasManyField from "./HasMany/IndexField";
 import MorphToManyField from "./MorphToMany/IndexField";
 import TextareaField from "./Textarea/IndexField";
 import TextField from "./Text/IndexField";
+import DateTimeField from "./DateTime/IndexField";
 
 const IndexComponent = (props) => {
   const components = {
@@ -11,6 +12,7 @@ const IndexComponent = (props) => {
     MorphToMany: MorphToManyField,
     Textarea: TextareaField,
     HasMany: HasManyField,
+    DateTime: DateTimeField,
   };
 
   const { component, field } = props;

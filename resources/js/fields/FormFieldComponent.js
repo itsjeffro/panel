@@ -4,6 +4,7 @@ import BelongsToField from './BelongsTo/FormField';
 import MorphToManyField from './MorphToMany/FormField';
 import TextareaField from './Textarea/FormField';
 import TextField from "./Text/FormField";
+import DateTimeField from "./DateTime/FormField";
 
 const FormFieldComponent = (props) => {
   const components = {
@@ -11,6 +12,7 @@ const FormFieldComponent = (props) => {
     BelongsTo: BelongsToField,
     MorphToMany: MorphToManyField,
     Textarea: TextareaField,
+    DateTime: DateTimeField,
   };
 
   const { component, errors, field } = props;
