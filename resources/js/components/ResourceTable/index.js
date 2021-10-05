@@ -1,16 +1,27 @@
 import React from 'react';
-import IndexComponent from "../../fields/IndexComponent";
-import {Link} from "react-router-dom";
-import Pagination from "../Pagination";
+import { Link } from "react-router-dom";
 import { IconEye, IconEdit, IconTrash, IconPlus } from '@tabler/icons';
 import axios from "axios";
+import CheckBox from "../../libs/CheckBox";
+import IndexComponent from "../../fields/IndexComponent";
+import Pagination from "../Pagination";
 
 class ResourceTable extends React.Component {
   state = {
+    checkedRows: [],
     isDropdownBulkShown: false,
     isLoading: true,
     searchTimeout: null,
-    search: ''
+    resource: {
+      name: {
+        singular: '',
+        plural: '',
+      },
+      model_data: {
+        data: []
+      }
+    },
+    search: '',
   }
 
   componentWillMount() {
@@ -107,9 +118,24 @@ class ResourceTable extends React.Component {
       });
   }
 
+  /**
+   * Handles checkbox click.
+   */
+  onCheckboxChange = (event, rowIndexStart, rowIndexEnd) => {
+    this.setState((prevState) => {
+      const checkbox = new CheckBox(prevState);
+
+      return {
+        checkedRows: checkbox.checkedRows(rowIndexStart, rowIndexEnd),
+      };
+    });
+  }
+
   render() {
-    const {resourceUri} = this.props;
-    const {isDropdownBulkShown, isLoading, resource} = this.state;
+    const { resourceUri } = this.props;
+    const { checkedRows, isDropdownBulkShown, isLoading, resource } = this.state;
+
+    let totalRows = resource.model_data.data.length;
 
     return (
       <>
@@ -150,7 +176,11 @@ class ResourceTable extends React.Component {
           <thead>
           <tr>
             <th width="1%">
-              <input type="checkbox"/>
+              <input
+                type="checkbox"
+                onChange={ (event) => this.onCheckboxChange(event, 0, totalRows) }
+                checked={ checkedRows.length > 0 }
+              />
             </th>
             {resource.model_data.data[0].resourceFields.map((resourceField) =>
               <th key={'th-' + resourceField.field.attribute}>
@@ -164,11 +194,16 @@ class ResourceTable extends React.Component {
           </thead>
 
           <tbody>
-          {(resource.model_data.data).map((model) =>
+          {(resource.model_data.data).map((model, index) =>
             <tr key={ 'tr-' + model.resourceId}>
               <td width="1%">
                 <div className="form-check form-check-inline">
-                  <input className="form-check-input" type="checkbox"/>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    onChange={ (event) => this.onCheckboxChange(event, index) }
+                    checked={ checkedRows.includes(index) }
+                  />
                 </div>
               </td>
               {model.resourceFields.map((resourceField) =>
