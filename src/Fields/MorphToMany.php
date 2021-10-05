@@ -2,6 +2,8 @@
 
 namespace Itsjeffro\Panel\Fields;
 
+use Illuminate\Http\Request;
+
 class MorphToMany extends Field
 {
     /**
@@ -23,4 +25,14 @@ class MorphToMany extends Field
       self::SHOW_ON_DETAIL,
       self::SHOW_ON_INDEX,
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function fillAttributeFromRequest(Request $request, $model, $field)
+    {
+        if ($request->exists($field)) {
+            $model->{$field}()->sync($request->input($field));
+        }
+    }
 }
