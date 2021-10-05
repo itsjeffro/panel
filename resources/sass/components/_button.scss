@@ -28,4 +28,16 @@
       box-shadow: 0 1px 3px rgba(0,0,0,.20);
     }
   }
+
+  &-icon {
+    padding: 0.2rem 0.75rem 0.2rem 0.15rem;
+  }
+}
+
+.btn-icon {
+  .icon {
+    height: 19px;
+    vertical-align: middle;
+    margin-top: -4px;
+  }
 }
