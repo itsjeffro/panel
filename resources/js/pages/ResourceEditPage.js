@@ -67,12 +67,12 @@ class ResourceEditPage extends React.Component {
   onHandleSubmit = (event) => {
     event.preventDefault();
 
-    const {params} = this.props.match;
-    const {resource} = this.state;
+    const { params } = this.props.match;
+    const { formData } = this.state;
 
     axios
-      .put('/panel/api/resources/' + params.resource + '/' + params.id, resource.model_data)
-      .then(response => {
+      .put('/panel/api/resources/' + params.resource + '/' + params.id, formData)
+      .then((response) => {
         this.setState({
           error: {
             message: '',
@@ -145,7 +145,7 @@ class ResourceEditPage extends React.Component {
       <div className="content">
         <div className="container">
           <div className="page-heading">
-            <h2>Edit</h2>
+            <h2>Edit { resource.name.singular }</h2>
           </div>
 
           { error.message.length ? <div className="alert alert-danger">{error.message}</div> : '' }
@@ -166,7 +166,7 @@ class ResourceEditPage extends React.Component {
                           field={ resourceField.field }
                           handleInputChange={ this.onInputChange }
                           handleFormDataFill={ this.onFormDataFill }
-                          resource={ resource }
+                          resource={ resourceField.resource }
                           resourceName={ resourceField.resourceName }
                           value={ formData[resourceField.field.attribute] }
                         />
