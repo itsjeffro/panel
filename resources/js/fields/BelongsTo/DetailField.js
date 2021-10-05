@@ -5,7 +5,7 @@ const DetailField = (props) => {
   const { resource, resourceName, resourceId, field } = props;
 
   return (
-    <span><Link to={ `/resources/${resourceName}/${resourceId}` }>{ field.value }</Link></span>
+    <span><Link to={ `/resources/${resource}/${resourceId}` }>{ resourceName }</Link></span>
   )
 }
 

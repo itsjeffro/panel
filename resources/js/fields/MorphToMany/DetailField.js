@@ -1,11 +1,11 @@
 import React from 'react';
 
 const DetailField = (props) => {
-  const { field } = props;
+  const { resource, resourceId, resourceName, field } = props;
 
   return (
     <span>
-      { (field.value || []).join(', ') }
+      { (resourceName || []).join(', ') }
     </span>
   )
 }

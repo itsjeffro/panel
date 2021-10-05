@@ -1,10 +1,11 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 const IndexField = (props) => {
-  const { field } = props;
+  const {resource, resourceName, resourceId, field} = props;
 
   return (
-    <span>{ field.value }</span>
+    <span><Link to={`/resources/${resource}/${resourceId}`}>{resourceName}</Link></span>
   )
 };
 

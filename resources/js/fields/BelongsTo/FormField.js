@@ -7,20 +7,20 @@ class FormField extends React.Component {
   }
 
   componentDidMount() {
-    const { handleFormDataFill, resourceName, field } = this.props;
+    const { handleFormDataFill, resource, resourceName, field } = this.props;
 
     handleFormDataFill(field.attribute, field.value);
 
-    this.loadOptions(resourceName);
+    this.loadOptions(resource);
   }
 
-  loadOptions(resourceName) {
+  loadOptions(resource) {
     axios
-      .get(`/panel/api/resources/${resourceName}`)
+      .get(`/panel/api/resources/${resource}`)
       .then((response) => {
         const items = response.data.model_data.data.map((item) => ({
           value: item.resourceId,
-          label: item.resourceId,
+          label: item.resourceName,
         }));
 
         this.setState({ options: items })

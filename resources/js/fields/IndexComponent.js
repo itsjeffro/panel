@@ -13,8 +13,8 @@ const IndexComponent = (props) => {
     HasMany: HasManyField,
   };
 
-  const { field } = props;
-  const ComponentName = components[field.component];
+  const { component, field } = props;
+  const ComponentName = components[component];
 
   if (typeof ComponentName == 'undefined') {
     return <TextField field={ field } />
