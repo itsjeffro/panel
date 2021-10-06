@@ -3,8 +3,14 @@
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
+    // Actions
+    Route::get('resources/{resource}/actions', 'ResourceActionController@index');
+    Route::post('resources/{resource}/actions/{action}', 'ResourceActionController@handle');
+
+    // Fields
     Route::get('resources/{resource}/fields', 'ResourceFieldController@show');
 
+    // Resources
     Route::get('resources/{resource}', 'ResourceController@index');
     Route::get('resources/{resource}/{id}', 'ResourceController@show');
     Route::get('resources/{resource}/{id}/edit', 'ResourceController@edit');

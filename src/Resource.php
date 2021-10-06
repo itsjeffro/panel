@@ -4,6 +4,7 @@ namespace Itsjeffro\Panel;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Itsjeffro\Panel\Contracts\ResourceInterface;
 
@@ -20,6 +21,14 @@ abstract class Resource implements ResourceInterface
      * Return resource's defined fields.
      */
     abstract public function fields(): array;
+
+    /**
+     * Get the actions available for the resource.
+     */
+    public function actions(Request $request): array
+    {
+        return [];
+    }
 
     /**
      * Returns resource's name.

@@ -4,6 +4,7 @@ namespace Itsjeffro\Panel;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Itsjeffro\Panel\Console\ActionCommand;
 use Itsjeffro\Panel\Console\ResourceCommand;
 
 class PanelServiceProvider extends ServiceProvider
@@ -95,6 +96,7 @@ class PanelServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 ResourceCommand::class,
+                ActionCommand::class,
             ]);
         }
     }

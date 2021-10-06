@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Itsjeffro\Panel\Fields\BelongsTo;
 use Itsjeffro\Panel\Fields\Field;
 use Itsjeffro\Panel\Fields\HasMany;
@@ -59,7 +60,18 @@ class ResourceHandler
             ];
         });
 
+        $actions = collect($resource->actions($request))->map(function ($action) {
+            $class = explode('\\', get_class($action));
+            $className = Str::kebab(end($class));
+
+            return [
+                'name' => str_replace('-', ' ', Str::title($className)),
+                'slug' => $className,
+            ];
+        });
+
         return [
+            'actions' => $actions,
             'name' => [
                 'singular' => $resource->modelName(),
                 'plural' => $resource->modelPluralName(),
