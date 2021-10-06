@@ -25,10 +25,16 @@ const DetailField = (props) => {
   let hours = date.getHours() % 12;
   let minutes = date.getMinutes();
   let meridiem = date.getHours() >= 12 ? 'PM' : 'AM';
+  let timezoneName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  const dateTime = [
+    day + ' ' + months[month] + ' ' + year,
+    hours + ':' + minutes + ' ' + meridiem
+  ];
 
   return (
     <span title={ field.value }>
-      { day + ' ' + months[month] + ' ' + year + ' - ' + hours + ':' + minutes + ' ' + meridiem }
+      { `${dateTime.join(' - ')} (${timezoneName})`  }
     </span>
   )
 };
