@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('api')->group(function () {
     // Actions
-    Route::get('resources/{resource}/actions', 'ResourceActionController@index');
     Route::post('resources/{resource}/actions/{action}', 'ResourceActionController@handle');
 
     // Fields
