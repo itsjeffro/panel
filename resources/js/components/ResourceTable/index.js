@@ -140,10 +140,12 @@ class ResourceTable extends React.Component {
 
     const { resourceUri } = this.props;
 
-    console.log(actionName, this.state.checkedRows)
+    const formData = {
+      'model_ids': this.state.checkedRows
+    }
 
     axios
-      .post(`/panel/api/resources/${resourceUri}/actions/${actionName}`)
+      .post(`/panel/api/resources/${resourceUri}/actions/${actionName}`, formData)
       .then((response) => {
         console.log(response.data)
 
