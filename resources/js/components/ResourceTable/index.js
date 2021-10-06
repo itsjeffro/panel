@@ -13,6 +13,7 @@ class ResourceTable extends React.Component {
     isLoading: true,
     searchTimeout: null,
     resource: {
+      actions: [],
       name: {
         singular: '',
         plural: '',
@@ -38,7 +39,7 @@ class ResourceTable extends React.Component {
   }
 
   /**
-   * @param page
+   * Load resources.
    */
   loadResources = (page) => {
     const {search} = this.state;
@@ -131,6 +132,25 @@ class ResourceTable extends React.Component {
     });
   }
 
+  /**
+   * Handles action click.
+   */
+  onActionClick = (event, actionName) => {
+    event.preventDefault();
+
+    const { resourceUri } = this.props;
+
+    console.log(actionName, this.state.checkedRows)
+
+    axios
+      .post(`/panel/api/resources/${resourceUri}/actions/${actionName}`)
+      .then((response) => {
+        console.log(response.data)
+
+        this.setState({ isDropdownBulkShown: false })
+      });
+  }
+
   render() {
     const { resourceUri } = this.props;
     const { checkedRows, isDropdownBulkShown, isLoading, resource } = this.state;
@@ -153,17 +173,26 @@ class ResourceTable extends React.Component {
             />
           </div>
           <div className="col-12 col-lg-9 text-right">
-            <div className="dropdown d-inline-block mr-2">
+            { resource.actions.length === 0
+              ? ''
+              : <div className="dropdown d-inline-block mr-2">
               <button
                 className="btn btn-secondary dropdown-toggle"
-                onClick={this.onDropdownBulkClick}
+                onClick={ this.onDropdownBulkClick }
               >Actions
               </button>
 
               <div className={'dropdown-menu' + (isDropdownBulkShown ? ' show' : '')}>
-                <a className="dropdown-item" href="#">Bulk Delete</a>
+                { resource.actions.map((action) => (
+                  <a
+                    key={ action.slug }
+                    className="dropdown-item"
+                    href="#"
+                    onClick={ (event) => this.onActionClick(event, action.slug) }
+                  >{ action.name }</a>
+                ))}
               </div>
-            </div>
+            </div> }
 
             <Link
               className="btn btn-primary btn-icon"
@@ -228,7 +257,7 @@ class ResourceTable extends React.Component {
                 ><IconEdit/></Link>{' '}
                 <button
                   className="btn btn-link"
-                  onClick={(e) => this.onDeleteClick(e, resourceUri, model.resourceId)}
+                  onClick={(event) => this.onDeleteClick(event, resourceUri, model.resourceId)}
                 ><IconTrash/></button>
               </td>
             </tr>
