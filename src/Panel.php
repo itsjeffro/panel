@@ -72,6 +72,7 @@ class Panel
     public static function scriptVariables(): array
     {
         return [
+            'auth' => auth()->user(),
             'prefix' => config('panel.prefix'),
             'resources' => self::getResources(),
         ];
