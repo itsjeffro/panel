@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Itsjeffro\Panel\Fields\Field;
+use Itsjeffro\Panel\Panel;
 use Itsjeffro\Panel\Services\ResourceHandler;
 use Itsjeffro\Panel\Services\ResourceModel;
 
@@ -21,9 +22,8 @@ class ResourceController extends Controller
      */
     public function index(Request $request, string $resourceName): JsonResponse
     {
-        $resourceModel = new ResourceModel($resourceName);
-        $handler = new ResourceHandler($resourceModel);
-        $models = $handler->index($resourceName, $request);
+        $resourceHandler = new ResourceHandler();
+        $models = $resourceHandler->index($resourceName, $request);
 
         return response()->json($models);
     }
@@ -34,16 +34,13 @@ class ResourceController extends Controller
     public function show(string $resourceName, string $id): JsonResponse
     {
         try {
-            $resourceModel = new ResourceModel($resourceName);
-            $resource = $resourceModel->resolveResource();
-
-            $with = $resourceModel
-                ->getWith()
-                ->toArray();
+            $resource = Panel::resolveResourceByName($resourceName);
 
             $model = $resource->resolveModel()
-                ->with($with)
+                ->with($resource::$with)
                 ->find($id);
+
+            $resourceModel = new ResourceModel($resource);
 
             return response()->json([
                 'groups' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_DETAIL)
@@ -59,15 +56,11 @@ class ResourceController extends Controller
     public function edit(string $resourceName, string $id): JsonResponse
     {
         try {
-            $resourceModel = new ResourceModel($resourceName);
-            $resource = $resourceModel->resolveResource();
-
-            $with = $resourceModel
-                ->getWith()
-                ->toArray();
+            $resource = Panel::resolveResourceByName($resourceName);
+            $resourceModel = new ResourceModel($resource);
 
             $model = $resource->resolveModel()
-                ->with($with)
+                ->with($resource::$with)
                 ->find($id);
 
             return response()->json([
@@ -90,9 +83,8 @@ class ResourceController extends Controller
     public function update(Request $request, string $resourceName, string $id): JsonResponse
     {
         try {
-            $resourceModel = new ResourceModel($resourceName);
-            $handler = new ResourceHandler($resourceModel);
-            $model = $handler->update($request, $id);
+            $resourceHandler = new ResourceHandler();
+            $model = $resourceHandler->update($resourceName, $request, $id);
 
             return response()->json($model);
         } catch (ModelNotFoundException $e) {
@@ -110,9 +102,8 @@ class ResourceController extends Controller
     public function store(Request $request, string $resourceName): JsonResponse
     {
         try {
-            $resourceModel = new ResourceModel($resourceName);
-            $handler = new ResourceHandler($resourceModel);
-            $model = $handler->store($request);
+            $resourceHandler = new ResourceHandler();
+            $model = $resourceHandler->store($resourceName, $request);
 
             return response()->json($model, 201);
         } catch (QueryException $e) {
@@ -128,8 +119,7 @@ class ResourceController extends Controller
     public function destroy(string $resourceName, string $id): JsonResponse
     {
         try {
-            $resourceModel = new ResourceModel($resourceName);
-            $resource = $resourceModel->resolveResource();
+            $resource = Panel::resolveResourceByName($resourceName);
             $model = $resource->resolveModel()->find($id);
 
             if (!$model) {

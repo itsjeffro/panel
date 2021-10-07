@@ -11,59 +11,23 @@ use Itsjeffro\Panel\Fields\Field;
 use Itsjeffro\Panel\Fields\HasMany;
 use Itsjeffro\Panel\Fields\MorphToMany;
 use Itsjeffro\Panel\Panel;
+use Itsjeffro\Panel\Resource;
 
 class ResourceModel
 {
     /**
-     * @var string
+     * The defined resource.
+     *
+     * @var ResourceInterface
      */
-    public $resourceClass;
+    public $resource;
 
     /**
      * ResourceManager constructor.
      */
-    public function __construct(string $resourceName)
+    public function __construct(ResourceInterface $resource)
     {
-        $this->resourceClass = $this->classNameFromResource(
-            Panel::getResources(),
-            $resourceName
-        );
-    }
-
-    /**
-     * Return resource class.
-
-     * @throw InvalidArgumentException
-     */
-    public function classNameFromResource(array $registeredResources, string $resource): string
-    {
-        foreach ($registeredResources as $registeredResource) {
-            if (strtolower($registeredResource['slug']) === strtolower($resource)) {
-                return $registeredResource['path'];
-            }
-        }
-
-        throw new \InvalidArgumentException(sprintf("Resource [%s] is not registered.", $resource));
-    }
-
-    /**
-     * Return namespace where application resources are located.
-     */
-    public function getResourceNamespace(): string
-    {
-        $classSegments =  explode('\\', $this->resourceClass);
-
-        array_pop($classSegments);
-
-        return implode('\\', $classSegments);
-    }
-
-    /**
-     * Return resource's full class name.
-     */
-    public function resolveResource(): ResourceInterface
-    {
-        return (new $this->resourceClass);
+        $this->resource = $resource;
     }
 
     /**
@@ -71,10 +35,9 @@ class ResourceModel
      */
     public function getFields(string $visibility = ''): Collection
     {
-        $resource = $this->resolveResource();
         $fields = new Collection([]);
 
-        foreach ($resource->fields() as $resourceField) {
+        foreach ($this->resource->fields() as $resourceField) {
             if ($resourceField instanceof Block) {
                 foreach ($resourceField->fields() as $blockField) {
                     $fields->add($blockField);
@@ -86,7 +49,7 @@ class ResourceModel
 
         if ($visibility) {
             $fields = $fields->filter(function ($field) use ($visibility) {
-                return in_array($visibility, $field->visibility);
+                return $field->hasVisibility($visibility);
             });
         }
 
@@ -100,16 +63,15 @@ class ResourceModel
      */
     public function getGroupedFields($model, ?string $visibility = null): array
     {
-        $resource = $this->resolveResource();
-
-        $fields =  collect($resource->fields())->filter(function ($field) use ($visibility) {
-            return $field instanceof Block ||
-                ($field instanceof Field && $field->hasVisibility($visibility));
-        });
+        $fields =  collect($this->resource->fields())
+            ->filter(function ($field) use ($visibility) {
+                return $field instanceof Block ||
+                    ($field instanceof Field && $field->hasVisibility($visibility));
+            });
 
         $groups = [
             'general' => [
-                'name' => $resource->modelName() . ' Details',
+                'name' => $this->resource->modelName() . ' Details',
                 'resourceFields' => [],
             ],
         ];
@@ -170,10 +132,9 @@ class ResourceModel
      */
     public function getResourceFields($model): Collection
     {
-        $resource = $this->resolveResource();
         $resourceFields = new Collection([]);
 
-        foreach ($resource->fields() as $resourceField) {
+        foreach ($this->resource->fields() as $resourceField) {
             if ($resourceField instanceof Block) {
                 $resourceFields->push(...$resourceField->fields());
             } else {
@@ -185,22 +146,6 @@ class ResourceModel
     }
 
     /**
-     * Return the model relationships that should be eager loaded via the with() method. Exclude
-     * hasMany fields as they will be passed with the relationships property in the controllers.
-     */
-    public function getWith(): Collection
-    {
-        $relationshipFields = $this->getFields()
-            ->filter(function ($field) {
-                return $field instanceof Field && $field->isRelationshipField && !$field instanceof HasMany;
-            });
-
-        return $relationshipFields->map(function ($field) {
-            return $field->column;
-        });
-    }
-
-    /**
      * Returns field data.
      */
     protected function prepareField($model, Field $field): array
@@ -209,7 +154,7 @@ class ResourceModel
         $fieldAttribute = $fieldColumn;
 
         $value = $model->{$fieldColumn};
-        $resource = $this->resolveResource()->slug();
+        $resource = $this->resource->slug();
         $resourceId = $model->getKey();
         $resourceName = $value;
         $relationship = null;

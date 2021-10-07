@@ -3,7 +3,6 @@
 namespace Itsjeffro\Panel\Services;
 
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -12,19 +11,10 @@ use Itsjeffro\Panel\Fields\BelongsTo;
 use Itsjeffro\Panel\Fields\Field;
 use Itsjeffro\Panel\Fields\HasMany;
 use Itsjeffro\Panel\Fields\MorphToMany;
+use Itsjeffro\Panel\Panel;
 
 class ResourceHandler
 {
-    /**
-     * @var ResourceModel
-     */
-    private $resourceModel;
-
-    public function __construct(ResourceModel $resourceModel)
-    {
-        $this->resourceModel = $resourceModel;
-    }
-
     /**
      * Return built data response.
      *
@@ -38,17 +28,18 @@ class ResourceHandler
 
         // Handle filtering by relationship from query.
         if (!$queryResource || !$queryResourceId || !$queryRelationship) {
-            $resourceModel = new ResourceModel($resourceName);
-            $resource = $resourceModel->resolveResource();
+            $resource = Panel::resolveResourceByName($resourceName);
+            $resourceModel = new ResourceModel($resource);
 
             $query = $resource->resolveModel()
                 ->with($resource::$with)
                 ->orderBy('id', 'desc');
         } else {
-            $resourceModel = new ResourceModel($queryResource);
-            $resource = $resourceModel->resolveResource();
+            $relatedResource = Panel::resolveResourceByName($queryResource);
+            $resource = Panel::resolveResourceByName($queryRelationship);
+            $resourceModel = new ResourceModel($resource);
 
-            $query = $resource->resolveModel()
+            $query = $relatedResource->resolveModel()
                 ->find($queryResourceId)
                 ->{$queryRelationship}()
                 ->getQuery();
@@ -92,52 +83,21 @@ class ResourceHandler
      * @return mixed
      * @throws Exception
      */
-    public function store(Request $request)
+    public function store(string $resourceName, Request $request)
     {
-        $resourceValidator = new ResourceValidator();
-        $resource = $this->resourceModel->resolveResource();
+        $resource = Panel::resolveResourceByName($resourceName);
         $model = $resource->resolveModel();
 
-        $fields = $this->fields(Field::SHOW_ON_CREATE)->toArray();
-        $validationRules = $resourceValidator->getValidationRules($model, $fields);
-
-        if ($validationRules) {
-            $request->validate($validationRules);
-        }
-
-        foreach ($fields as $field) {
-            $column = $field->column;
-
-            if ($field->isRelationshipField) {
-                $column = $model->{$column}()->getForeignKeyName();
-            }
-
-            $field->fillAttributeFromRequest($request, $model, $column);
-        }
-
-        $model->save();
-
-        return $model;
-    }
-
-    /**
-     * Validate and update model.
-     *
-     * @return mixed
-     * @throws ModelNotFoundException
-     * @throws Exception
-     */
-    public function update(Request $request, string $id)
-    {
         $resourceValidator = new ResourceValidator();
-        $resource = $this->resourceModel->resolveResource();
-        $model = $resource->resolveModel()->find($id);
+        $resourceModel = new ResourceModel($resource);
 
-        if (!$model) {
-            throw new ModelNotFoundException();
-        }
+        $fields = $resourceModel->getFields(Field::SHOW_ON_CREATE)
+            ->map(function ($field) {
+                $field->rules = $field->rules + $field->rulesOnCreate;
+                return $field;
+            })
+            ->toArray();
 
-        $fields = $this->fields(Field::SHOW_ON_UPDATE)->toArray();
         $validationRules = $resourceValidator->getValidationRules($model, $fields);
 
         if ($validationRules) {
@@ -168,27 +128,64 @@ class ResourceHandler
     }
 
     /**
-     * Get updatable fields.
+     * Validate and update model.
      *
+     * @return mixed
+     * @throws ModelNotFoundException
      * @throws Exception
      */
-    protected function fields(string $visibility): Collection
+    public function update(string $resourceName, Request $request, string $id)
     {
-        return $this->resourceModel
-            ->getFields()
-            ->filter(function ($field) use ($visibility) {
-                return $field instanceof Field && $field->hasVisibility($visibility);
-            })
+        $resource = Panel::resolveResourceByName($resourceName);
+        $model = $resource->resolveModel()->find($id);
+
+        $resourceValidator = new ResourceValidator();
+        $resourceModel = new ResourceModel($resource);
+
+        if (!$model) {
+            throw new ModelNotFoundException();
+        }
+
+        $fields = $resourceModel->getFields(Field::SHOW_ON_UPDATE)
             ->map(function ($field) {
-                $field->rules = $field->rules + $field->rulesOnCreate;
+                $field->rules = $field->rules + $field->rulesOnUpdate;
                 return $field;
-            });
+            })
+            ->toArray();
+
+        $validationRules = $resourceValidator->getValidationRules($model, $fields);
+
+        if ($validationRules) {
+            $request->validate($validationRules);
+        }
+
+        foreach ($fields as $field) {
+            $column = $field->column;
+
+            if ($field instanceof MorphToMany) {
+                $column = $field->column;
+            }
+
+            if ($field instanceof HasMany) {
+                $column = $model->{$column};
+            }
+
+            if ($field instanceof BelongsTo) {
+                $column = $model->{$column}()->getForeignKeyName();
+            }
+
+            $field->fillAttributeFromRequest($request, $model, $column);
+        }
+
+        $model->save();
+
+        return $model;
     }
 
     /**
      * Return resource's actions.
      */
-    protected function prepareActions(array $actions)
+    protected function prepareActions(array $actions): Collection
     {
         return  collect($actions)->map(function ($action) {
             $class = explode('\\', get_class($action));

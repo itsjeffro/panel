@@ -9,4 +9,6 @@ interface ResourceInterface
     public function modelName(): string;
 
     public function modelPluralName(): string;
+
+    public function resolveModel();
 }

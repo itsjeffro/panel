@@ -2,7 +2,7 @@
 
 namespace Itsjeffro\Panel;
 
-use Illuminate\Support\Str;
+use Itsjeffro\Panel\Contracts\ResourceInterface;
 use Symfony\Component\Finder\Finder;
 
 class Panel
@@ -76,5 +76,19 @@ class Panel
             'prefix' => config('panel.prefix'),
             'resources' => self::getResources(),
         ];
+    }
+
+    /**
+     * Resolve instance of resource.
+     */
+    public static function resolveResourceByName(string $resourceName): ResourceInterface
+    {
+        foreach (static::getResources() as $resource) {
+            if (strtolower($resource['slug']) === strtolower($resourceName)) {
+                return (new $resource['path']);
+            }
+        }
+
+        throw new \InvalidArgumentException(sprintf("Resource [%s] is not registered.", $resourceName));
     }
 }

@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Itsjeffro\Panel\Fields\Field;
+use Itsjeffro\Panel\Panel;
 use Itsjeffro\Panel\Services\ResourceModel;
 
 class ResourceFieldController extends Controller
@@ -18,8 +19,8 @@ class ResourceFieldController extends Controller
      */
     public function show(string $resourceName)
     {
-        $resourceModel = new ResourceModel($resourceName);
-        $resource = $resourceModel->resolveResource();
+        $resource = Panel::resolveResourceByName($resourceName);
+        $resourceModel = new ResourceModel($resource);
         $model = $resource->resolveModel();
 
         return response()->json([
