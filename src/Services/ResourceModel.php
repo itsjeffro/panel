@@ -209,9 +209,10 @@ class ResourceModel
         $fieldAttribute = $fieldColumn;
 
         $value = $model->{$fieldColumn};
-        $resource = $model->getTable();
+        $resource = $this->resolveResource()->slug();
         $resourceId = $model->getKey();
         $resourceName = $value;
+        $relationship = null;
 
         if ($field instanceof MorphToMany) {
             $relationshipResource = new $field->resourceNamespace;
@@ -242,9 +243,8 @@ class ResourceModel
             $relationshipResource = new $field->resourceNamespace;
 
             $value = null;
-            $resource = $relationshipResource->slug();
-            $resourceId = null;
             $resourceName = null;
+            $relationship = $relationshipResource->slug();
         }
 
         return [
@@ -257,6 +257,7 @@ class ResourceModel
             'resource' => $resource,
             'resourceId' => $resourceId,
             'resourceName' => $resourceName,
+            'relationship' => $relationship,
         ];
     }
 
