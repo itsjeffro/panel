@@ -2,6 +2,8 @@
 
 namespace Itsjeffro\Panel\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Itsjeffro\Panel\Panel;
 
@@ -10,7 +12,7 @@ class AppController extends Controller
     /**
      * Application entry point.
      *
-     * @return Illuminate\Http\Response
+     * @return Response|View
      */
     public function show()
     {
