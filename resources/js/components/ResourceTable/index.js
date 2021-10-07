@@ -5,10 +5,11 @@ import axios from "axios";
 import CheckBox from "../../libs/CheckBox";
 import IndexComponent from "../../fields/IndexComponent";
 import Pagination from "../Pagination";
+import Loading from "../Loading";
 
 class ResourceTable extends React.Component {
   state = {
-    checkedRows: [],
+    checkedRows: {},
     isDropdownBulkShown: false,
     isLoading: true,
     searchTimeout: null,
@@ -122,12 +123,17 @@ class ResourceTable extends React.Component {
   /**
    * Handles checkbox click.
    */
-  onCheckboxChange = (event, rowIndexStart, rowIndexEnd) => {
+  onCheckboxChange = (event, models, indexKey) => {
+    const rows = models.reduce((object, model, index) => {
+      object[index] = model.resourceId;
+      return object;
+    }, {});
+
     this.setState((prevState) => {
-      const checkbox = new CheckBox(prevState);
+      const checkbox = new CheckBox(prevState.checkedRows);
 
       return {
-        checkedRows: checkbox.checkedRows(rowIndexStart, rowIndexEnd),
+        checkedRows: checkbox.checkedRows(rows, indexKey),
       };
     });
   }
@@ -203,14 +209,14 @@ class ResourceTable extends React.Component {
           </div>
         </div>
 
-        {isLoading ? 'Loading...' : <table className="table">
+        {isLoading ? <Loading /> : <table className="table">
           <thead>
           <tr>
             <th width="1%">
               <input
                 type="checkbox"
-                onChange={ (event) => this.onCheckboxChange(event, 0, totalRows) }
-                checked={ checkedRows.length > 0 }
+                onChange={ (event) => this.onCheckboxChange(event, resource.model_data.data) }
+                checked={ Object.keys(checkedRows).length > 0 }
               />
             </th>
             {resource.model_data.data[0].resourceFields.map((resourceField) =>
@@ -232,8 +238,8 @@ class ResourceTable extends React.Component {
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    onChange={ (event) => this.onCheckboxChange(event, index) }
-                    checked={ checkedRows.includes(index) }
+                    onChange={ (event) => this.onCheckboxChange(event, resource.model_data.data, index) }
+                    checked={ checkedRows.hasOwnProperty(index) }
                   />
                 </div>
               </td>

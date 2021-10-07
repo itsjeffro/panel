@@ -7,6 +7,7 @@ import { IconEdit } from '@tabler/icons';
 
 class ResourceViewPage extends React.Component {
   state = {
+    isLoading: true,
     resource: null
   };
 
@@ -18,9 +19,9 @@ class ResourceViewPage extends React.Component {
 
   componentDidUpdate(prevProps) {
     const {params} = this.props.match;
-    const previousResource = prevProps.match.params.resource;
+    const previousParams= prevProps.match.params;
 
-    if (params.resource !== previousResource) {
+    if (params.resource !== previousParams.resource || params.id !== previousParams.id) {
       this.loadResource(params.resource, params.id);
     }
   }
@@ -29,22 +30,24 @@ class ResourceViewPage extends React.Component {
    * Loads resource.
    */
   loadResource = (resourceUri, id) => {
+    this.setState({ isLoading: true });
+
     axios
       .get('/panel/api/resources/' + resourceUri + '/' + id)
       .then(response => {
-        this.setState({resource: response.data});
+        this.setState({ resource: response.data, isLoading: false });
       });
   }
 
   render() {
-    const { resource } = this.state;
+    const { isLoading, resource } = this.state;
     const {
       match: {
         params,
       },
     } = this.props;
 
-    if (typeof resource === 'object' && resource === null) {
+    if (isLoading) {
       return (
         <div className="content">
           <div className="container">
