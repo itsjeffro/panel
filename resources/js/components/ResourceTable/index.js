@@ -82,6 +82,10 @@ class ResourceTable extends React.Component {
 
   /**
    * Load paged results based on page click.
+   *
+   * @param {object} event
+   * @param {string} page
+   * @returns {void}
    */
   onPageClick = (event, page) => {
     event.preventDefault();
@@ -90,7 +94,10 @@ class ResourceTable extends React.Component {
   }
 
   /**
+   * Handle search input change and loading resources.
+   *
    * @param {object} event
+   * @returns {void}
    */
   onSearchChange = (event) => {
     const value = event.target.value;
@@ -109,12 +116,17 @@ class ResourceTable extends React.Component {
 
   /**
    * Handle delete and reload resources.
+   *
+   * @param {object} event
+   * @param {string} resource
+   * @param {string} id
+   * @returns {void}
    */
   onDeleteClick = (event, resource, id) => {
-    const {resourceUri} = this.props;
+    const { resourceUri } = this.props;
 
     axios
-      .delete('/panel/api/resources/' + resourceUri + '/' + id)
+      .delete(`/panel/api/resources/${resourceUri}/${id}`)
       .then((response) => {
         this.loadResources();
       });
@@ -122,6 +134,11 @@ class ResourceTable extends React.Component {
 
   /**
    * Handles checkbox click.
+   *
+   * @param {object} event
+   * @param {array} models
+   * @param {string} indexKey
+   * @returns {void}
    */
   onCheckboxChange = (event, models, indexKey) => {
     const rows = models.reduce((object, model, index) => {
@@ -140,30 +157,32 @@ class ResourceTable extends React.Component {
 
   /**
    * Handles action click.
+   *
+   * @param {object} event
+   * @param {string} actionName
+   * @returns void
    */
   onActionClick = (event, actionName) => {
     event.preventDefault();
 
     const { resourceUri } = this.props;
 
-    const formData = {
-      'model_ids': this.state.checkedRows
-    }
-
     axios
-      .post(`/panel/api/resources/${resourceUri}/actions/${actionName}`, formData)
+      .post(`/panel/api/resources/${resourceUri}/actions/${actionName}`, {
+        'model_ids': this.state.checkedRows
+      })
       .then((response) => {
         console.log(response.data)
 
-        this.setState({ isDropdownBulkShown: false })
+        this.setState({ isDropdownBulkShown: false, checkedRows: {} })
+
+        this.loadResources();
       });
   }
 
   render() {
     const { resourceUri } = this.props;
     const { checkedRows, isDropdownBulkShown, isLoading, resource } = this.state;
-
-    let totalRows = resource.model_data.data.length;
 
     return (
       <>
