@@ -41,19 +41,18 @@ App\Providers\PanelServiceProvider::class,
 
 - [Resources](./docs/resources.md)
 - [Fields](./docs/fields.md)
+- [Actions](./docs/actions.md)
 
 ## Roadmap
 
 Since this is a project I plan to use quite often, there will be additional features I would like to add when needed.
 
-#### Fields
+#### Fields to support
 
-- [ ] WYSIWYG
-- [ ] File
-- [ ] Date
+- WYSIWYG
+- File
 
-#### Other
+#### Other features to support
 
-- [ ] Pass currently authenticated user data
-- [ ] Group resources in menu
-- [ ] Observers
+- Group resources in menu
+- Observers

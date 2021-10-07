@@ -3,6 +3,7 @@
 When a resource is generated, it will contain an ID field to begin with. You may use any of the fields below by adding them
 to the fields' method inside your generated resource.
 
+- DateTime
 - ID
 - Password
 - Text
