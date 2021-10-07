@@ -23,7 +23,7 @@ class ResourceController extends Controller
     {
         $resourceModel = new ResourceModel($resourceName);
         $handler = new ResourceHandler($resourceModel);
-        $models = $handler->index($request);
+        $models = $handler->index($resourceName, $request);
 
         return response()->json($models);
     }

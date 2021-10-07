@@ -3,6 +3,7 @@
 namespace Itsjeffro\Panel\Services;
 
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -29,49 +30,54 @@ class ResourceHandler
      *
      * @throws Exception
      */
-    public function index(Request $request): array
+    public function index(string $resourceName, Request $request): array
     {
-        $resource = $this->resourceModel->resolveResource();
-        $model = $resource->resolveModel();
-        $with = $this->resourceModel->getWith()->toArray();
+        $queryResource = $request->get('resource');
+        $queryResourceId = $request->get('resourceId');
+        $queryRelationship = $request->get('relationship');
 
-        $relations = $request->get('relation', []);
-        $models = $model::with($with)->orderBy('id', 'desc');
+        // Handle filtering by relationship from query.
+        if (!$queryResource || !$queryResourceId || !$queryRelationship) {
+            $resourceModel = new ResourceModel($resourceName);
+            $resource = $resourceModel->resolveResource();
 
-        foreach ($relations as $relation => $id) {
-            $models = $models->where($relation, $id);
+            $query = $resource->resolveModel()
+                ->with($resource::$with)
+                ->orderBy('id', 'desc');
+        } else {
+            $resourceModel = new ResourceModel($queryResource);
+            $resource = $resourceModel->resolveResource();
+
+            $query = $resource->resolveModel()
+                ->find($queryResourceId)
+                ->{$queryRelationship}()
+                ->getQuery();
         }
 
+        // Handle search query.
         if ($request->exists('search')) {
-            $models = $models->where(function ($query) use ($resource, $request) {
+            $query = $query->where(function ($query) use ($resource, $request) {
                 foreach ($resource->search as $column) {
                     $query->orWhere($column, 'LIKE', $request->input('search').'%');
                 }
             });
         }
 
-        $indexResults = $models->paginate();
+        $indexResults = $query->paginate();
 
-        $indexResults->getCollection()->transform(function ($item) use ($resource) {
-            return [
-                'resourceId' => $item->getKey(),
-                'resourceName' => $item->{$resource->title},
-                'resourceFields' => $this->resourceModel->getResourceIndexFields($item),
-            ];
-        });
-
-        $actions = collect($resource->actions($request))->map(function ($action) {
-            $class = explode('\\', get_class($action));
-            $className = Str::kebab(end($class));
-
-            return [
-                'name' => str_replace('-', ' ', Str::title($className)),
-                'slug' => $className,
-            ];
-        });
+        // Handle transforming paginated models.
+        $indexResults
+            ->getCollection()
+            ->transform(function ($item) use ($resource, $resourceModel) {
+                return [
+                    'resourceId' => $item->getKey(),
+                    'resourceName' => $item->{$resource->title},
+                    'resourceFields' => $resourceModel->getResourceIndexFields($item),
+                ];
+            });
 
         return [
-            'actions' => $actions,
+            'actions' => $this->prepareActions($resource->actions($request)),
             'name' => [
                 'singular' => $resource->modelName(),
                 'plural' => $resource->modelPluralName(),
@@ -177,5 +183,21 @@ class ResourceHandler
                 $field->rules = $field->rules + $field->rulesOnCreate;
                 return $field;
             });
+    }
+
+    /**
+     * Return resource's actions.
+     */
+    protected function prepareActions(array $actions)
+    {
+        return  collect($actions)->map(function ($action) {
+            $class = explode('\\', get_class($action));
+            $className = Str::kebab(end($class));
+
+            return [
+                'name' => str_replace('-', ' ', Str::title($className)),
+                'slug' => $className,
+            ];
+        });
     }
 }
