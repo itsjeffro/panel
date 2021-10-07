@@ -43,8 +43,8 @@ class ResourceTable extends React.Component {
    * Load resources.
    */
   loadResources = (page) => {
-    const {search} = this.state;
-    const {resourceUri, uriQuery} = this.props;
+    const { search} = this.state;
+    const { resourceUri, uriQueries } = this.props;
 
     let query = [];
 
@@ -56,8 +56,10 @@ class ResourceTable extends React.Component {
       query.push('search=' + search);
     }
 
-    if (uriQuery) {
-      query.push(`${uriQuery}`)
+    if (uriQueries) {
+      Object.keys(uriQueries).map((uriQuery) => {
+        query.push(`${uriQuery}=${uriQueries[uriQuery]}`);
+      })
     }
 
     const endpointQuery = query.length ? '?' + query.join('&') : '';
@@ -180,6 +182,31 @@ class ResourceTable extends React.Component {
       });
   }
 
+  /**
+   * Returns relation uri query for.
+   *
+   * @returns {string}
+   */
+  getCreateRelationQuery() {
+    const { uriQueries } = this.props;
+
+    let query = [];
+
+    if (uriQueries) {
+      Object.keys(uriQueries).map((uriQuery) => {
+        const queryName = uriQuery.charAt(0).toUpperCase() + uriQuery.slice(1);
+
+        query.push(`via${queryName}=${uriQueries[uriQuery]}`);
+      })
+    }
+
+    if (query.length === 0) {
+      return '';
+    }
+
+    return '?' + query.join('&');
+  }
+
   render() {
     const { resourceUri } = this.props;
     const { checkedRows, isDropdownBulkShown, isLoading, resource } = this.state;
@@ -223,7 +250,7 @@ class ResourceTable extends React.Component {
 
             <Link
               className="btn btn-primary btn-icon"
-              to={'/resources/' + resourceUri + '/create'}
+              to={ '/resources/' + resourceUri + '/create' + this.getCreateRelationQuery() }
             ><IconPlus /> { 'Create ' + (resource ? resource.name.singular : '') }</Link>
           </div>
         </div>

@@ -67,8 +67,8 @@ class ResourceViewPage extends React.Component {
               return (
                 <div key={ group.resourceName } className="page-heading">
                   <ResourceTable
-                    resourceUri={ group.resource }
-                    // uriQuery={ `relation[${group.relation.foreign_key}]=${resource.model_data.id}` }
+                    resourceUri={ group.relationship }
+                    uriQueries={ { resource: group.resource, resourceId: group.resourceId, relationship: group.relationship } }
                   />
                 </div>
               )
