@@ -1,42 +1,69 @@
 class CheckBox {
-  constructor(state) {
-    this.state = state;
+  constructor(items) {
+    this.items = items;
   }
 
-  checkedRows(rowIndexStart, rowIndexEnd) {
-    if (rowIndexEnd !== undefined && !this.hasCheckedRows()) {
-      let indexes = [];
-
-      for (let i = 0; i < rowIndexEnd; i++) {
-        indexes.push(i);
-      }
-
-      return indexes;
+  /**
+   * Set and return checked rows.
+   */
+  checkedRows(rows, indexKey) {
+    // If there are no checked rows and an end indexKey is undefined, then check all rows.
+    if (typeof indexKey === 'undefined' && !this.hasCheckedRows()) {
+      return rows;
     }
 
-    if (rowIndexEnd !== undefined && this.hasCheckedRows()) {
-      return [];
+    // If there are checked rows and an end index is provided, then remove all checked rows.
+    if (typeof indexKey === 'undefined' && this.hasCheckedRows()) {
+      return {};
     }
 
-    if (this.getCheckedRows().includes(rowIndexStart)) {
-      return this.getCheckedRows()
-        .filter((checkedRow) => {
-          return checkedRow !== rowIndexStart;
-        });
+    // Uncheck a single row if it already exists in the items property.
+    if (this.getCheckedRows().hasOwnProperty(indexKey)) {
+      return this.removeCheckedRow(indexKey);
     }
 
-    return [
+    // Add row to the items list with the index as the key and resourceId as the value.
+    return {
       ...this.getCheckedRows(),
-      rowIndexStart,
-    ];
+      [indexKey]: rows[indexKey],
+    };
   }
 
+  /**
+   * Determines if any rows are checked.
+   *
+   * @returns {boolean}
+   */
   hasCheckedRows() {
-    return this.state.checkedRows.length > 0;
+    return Object.keys(this.items).length > 0;
   }
 
+  /**
+   * Returns checked rows.
+   *
+   * @returns {object}
+   */
    getCheckedRows() {
-    return this.state.checkedRows;
+    return this.items;
+  }
+
+  /**
+   * Remove checked row by its index key from the items list.
+   *
+   * @param {string} indexKey
+   * @returns {object}
+   */
+  removeCheckedRow(indexKey) {
+    const filteredRows = Object.keys(this.getCheckedRows())
+      .filter((index) => {
+        return Number(index) !== Number(indexKey);
+      });
+
+    return filteredRows.reduce((object, index) => {
+      object[index] = this.getCheckedRows()[index];
+
+      return object;
+    }, {});
   }
 }
 
