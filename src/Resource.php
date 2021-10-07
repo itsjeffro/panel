@@ -18,6 +18,13 @@ abstract class Resource implements ResourceInterface
     public static $displayInNavigation = true;
 
     /**
+     * The relationships that should be eager loaded on index queries.
+     *
+     * @var array
+     */
+    public static $with = [];
+
+    /**
      * Return resource's defined fields.
      */
     abstract public function fields(): array;
