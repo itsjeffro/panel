@@ -95,14 +95,21 @@ class ResourceHandler
             ->map(function ($field) {
                 $field->rules = $field->rules + $field->rulesOnCreate;
                 return $field;
-            })
-            ->toArray();
+            });
 
         $validationRules = $resourceValidator->getValidationRules($model, $fields);
 
         if ($validationRules) {
             $request->validate($validationRules);
         }
+
+        $syncFields = $fields->filter(function ($field) {
+            return $field instanceof MorphToMany;
+        });
+
+        $fields = $fields->filter(function ($field) {
+            return !$field instanceof MorphToMany;
+        });
 
         foreach ($fields as $field) {
             $column = $field->column;
@@ -120,6 +127,22 @@ class ResourceHandler
             }
 
             $field->fillAttributeFromRequest($request, $model, $column);
+        }
+
+        $model->save();
+
+        if ($syncFields->isEmpty()) {
+            return $model;
+        }
+
+        foreach ($syncFields as $syncField) {
+            $column = $syncField->column;
+
+            if ($syncField instanceof MorphToMany) {
+                $column = $syncField->column;
+            }
+
+            $syncField->fillAttributeFromRequest($request, $model, $column);
         }
 
         $model->save();
@@ -150,8 +173,7 @@ class ResourceHandler
             ->map(function ($field) {
                 $field->rules = $field->rules + $field->rulesOnUpdate;
                 return $field;
-            })
-            ->toArray();
+            });
 
         $validationRules = $resourceValidator->getValidationRules($model, $fields);
 
