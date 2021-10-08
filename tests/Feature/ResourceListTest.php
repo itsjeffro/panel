@@ -25,14 +25,22 @@ class ResourceListTest extends TestCase
 
         $response
             ->assertStatus(200)
-            ->assertJsonStructure([
-                'data',
+            ->assertJson([
+                'data' => [],
                 'meta' => [
-                    'actions',
-                    'fields',
-                    'name',
+                    'actions' => [],
+                    'fields' => [
+                        ['name' => 'ID', 'attribute' => 'id'],
+                        ['name' => 'Name', 'attribute' => 'name'],
+                        ['name' => 'Email', 'attribute' => 'email'],
+                        ['name' => 'Created At', 'attribute' => 'created_at'],
+                        ['name' => 'Updated At', 'attribute' => 'updated_at'],
+                    ],
+                    'name' => [
+                        'plural' => 'Users',
+                        'singular' => 'User',
+                    ],
                 ],
-                'links',
             ]);
     }
 }

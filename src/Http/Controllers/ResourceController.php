@@ -38,13 +38,15 @@ class ResourceController extends Controller
 
             $model = $resource->resolveModel()
                 ->with($resource::$with)
-                ->find($id);
+                ->findOrFail($id);
 
             $resourceModel = new ResourceModel($resource);
 
             return response()->json([
                 'groups' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_DETAIL)
             ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => "Resource [{$resourceName}] not found"], 404);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
         }
