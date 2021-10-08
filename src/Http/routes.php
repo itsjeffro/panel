@@ -10,7 +10,7 @@ Route::prefix('api')->group(function () {
     Route::get('resources/{resource}/fields', 'ResourceFieldController@show');
 
     // Resources
-    Route::get('resources/{resource}', 'ResourceController@index');
+    Route::get('resources/{resource}', 'ResourceController@index')->name('panel.resources.index');
     Route::get('resources/{resource}/{id}', 'ResourceController@show');
     Route::get('resources/{resource}/{id}/edit', 'ResourceController@edit');
     Route::put('resources/{resource}/{id}', 'ResourceController@update');
