@@ -9,10 +9,10 @@ class ResourceShowTest extends TestCase
 {
     public function test_404_returned_when_resource_model_does_not_exist()
     {
-        $response = $this->json('GET', route('panel.resources.show', [
-            'resource' => 'users',
-            'id' => '1',
-        ]));
+        $response = $this->json(
+            'GET',
+            route('panel.resources.show', ['resource' => 'users', 'id' => '1'])
+        );
 
         $response->assertStatus(404);
     }
@@ -21,10 +21,10 @@ class ResourceShowTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $response = $this->json('GET', route('panel.resources.show', [
-            'resource' => 'users',
-            'id' => $user->getKey(),
-        ]));
+        $response = $this->json(
+            'GET',
+            route('panel.resources.show', ['resource' => 'users', 'id' => $user->getKey()])
+        );
 
         $response
             ->assertStatus(200)

@@ -9,10 +9,10 @@ class ResourceUpdateTest extends TestCase
 {
     public function test_404_returned_when_resource_model_does_not_exist()
     {
-        $response = $this->json('PUT', route('panel.resources.update', [
-            'resource' => 'users',
-            'id' => '1',
-        ]));
+        $response = $this->json(
+            'PUT',
+            route('panel.resources.update', ['resource' => 'users', 'id' => '1'])
+        );
 
         $response->assertStatus(404);
     }

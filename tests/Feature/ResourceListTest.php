@@ -8,14 +8,20 @@ class ResourceListTest extends TestCase
 {
     public function test_throws_when_resource_is_not_registered()
     {
-        $response = $this->json('GET', route('panel.resources.index', ['resource' => 'UNREGISTERED']));
+        $response = $this->json(
+            'GET',
+            route('panel.resources.index', ['resource' => 'UNREGISTERED'])
+        );
 
         $response->assertStatus(500);
     }
 
     public function test_user_can_see_listed_resources()
     {
-        $response = $this->json('GET', route('panel.resources.index', ['resource' => 'users']));
+        $response = $this->json(
+            'GET',
+            route('panel.resources.index', ['resource' => 'users'])
+        );
 
         $response
             ->assertStatus(200)

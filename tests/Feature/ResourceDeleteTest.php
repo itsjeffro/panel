@@ -9,10 +9,10 @@ class ResourceDeleteTest extends TestCase
 {
     public function test_404_returned_when_resource_model_does_not_exist()
     {
-        $response = $this->json('DELETE', route('panel.resources.destroy', [
-            'resource' => 'users',
-            'id' => '1',
-        ]));
+        $response = $this->json(
+            'DELETE',
+            route('panel.resources.destroy', ['resource' => 'users', 'id' => '1'])
+        );
 
         $response->assertStatus(404);
     }
@@ -21,10 +21,10 @@ class ResourceDeleteTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $response = $this->json('DELETE', route('panel.resources.destroy', [
-            'resource' => 'users',
-            'id' => $user->getKey(),
-        ]));
+        $response = $this->json(
+            'DELETE',
+            route('panel.resources.destroy', ['resource' => 'users', 'id' => $user->getKey()])
+        );
 
         $response->assertStatus(204);
     }
