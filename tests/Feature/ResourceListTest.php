@@ -2,9 +2,7 @@
 
 namespace Itsjeffro\Panel\Tests\Feature;
 
-use Itsjeffro\Panel\Panel;
 use Itsjeffro\Panel\Tests\TestCase;
-use Itsjeffro\Panel\Tests\Resources\User;
 
 class ResourceListTest extends TestCase
 {
@@ -15,12 +13,8 @@ class ResourceListTest extends TestCase
         $response->assertStatus(500);
     }
 
-    public function test_user_can_list_resource_models()
+    public function test_user_can_see_listed_resources()
     {
-        Panel::resources([
-            User::class,
-        ]);
-
         $response = $this->json('GET', route('panel.resources.index', ['resource' => 'users']));
 
         $response

@@ -2,18 +2,13 @@
 
 namespace Itsjeffro\Panel\Tests\Feature;
 
-use Itsjeffro\Panel\Panel;
 use Itsjeffro\Panel\Tests\TestCase;
-use Itsjeffro\Panel\Tests\Resources\User;
+use Itsjeffro\Panel\Tests\Models\User;
 
 class ResourceShowTest extends TestCase
 {
-    public function test_not_found_returned_when_resource_model_does_not_exist()
+    public function test_404_returned_when_resource_model_does_not_exist()
     {
-        Panel::resources([
-            User::class,
-        ]);
-
         $response = $this->json('GET', route('panel.resources.show', [
             'resource' => 'users',
             'id' => '1',
@@ -22,17 +17,13 @@ class ResourceShowTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_resource_model_returned_successfully()
+    public function test_user_can_see_resource()
     {
-        $user = new \Itsjeffro\Panel\Tests\Models\User();
+        $user = new User();
         $user->name = 'Demo';
         $user->email = 'demo@demo.com';
         $user->password = bcrypt('demo123');
         $user->save();
-
-        Panel::resources([
-            User::class,
-        ]);
 
         $response = $this->json('GET', route('panel.resources.show', [
             'resource' => 'users',

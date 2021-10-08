@@ -3,7 +3,9 @@
 namespace Itsjeffro\Panel\Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Itsjeffro\Panel\Panel;
 use Itsjeffro\Panel\PanelServiceProvider;
+use Itsjeffro\Panel\Tests\Resources\User;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -16,6 +18,10 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $this->loadLaravelMigrations(['--database' => 'testing']);
 
         $this->artisan('migrate', ['--database' => 'testing']);
+
+        Panel::resources([
+            User::class,
+        ]);
     }
 
     protected function getPackageProviders($app): array
