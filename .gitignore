@@ -1,6 +1,7 @@
 .phpunit.result.cache
 /node_modules
 /vendor
+/coverage
 composer.lock
 phpunit.xml
 panel_test
