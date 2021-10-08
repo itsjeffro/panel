@@ -15,9 +15,8 @@ class ResourceFieldController extends Controller
      * Get single model resource's fields.
      *
      * @throws Exception
-     * @return JsonResponse
      */
-    public function show(string $resourceName)
+    public function show(string $resourceName): JsonResponse
     {
         $resource = Panel::resolveResourceByName($resourceName);
         $resourceModel = new ResourceModel($resource);

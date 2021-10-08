@@ -7,17 +7,21 @@ use Itsjeffro\Panel\Fields\Field;
 class Block
 {
     /**
+     * The layout block name.
+     *
      * @var string
      */
     private $blockName;
 
     /**
+     * The fields assigned to the block.
+     *
      * @var Field[]
      */
     private $fields;
 
     /**
-     * @param Field[] $fields
+     * Block constructor.
      */
     public function __construct(string $blockName, array $fields)
     {

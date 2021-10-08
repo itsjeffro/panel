@@ -2,6 +2,7 @@
 
 namespace Itsjeffro\Panel\Services;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Itsjeffro\Panel\Fields\BelongsTo;
 use Itsjeffro\Panel\Fields\HasMany;
@@ -12,7 +13,7 @@ class ResourceValidator
     /**
      * Get validation rules for updatable fields.
      */
-    public function getValidationRules($model, Collection $fields): array
+    public function getValidationRules(Model $model, Collection $fields): array
     {
         $rules = [];
 

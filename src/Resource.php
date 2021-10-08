@@ -18,7 +18,7 @@ abstract class Resource implements ResourceInterface
     public static $displayInNavigation = true;
 
     /**
-     * The relationships that should be eager loaded on index queries.
+     * The relationships that should be eager loaded for the resource's model.
      *
      * @var array
      */

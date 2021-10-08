@@ -3,6 +3,7 @@
 namespace Itsjeffro\Panel\Services;
 
 use Exception;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Itsjeffro\Panel\Block;
 use Itsjeffro\Panel\Contracts\ResourceInterface;
@@ -61,7 +62,7 @@ class ResourceModel
      *
      * @throws Exception
      */
-    public function getGroupedFields($model, ?string $visibility = null): array
+    public function getGroupedFields(Model $model, ?string $visibility = null): array
     {
         $fields =  collect($this->resource->fields())
             ->filter(function ($field) use ($visibility) {
@@ -110,7 +111,7 @@ class ResourceModel
     /**
      * Returns only the resource's index fields.
      */
-    public function getResourceIndexFields($model): Collection
+    public function getResourceIndexFields(Model $model): Collection
     {
         $resourceFields = $this->getResourceFields()
             ->filter(function ($field) {
@@ -148,7 +149,7 @@ class ResourceModel
     /**
      * Returns field data.
      */
-    protected function prepareField($model, Field $field): array
+    protected function prepareField(Model $model, Field $field): array
     {
         $fieldColumn = $field->column;
         $fieldAttribute = $fieldColumn;

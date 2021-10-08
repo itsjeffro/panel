@@ -4,6 +4,7 @@ namespace Itsjeffro\Panel;
 
 use Itsjeffro\Panel\Contracts\ResourceInterface;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class Panel
 {
@@ -59,7 +60,7 @@ class Panel
     /**
      * Get class name from path.
      */
-    public static function getClassName($file, string $basePath): string
+    public static function getClassName(SplFileInfo $file, string $basePath): string
     {
         $class = trim(str_replace([$basePath, '.php'], ['', ''], $file->getRealPath()), DIRECTORY_SEPARATOR);
 

@@ -2,9 +2,7 @@
 
 namespace Itsjeffro\Panel;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Itsjeffro\Panel\Panel;
 
 class PanelApplicationServiceProvider extends ServiceProvider
 {
