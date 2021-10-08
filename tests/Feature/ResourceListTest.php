@@ -15,7 +15,7 @@ class ResourceListTest extends TestCase
         $response->assertStatus(500);
     }
 
-    public function test_user_can_list_resources()
+    public function test_user_can_list_resource_models()
     {
         Panel::resources([
             User::class,
