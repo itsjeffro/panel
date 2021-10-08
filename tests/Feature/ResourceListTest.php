@@ -22,7 +22,9 @@ class ResourceListTest extends TestCase
             ->assertJson([
                 'data' => [],
                 'meta' => [
-                    'actions' => [],
+                    'actions' => [
+                        ['name' => 'Bulk Delete', 'slug' => 'bulk-delete'],
+                    ],
                     'fields' => [
                         ['name' => 'ID', 'attribute' => 'id'],
                         ['name' => 'Name', 'attribute' => 'name'],

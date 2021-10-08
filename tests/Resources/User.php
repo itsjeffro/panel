@@ -2,6 +2,9 @@
 
 namespace Itsjeffro\Panel\Tests\Resources;
 
+use Illuminate\Http\Request;
+use Itsjeffro\Panel\Actions\Action;
+use Itsjeffro\Panel\Actions\BulkDelete;
 use Itsjeffro\Panel\Block;
 use Itsjeffro\Panel\Fields\DateTime;
 use Itsjeffro\Panel\Fields\ID;
@@ -53,6 +56,16 @@ class User extends Resource
                 DateTime::make('Created At')->hideFromCreate()->hideFromUpdate(),
                 DateTime::make('Updated At')->hideFromCreate()->hideFromUpdate(),
             ]),
+        ];
+    }
+
+    /**
+     * Get the actions available for the resource.
+     */
+    public function actions(Request $request): array
+    {
+        return [
+            new BulkDelete,
         ];
     }
 }
