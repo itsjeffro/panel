@@ -18,7 +18,7 @@ class FormField extends React.Component {
     axios
       .get(`/panel/api/resources/${resource}`)
       .then((response) => {
-        const items = response.data.model_data.data.map((item) => ({
+        const items = response.data.data.map((item) => ({
           value: item.resourceId,
           label: item.resourceName,
         }));
