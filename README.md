@@ -23,25 +23,26 @@ something similar to a learning experience.
 * Laravel 7
 
 ## Installation
+
 The package's main service provider will be automatically registered with Laravel's package auto-discovery.
 
 ```bash
 composer require itsjeffro/panel
 ```
 
-Publish the config, assets and application service provider.
+Publish the package's assets, config and provider by running `panel:install` Artisan command:
+
 ```bash
-php artisan vendor:publish --tag=panel-config
-php artisan vendor:publish --tag=panel-assets
-php artisan vendor:publish --tag=panel-provider
+php artisan panel:install
 ```
 
-The published application service provider is where the path for the resources is configured. You may register the Panel service 
-provider in the providers array in your config/app.php configuration file:
+### Dashboard
 
-```php
-App\Providers\PanelServiceProvider::class,
-```
+A dashboard will be exposed at the `/panel` URI by default, but can be changed in the config.
+
+### Configuration
+
+The package config is located at `config/panel.php`.
 
 ## Documentation
 
@@ -53,12 +54,13 @@ App\Providers\PanelServiceProvider::class,
 
 Since this is a project I plan to use quite often, there will be additional features I would like to add when needed.
 
-#### Fields to support
+### Fields to support
 
 - WYSIWYG
 - File
 
-#### Other features to support
+### Other features to support
 
 - Group resources in menu
-- Observers
+- Model observers
+- Policies to manage authorization to Panel pages and resources.
