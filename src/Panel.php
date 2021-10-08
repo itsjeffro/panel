@@ -58,6 +58,16 @@ class Panel
     }
 
     /**
+     * Directly register resources.
+     *
+     * @param string[] $resources
+     */
+    public static function resources(array $resources): void
+    {
+        self::$resources = $resources;
+    }
+
+    /**
      * Get class name from path.
      */
     public static function getClassName(SplFileInfo $file, string $basePath): string
