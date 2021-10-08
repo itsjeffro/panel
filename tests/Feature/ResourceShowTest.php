@@ -19,11 +19,7 @@ class ResourceShowTest extends TestCase
 
     public function test_user_can_see_resource()
     {
-        $user = new User();
-        $user->name = 'Demo';
-        $user->email = 'demo@demo.com';
-        $user->password = bcrypt('demo123');
-        $user->save();
+        $user = factory(User::class)->create();
 
         $response = $this->json('GET', route('panel.resources.show', [
             'resource' => 'users',

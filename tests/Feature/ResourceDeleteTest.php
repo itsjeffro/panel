@@ -19,11 +19,7 @@ class ResourceDeleteTest extends TestCase
 
     public function test_user_can_delete_resource()
     {
-        $user = new User();
-        $user->name = 'Demo';
-        $user->email = 'demo@demo.com';
-        $user->password = bcrypt('demo123');
-        $user->save();
+        $user = factory(User::class)->create();
 
         $response = $this->json('DELETE', route('panel.resources.destroy', [
             'resource' => 'users',
