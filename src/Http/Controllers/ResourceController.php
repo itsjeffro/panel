@@ -122,19 +122,13 @@ class ResourceController extends Controller
     {
         try {
             $resource = Panel::resolveResourceByName($resourceName);
-            $model = $resource->resolveModel()->find($id);
 
-            if (!$model) {
-                throw new ModelNotFoundException();
-            }
-
+            $model = $resource->resolveModel()->findOrFail($id);
             $model->delete();
 
             return response()->json(null, 204);
         } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'message' => "Resource [{$resourceName}] not found",
-            ], 404);
+            return response()->json(['message' => "Resource [{$resourceName}] not found"], 404);
         }
     }
 }
