@@ -33,7 +33,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         config([
             'database.connections.testing' => [
-                'driver' => 'mysql',
+                'driver' => 'sqlite',
                 'username' => env('DB_USERNAME', 'root'),
                 'host' => env('DB_HOST', '127.0.0.1'),
                 'port' => env('DB_PORT', '3306'),
