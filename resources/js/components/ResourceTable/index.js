@@ -14,14 +14,14 @@ class ResourceTable extends React.Component {
     isLoading: true,
     searchTimeout: null,
     resource: {
-      actions: [],
-      name: {
-        singular: '',
-        plural: '',
+      meta: {
+        actions: [],
+        name: {
+          singular: '',
+          plural: '',
+        },
       },
-      model_data: {
-        data: []
-      }
+      data: []
     },
     search: '',
   }
@@ -214,7 +214,7 @@ class ResourceTable extends React.Component {
     return (
       <>
         <div className="page-heading">
-          <h2>{resource ? resource.name.plural : ''}</h2>
+          <h2>{resource.meta ? resource.meta.name.plural : ''}</h2>
         </div>
 
         <div className="form-group row">
@@ -227,7 +227,7 @@ class ResourceTable extends React.Component {
             />
           </div>
           <div className="col-12 col-lg-9 text-right">
-            { resource.actions.length === 0
+            { resource.meta.actions.length === 0
               ? ''
               : <div className="dropdown d-inline-block mr-2">
               <button
@@ -237,7 +237,7 @@ class ResourceTable extends React.Component {
               </button>
 
               <div className={'dropdown-menu' + (isDropdownBulkShown ? ' show' : '')}>
-                { resource.actions.map((action) => (
+                { resource.meta.actions.map((action) => (
                   <a
                     key={ action.slug }
                     className="dropdown-item"
@@ -251,7 +251,7 @@ class ResourceTable extends React.Component {
             <Link
               className="btn btn-primary btn-icon"
               to={ '/resources/' + resourceUri + '/create' + this.getCreateRelationQuery() }
-            ><IconPlus /> { 'Create ' + (resource ? resource.name.singular : '') }</Link>
+            ><IconPlus /> { 'Create ' + (resource.meta ? resource.meta.name.singular : '') }</Link>
           </div>
         </div>
 
@@ -261,30 +261,26 @@ class ResourceTable extends React.Component {
             <th width="1%">
               <input
                 type="checkbox"
-                onChange={ (event) => this.onCheckboxChange(event, resource.model_data.data) }
+                onChange={ (event) => this.onCheckboxChange(event, resource.data) }
                 checked={ Object.keys(checkedRows).length > 0 }
               />
             </th>
-            {resource.model_data.data[0].resourceFields.map((resourceField) =>
-              <th key={'th-' + resourceField.field.attribute}>
-                {resourceField.field.name}
-              </th>
+            {resource.meta.fields.map((field) =>
+              <th key={ 'th-' + field.attribute }>{ field.name }</th>
             )}
-            <th className="text-right">
-              {' '}
-            </th>
+            <th className="text-right">{ ' ' }</th>
           </tr>
           </thead>
 
           <tbody>
-          {(resource.model_data.data).map((model, index) =>
+          {(resource.data).map((model, index) =>
             <tr key={ 'tr-' + model.resourceId}>
               <td width="1%">
                 <div className="form-check form-check-inline">
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    onChange={ (event) => this.onCheckboxChange(event, resource.model_data.data, index) }
+                    onChange={ (event) => this.onCheckboxChange(event, resource.data, index) }
                     checked={ checkedRows.hasOwnProperty(index) }
                   />
                 </div>
@@ -320,10 +316,10 @@ class ResourceTable extends React.Component {
         </table>}
 
         {isLoading ? '' : <Pagination
-          total={resource.model_data.total}
-          per_page={resource.model_data.per_page}
-          current_page={resource.model_data.current_page}
-          handlePageClick={this.onPageClick}
+          total={resource.meta.total}
+          per_page={resource.meta.per_page}
+          current_page={resource.meta.current_page}
+          handlePageClick={ this.onPageClick }
         />}
       </>
     )
