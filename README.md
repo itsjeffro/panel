@@ -7,10 +7,16 @@
     <a href="https://packagist.org/packages/itsjeffro/panel"><img src="https://poser.pugx.org/itsjeffro/panel/license.svg"></a>
 </p>
 
+## Introduction
+
 Inspired by Laravel Nova. This package provides a separate administration panel to manage model data.
 
 This is by no means a replacement or a competitor. I mainly created this package to see if I could create 
-something similar as a learning experience.
+something similar to a learning experience.
+
+<p align="center">
+    <img src="https://res.cloudinary.com/dz4tjswiv/image/upload/v1633656076/panel.png" />
+</p>
 
 ## Requirements
 
