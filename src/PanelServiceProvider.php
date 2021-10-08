@@ -5,6 +5,7 @@ namespace Itsjeffro\Panel;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Itsjeffro\Panel\Console\ActionCommand;
+use Itsjeffro\Panel\Console\InstallCommand;
 use Itsjeffro\Panel\Console\ResourceCommand;
 
 class PanelServiceProvider extends ServiceProvider
@@ -55,7 +56,7 @@ class PanelServiceProvider extends ServiceProvider
     {
         return [
             'namespace' => 'Itsjeffro\Panel\Http\Controllers',
-            'prefix' => 'panel',
+            'prefix' => config('panel.prefix'),
             'middleware' => config('panel.middleware_group'),
         ];
     }
@@ -95,8 +96,9 @@ class PanelServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                ResourceCommand::class,
                 ActionCommand::class,
+                InstallCommand::class,
+                ResourceCommand::class,
             ]);
         }
     }
