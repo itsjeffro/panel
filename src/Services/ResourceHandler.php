@@ -5,6 +5,7 @@ namespace Itsjeffro\Panel\Services;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Itsjeffro\Panel\Fields\BelongsTo;
@@ -54,10 +55,10 @@ class ResourceHandler
             });
         }
 
-        $indexResults = $query->paginate();
+        $paginationResults = $query->paginate();
 
         // Handle transforming paginated models.
-        $indexResults
+        $paginationResults
             ->getCollection()
             ->transform(function ($item) use ($resource, $resourceModel) {
                 return [
@@ -67,13 +68,30 @@ class ResourceHandler
                 ];
             });
 
+        $paginated = $paginationResults->toArray();
+
         return [
-            'actions' => $this->prepareActions($resource->actions($request)),
-            'name' => [
-                'singular' => $resource->modelName(),
-                'plural' => $resource->modelPluralName(),
-            ],
-            'model_data' => $indexResults,
+            'data' => Arr::get($paginated, 'data'),
+            'meta' => [
+                'actions' => $this->prepareActions($resource->actions($request)),
+                'fields' => $this->getTableHeadersFromResource($resourceModel),
+                'name' => [
+                    'plural' => $resource->modelPluralName(),
+                    'singular' => $resource->modelName(),
+                ]
+            ] + Arr::except($paginated, [
+                'data',
+                'first_page_url',
+                'last_page_url',
+                'prev_page_url',
+                'next_page_url',
+            ]),
+            'links' => [
+                'first' => $paginated['first_page_url'] ?? null,
+                'last' => $paginated['last_page_url'] ?? null,
+                'prev' => $paginated['prev_page_url'] ?? null,
+                'next' => $paginated['next_page_url'] ?? null,
+            ]
         ];
     }
 
@@ -218,5 +236,23 @@ class ResourceHandler
                 'slug' => $className,
             ];
         });
+    }
+
+    /**
+     * Returns fields to be used for table headings.
+     */
+    protected function getTableHeadersFromResource(ResourceModel $resourceModel): Collection
+    {
+        return $resourceModel->getResourceFields()
+            ->filter(function ($field) {
+                return $field->hasVisibility(Field::SHOW_ON_INDEX);
+            })
+            ->map(function ($field) {
+                return [
+                    'attribute' => $field->column,
+                    'name' => $field->name,
+                ];
+            })
+            ->values();
     }
 }

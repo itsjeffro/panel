@@ -112,7 +112,7 @@ class ResourceModel
      */
     public function getResourceIndexFields($model): Collection
     {
-        $resourceFields = $this->getResourceFields($model)
+        $resourceFields = $this->getResourceFields()
             ->filter(function ($field) {
                 return $field->hasVisibility(Field::SHOW_ON_INDEX);
             })
@@ -130,7 +130,7 @@ class ResourceModel
     /**
      * Return all resource's fields.
      */
-    public function getResourceFields($model): Collection
+    public function getResourceFields(): Collection
     {
         $resourceFields = new Collection([]);
 
