@@ -5,6 +5,7 @@ namespace Itsjeffro\Panel\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
+use Itsjeffro\Panel\Panel;
 use Itsjeffro\Panel\Services\ResourceModel;
 
 class ResourceActionController extends Controller
@@ -12,10 +13,9 @@ class ResourceActionController extends Controller
     /**
      * Handle action for the given resource.
      */
-    public function handle(Request $request, string $resource, string $action)
+    public function handle(Request $request, string $resourceName, string $action)
     {
-        $resourceModel = new ResourceModel($resource);
-        $resource = $resourceModel->resolveResource();
+        $resource = Panel::resolveResourceByName($resourceName);
         $models = $resource->resolveModel()->find($request->get('model_ids'));
 
         $fields = [];
