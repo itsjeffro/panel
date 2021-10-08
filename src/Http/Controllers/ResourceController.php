@@ -23,6 +23,7 @@ class ResourceController extends Controller
     public function index(Request $request, string $resourceName): JsonResponse
     {
         $resourceHandler = new ResourceHandler();
+
         $models = $resourceHandler->index($resourceName, $request);
 
         return response()->json($models);
@@ -61,9 +62,7 @@ class ResourceController extends Controller
             $resource = Panel::resolveResourceByName($resourceName);
             $resourceModel = new ResourceModel($resource);
 
-            $model = $resource->resolveModel()
-                ->with($resource::$with)
-                ->find($id);
+            $model = $resource->resolveModel()->with($resource::$with)->findOrFail($id);
 
             return response()->json([
                 'name' => [
@@ -72,6 +71,8 @@ class ResourceController extends Controller
                 ],
                 'groups' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_UPDATE),
             ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => "Resource [{$resourceName}] not found"], 404);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
         }
@@ -86,6 +87,7 @@ class ResourceController extends Controller
     {
         try {
             $resourceHandler = new ResourceHandler();
+
             $model = $resourceHandler->update($resourceName, $request, $id);
 
             return response()->json($model);
@@ -105,6 +107,7 @@ class ResourceController extends Controller
     {
         try {
             $resourceHandler = new ResourceHandler();
+
             $model = $resourceHandler->store($resourceName, $request);
 
             return response()->json($model, 201);
