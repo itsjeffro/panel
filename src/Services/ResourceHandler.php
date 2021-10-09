@@ -8,9 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Itsjeffro\Panel\Fields\BelongsTo;
 use Itsjeffro\Panel\Fields\Field;
-use Itsjeffro\Panel\Fields\HasMany;
 use Itsjeffro\Panel\Fields\MorphToMany;
 use Itsjeffro\Panel\Panel;
 
@@ -108,6 +106,7 @@ class ResourceHandler
 
         $resourceValidator = new ResourceValidator();
         $resourceModel = new ResourceModel($resource);
+        $resourceField = new ResourceField();
 
         $fields = $resourceModel->getFields(Field::SHOW_ON_CREATE)
             ->map(function ($field) {
@@ -130,19 +129,7 @@ class ResourceHandler
         });
 
         foreach ($fields as $field) {
-            $column = $field->column;
-
-            if ($field instanceof MorphToMany) {
-                $column = $field->column;
-            }
-
-            if ($field instanceof HasMany) {
-                $column = $model->{$column};
-            }
-
-            if ($field instanceof BelongsTo) {
-                $column = $model->{$column}()->getForeignKeyName();
-            }
+            $column = $resourceField->column($model, $field);
 
             $field->fillAttributeFromRequest($request, $model, $column);
         }
@@ -182,6 +169,7 @@ class ResourceHandler
 
         $resourceValidator = new ResourceValidator();
         $resourceModel = new ResourceModel($resource);
+        $resourceField = new ResourceField();
 
         if (!$model) {
             throw new ModelNotFoundException();
@@ -200,19 +188,7 @@ class ResourceHandler
         }
 
         foreach ($fields as $field) {
-            $column = $field->column;
-
-            if ($field instanceof MorphToMany) {
-                $column = $field->column;
-            }
-
-            if ($field instanceof HasMany) {
-                $column = $model->{$column};
-            }
-
-            if ($field instanceof BelongsTo) {
-                $column = $model->{$column}()->getForeignKeyName();
-            }
+            $column = $resourceField->column($model, $field);
 
             $field->fillAttributeFromRequest($request, $model, $column);
         }

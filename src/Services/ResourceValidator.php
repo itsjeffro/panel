@@ -4,9 +4,6 @@ namespace Itsjeffro\Panel\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Itsjeffro\Panel\Fields\BelongsTo;
-use Itsjeffro\Panel\Fields\HasMany;
-use Itsjeffro\Panel\Fields\MorphToMany;
 
 class ResourceValidator
 {
@@ -16,21 +13,10 @@ class ResourceValidator
     public function getValidationRules(Model $model, Collection $fields): array
     {
         $rules = [];
+        $resourceField = new ResourceField();
 
         foreach ($fields as $field) {
-            $column = $field->column;
-
-            if ($field instanceof MorphToMany) {
-                $column = $model->{$column}();
-            }
-
-            if ($field instanceof HasMany) {
-                $column = $model->{$column}();
-            }
-
-            if ($field instanceof BelongsTo) {
-                $column = $model->{$column}()->getForeignKeyName();
-            }
+            $column = $resourceField->column($model, $field);
 
             if ($field->rules) {
                 $rules[$column] = implode('|', $field->rules);

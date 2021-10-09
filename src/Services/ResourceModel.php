@@ -11,8 +11,6 @@ use Itsjeffro\Panel\Fields\BelongsTo;
 use Itsjeffro\Panel\Fields\Field;
 use Itsjeffro\Panel\Fields\HasMany;
 use Itsjeffro\Panel\Fields\MorphToMany;
-use Itsjeffro\Panel\Panel;
-use Itsjeffro\Panel\Resource;
 
 class ResourceModel
 {
