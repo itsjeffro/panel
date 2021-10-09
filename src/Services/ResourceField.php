@@ -9,6 +9,9 @@ use Itsjeffro\Panel\Fields\MorphToMany;
 
 class ResourceField
 {
+    /**
+     * Resolve model field column.
+     */
     public function column($model, Field $field): string
     {
         $column = $field->column;
