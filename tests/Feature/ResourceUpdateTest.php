@@ -7,6 +7,26 @@ use Itsjeffro\Panel\Tests\Models\User;
 
 class ResourceUpdateTest extends TestCase
 {
+    public function test_500_query_exception()
+    {
+        $user = factory(User::class)->create();
+
+        $response = $this->json(
+            'PUT',
+            route('panel.resources.update', ['resource' => 'users', 'id' => $user->getKey()]),
+            [
+                'name' => null,
+                'email' => 'hello@itsjeffro.com',
+            ]
+        );
+
+        $response
+            ->assertStatus(500)
+            ->assertJsonStructure([
+                'message',
+            ]);
+    }
+
     public function test_404_returned_when_resource_model_does_not_exist()
     {
         $response = $this->json(
