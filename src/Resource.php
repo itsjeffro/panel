@@ -5,6 +5,7 @@ namespace Itsjeffro\Panel;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Itsjeffro\Panel\Contracts\ResourceInterface;
 
@@ -90,5 +91,29 @@ abstract class Resource implements ResourceInterface
         }
 
         return $model;
+    }
+
+    /**
+     * Returns a flat list of the resource's defined fields.
+     */
+    public function fieldsByVisibility(string $visibility = ''): Collection
+    {
+        $fields = new Collection([]);
+
+        foreach ($this->fields() as $resourceField) {
+            if ($resourceField instanceof Block) {
+                $fields->push(...$resourceField->fields());
+            } else {
+                $fields->add($resourceField);
+            }
+        }
+
+        if ($visibility) {
+            $fields = $fields->filter(function ($field) use ($visibility) {
+                return $field->hasVisibility($visibility);
+            });
+        }
+
+        return $fields->values();
     }
 }
