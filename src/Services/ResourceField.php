@@ -2,9 +2,6 @@
 
 namespace Itsjeffro\Panel\Services;
 
-use Illuminate\Support\Collection;
-use Itsjeffro\Panel\Block;
-use Itsjeffro\Panel\Contracts\ResourceInterface;
 use Itsjeffro\Panel\Fields\BelongsTo;
 use Itsjeffro\Panel\Fields\Field;
 use Itsjeffro\Panel\Fields\HasMany;

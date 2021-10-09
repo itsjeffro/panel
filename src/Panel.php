@@ -2,7 +2,6 @@
 
 namespace Itsjeffro\Panel;
 
-use Itsjeffro\Panel\Contracts\ResourceInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -92,7 +91,7 @@ class Panel
     /**
      * Resolve instance of resource.
      */
-    public static function resolveResourceByName(string $resourceName): ResourceInterface
+    public static function resolveResourceByName(string $resourceName): Resource
     {
         foreach (static::getResources() as $resource) {
             if (strtolower($resource['slug']) === strtolower($resourceName)) {

@@ -6,25 +6,25 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Itsjeffro\Panel\Block;
-use Itsjeffro\Panel\Contracts\ResourceInterface;
 use Itsjeffro\Panel\Fields\BelongsTo;
 use Itsjeffro\Panel\Fields\Field;
 use Itsjeffro\Panel\Fields\HasMany;
 use Itsjeffro\Panel\Fields\MorphToMany;
+use Itsjeffro\Panel\Resource;
 
 class ResourceModel
 {
     /**
      * The defined resource.
      *
-     * @var ResourceInterface
+     * @var Resource
      */
     public $resource;
 
     /**
      * ResourceManager constructor.
      */
-    public function __construct(ResourceInterface $resource)
+    public function __construct(Resource $resource)
     {
         $this->resource = $resource;
     }

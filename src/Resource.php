@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Itsjeffro\Panel\Contracts\ResourceInterface;
 
-abstract class Resource implements ResourceInterface
+class Resource
 {
     /**
      * Determines if the resource should appear in the menu.
@@ -28,7 +27,10 @@ abstract class Resource implements ResourceInterface
     /**
      * Return resource's defined fields.
      */
-    abstract public function fields(): array;
+    public function fields(): array
+    {
+        return [];
+    }
 
     /**
      * Get the actions available for the resource.
