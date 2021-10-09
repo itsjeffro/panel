@@ -9,7 +9,7 @@ class ResourceActionTest extends TestCase
 {
     public function test_user_can_use_resource_action()
     {
-        $users = factory(User::class, 2)->create();
+        $users = factory(User::class, 3)->create();
 
         $response = $this->json(
             'POST',
@@ -23,6 +23,6 @@ class ResourceActionTest extends TestCase
 
         $response->assertStatus(200);
 
-        $this->assertDatabaseCount('users', 1);
+        $this->assertSame(2, User::count());
     }
 }
