@@ -48,8 +48,6 @@ class ResourceController extends Controller
             ]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => "Resource [{$resourceName}] not found"], 404);
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
         }
     }
 
@@ -73,8 +71,6 @@ class ResourceController extends Controller
             ]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => "Resource [{$resourceName}] not found"], 404);
-        } catch (\Exception $e) {
-            return response()->json($e->getMessage(), 500);
         }
     }
 
