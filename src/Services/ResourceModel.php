@@ -30,32 +30,6 @@ class ResourceModel
     }
 
     /**
-     * Returns a flat list of the resource's defined fields.
-     */
-    public function getFields(string $visibility = ''): Collection
-    {
-        $fields = new Collection([]);
-
-        foreach ($this->resource->fields() as $resourceField) {
-            if ($resourceField instanceof Block) {
-                foreach ($resourceField->fields() as $blockField) {
-                    $fields->add($blockField);
-                }
-            } else {
-                $fields->add($resourceField);
-            }
-        }
-
-        if ($visibility) {
-            $fields = $fields->filter(function ($field) use ($visibility) {
-                return $field->hasVisibility($visibility);
-            });
-        }
-
-        return $fields->values();
-    }
-
-    /**
      * Return resource's grouped fields along.
      *
      * @throws Exception
@@ -83,7 +57,9 @@ class ResourceModel
                     $groups[$groupKey]['name'] = $field->getName();
                 }
 
-                $blockFields = $this->filterFieldsByVisibility($visibility, $field->fields());
+                $blockFields = collect($field->fields())->filter(function ($field) use ($visibility) {
+                    return $field->hasVisibility($visibility);
+                });
 
                 $groups[$groupKey]['resourceFields'] = $blockFields->map(function ($blockField) use ($model) {
                     return $this->prepareField($model, $blockField);
@@ -111,10 +87,8 @@ class ResourceModel
      */
     public function getResourceIndexFields(Model $model): Collection
     {
-        $resourceFields = $this->getResourceFields()
-            ->filter(function ($field) {
-                return $field->hasVisibility(Field::SHOW_ON_INDEX);
-            })
+        $resourceFields = $this->resource
+            ->fieldsByVisibility(Field::SHOW_ON_INDEX)
             ->values();
 
         $fields = collect([]);
@@ -124,24 +98,6 @@ class ResourceModel
         }
 
         return $fields;
-    }
-
-    /**
-     * Return all resource's fields.
-     */
-    public function getResourceFields(): Collection
-    {
-        $resourceFields = new Collection([]);
-
-        foreach ($this->resource->fields() as $resourceField) {
-            if ($resourceField instanceof Block) {
-                $resourceFields->push(...$resourceField->fields());
-            } else {
-                $resourceFields->add($resourceField);
-            }
-        }
-
-        return $resourceFields;
     }
 
     /**
@@ -203,21 +159,5 @@ class ResourceModel
             'resourceName' => $resourceName,
             'relationship' => $relationship,
         ];
-    }
-
-    /**
-     * Returns fields based on its specified visibility.
-     */
-    protected function filterFieldsByVisibility(string $visibility, array $fields): Collection
-    {
-        $fields = collect($fields);
-
-        if (!$visibility) {
-            return $fields;
-        }
-
-        return $fields->filter(function ($field) use ($visibility) {
-            return $field instanceof Block || ($field instanceof Field && $field->hasVisibility($visibility));
-        });
     }
 }

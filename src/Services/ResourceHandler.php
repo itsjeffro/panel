@@ -6,8 +6,6 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Itsjeffro\Panel\Fields\Field;
 use Itsjeffro\Panel\Fields\MorphToMany;
 use Itsjeffro\Panel\Panel;
@@ -71,8 +69,8 @@ class ResourceHandler
         return [
             'data' => Arr::get($paginated, 'data'),
             'meta' => [
-                'actions' => $this->prepareActions($resource->actions($request)),
-                'fields' => $this->getTableHeadersFromResource($resourceModel),
+                'actions' => (new ResourceAction())->prepareActions($resource->actions($request)),
+                'fields' => (new ResourceTable())->tableHeaders($resource),
                 'name' => [
                     'plural' => $resource->modelPluralName(),
                     'singular' => $resource->modelName(),
@@ -105,10 +103,9 @@ class ResourceHandler
         $model = $resource->resolveModel();
 
         $resourceValidator = new ResourceValidator();
-        $resourceModel = new ResourceModel($resource);
         $resourceField = new ResourceField();
 
-        $fields = $resourceModel->getFields(Field::SHOW_ON_CREATE)
+        $fields = $resource->fieldsByVisibility(Field::SHOW_ON_CREATE)
             ->map(function ($field) {
                 $field->rules = $field->rules + $field->rulesOnCreate;
                 return $field;
@@ -168,14 +165,13 @@ class ResourceHandler
         $model = $resource->resolveModel()->find($id);
 
         $resourceValidator = new ResourceValidator();
-        $resourceModel = new ResourceModel($resource);
         $resourceField = new ResourceField();
 
         if (!$model) {
             throw new ModelNotFoundException();
         }
 
-        $fields = $resourceModel->getFields(Field::SHOW_ON_UPDATE)
+        $fields = $resource->fieldsByVisibility(Field::SHOW_ON_UPDATE)
             ->map(function ($field) {
                 $field->rules = $field->rules + $field->rulesOnUpdate;
                 return $field;
@@ -196,39 +192,5 @@ class ResourceHandler
         $model->save();
 
         return $model;
-    }
-
-    /**
-     * Return resource's actions.
-     */
-    protected function prepareActions(array $actions): Collection
-    {
-        return  collect($actions)->map(function ($action) {
-            $class = explode('\\', get_class($action));
-            $className = Str::kebab(end($class));
-
-            return [
-                'name' => str_replace('-', ' ', Str::title($className)),
-                'slug' => $className,
-            ];
-        });
-    }
-
-    /**
-     * Returns fields to be used for table headings.
-     */
-    protected function getTableHeadersFromResource(ResourceModel $resourceModel): Collection
-    {
-        return $resourceModel->getResourceFields()
-            ->filter(function ($field) {
-                return $field->hasVisibility(Field::SHOW_ON_INDEX);
-            })
-            ->map(function ($field) {
-                return [
-                    'attribute' => $field->column,
-                    'name' => $field->name,
-                ];
-            })
-            ->values();
     }
 }
