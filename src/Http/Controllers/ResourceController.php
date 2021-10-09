@@ -60,7 +60,9 @@ class ResourceController extends Controller
             $resource = Panel::resolveResourceByName($resourceName);
             $resourceModel = new ResourceModel($resource);
 
-            $model = $resource->resolveModel()->with($resource::$with)->findOrFail($id);
+            $model = $resource->resolveModel()
+                ->with($resource::$with)
+                ->findOrFail($id);
 
             return response()->json([
                 'name' => [
