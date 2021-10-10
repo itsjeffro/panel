@@ -29,28 +29,64 @@ class ResourceShowTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'groups' => [
-                    'general' => [
-                        'name' => 'User Details',
-                        'resourceFields' => [
-                            [
-                                'component' => 'Text',
-                                'field' => [
-                                    'attribute' => 'id',
-                                    'name' => 'ID',
-                                    'value' => $user->getKey(),
-                                ],
-                                'resource' => 'users',
-                                'resourceId' => $user->getKey(),
-                                'resourceName' => $user->getKey(),
-                                'relationship' => null,
-                            ]
+                'data' => [
+                    [
+                        'block' => null,
+                        'component' => 'Text',
+                        'field' => [
+                            'attribute' => 'id',
+                            'name' => 'ID',
+                            'value' => $user->getKey(),
                         ],
+                        'resource' => 'users',
+                        'resourceId' => $user->getKey(),
+                        'resourceName' => $user->getKey(),
+                        'relationship' => null,
                     ],
-                    'timestamps' => [
-                        'name' => 'Timestamps',
-                        'resourceFields' => [],
+                    [
+                        'block' => null,
+                        'component' => 'Text',
+                        'field' => [
+                            'attribute' => 'name',
+                            'name' => 'Name',
+                            'value' => $user->name,
+                        ],
+                        'resource' => 'users',
+                        'resourceId' => $user->getKey(),
+                        'resourceName' => $user->name,
+                        'relationship' => null,
                     ],
+                    [
+                        'block' => null,
+                        'component' => 'Text',
+                        'field' => [
+                            'attribute' => 'email',
+                            'name' => 'Email',
+                            'value' => $user->email,
+                        ],
+                        'resource' => 'users',
+                        'resourceId' => $user->getKey(),
+                        'resourceName' => $user->email,
+                        'relationship' => null,
+                    ],
+                    [
+                        'block' => 'Timestamps',
+                        'component' => 'DateTime',
+                        'field' => [
+                            'attribute' => 'created_at',
+                            'name' => 'Created At',
+                        ],
+                        'resource' => 'users',
+                    ],
+                    [
+                        'block' => 'Timestamps',
+                        'component' => 'DateTime',
+                        'field' => [
+                            'attribute' => 'updated_at',
+                            'name' => 'Updated At',
+                        ],
+                        'resource' => 'users',
+                    ]
                 ]
             ]);
     }

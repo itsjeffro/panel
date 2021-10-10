@@ -16,32 +16,25 @@ class ResourceFieldShowTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'groups' => [
-                    'general' => [
-                        'name' => 'User Details',
-                        'resourceFields' => [
-                            [
-                                'component' => 'Text',
-                                'field' => [
-                                    'attribute' => 'name',
-                                    'name' => 'Name',
-                                    'value' => null,
-                                ],
-                                'resource' => 'users',
-                                'resourceId' => null,
-                                'resourceName' => null,
-                                'relationship' => null,
-                            ]
+                'data' => [
+                    [
+                        'component' => 'Text',
+                        'field' => [
+                            'attribute' => 'name',
+                            'name' => 'Name',
+                            'value' => null,
                         ],
-                    ],
-                    'timestamps' => [
-                        'name' => 'Timestamps',
-                        'resourceFields' => [],
-                    ],
+                        'resource' => 'users',
+                        'resourceId' => null,
+                        'resourceName' => null,
+                        'relationship' => null,
+                    ]
                 ],
-                'name' => [
-                    'plural' => 'Users',
-                    'singular' => 'User',
+                'meta' => [
+                    'name' => [
+                        'plural' => 'Users',
+                        'singular' => 'User',
+                    ]
                 ]
             ]);
     }
