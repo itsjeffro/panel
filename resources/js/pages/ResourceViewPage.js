@@ -96,12 +96,28 @@ class ResourceViewPage extends React.Component {
       <div className="content">
         <div className="container">
           { this.groupFields(resource).map((group, index) => {
+            if (group.component === 'HasMany') {
+              return (
+                <div key={ `group-${group.name}` }>
+                  {group.resourceFields.map((resourceField) => (
+                    <DetailComponent
+                      component={resourceField.component}
+                      field={resourceField.field}
+                      resource={resourceField.resource}
+                      resourceId={resourceField.resourceId}
+                      resourceName={resourceField.resourceName}
+                    />
+                  ))}
+                </div>
+              )
+            }
+
             return (
-              <div key={'group-' + group.name}>
+              <div key={ 'group-' + group.name }>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="page-heading">
-                      <h2>{group.name}</h2>
+                      <h2>{ group.name }</h2>
                     </div>
                   </div>
                   <div className="col-md-6">
