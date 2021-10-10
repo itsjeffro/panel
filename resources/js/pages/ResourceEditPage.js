@@ -2,15 +2,20 @@ import React from 'react';
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
 import FormFieldComponent from "../fields/FormFieldComponent";
+import Loading from "../components/Loading";
 
 class ResourceEditPage extends React.Component {
   state = {
-    resource: null,
+    resource: {
+      meta: {},
+      data: [],
+    },
     formData: {},
     error: {
       message: '',
       errors: {},
     },
+    isLoading: true,
     isUpdated: false,
   };
 
@@ -27,7 +32,7 @@ class ResourceEditPage extends React.Component {
     axios
       .get('/panel/api/resources/' + resource + '/' + resourceId + '/edit')
       .then((response) => {
-        this.setState({ resource: response.data });
+        this.setState({ resource: response.data, isLoading: false });
       });
   }
 
@@ -100,23 +105,14 @@ class ResourceEditPage extends React.Component {
    * @returns {any[]}
    */
   getFieldsFromResource = (resource) => {
-    const groups = Object.keys(resource.groups || []);
-
-    let resourceFields = [];
-
-    groups.map((groupKey) => {
-      (resource.groups[groupKey].resourceFields || []).map((resourceField) => {
-        resourceFields.push(resourceField)
-      })
-    });
-
-    return resourceFields;
+    return resource.data;
   }
 
   render() {
     const {
       error,
       isUpdated,
+      isLoading,
       resource,
       formData,
     } = this.state;
@@ -131,11 +127,11 @@ class ResourceEditPage extends React.Component {
       return <Redirect to={'/resources/' + params.resource + '/' + params.id} />
     }
 
-    if (typeof resource === 'object' && resource === null) {
+    if (isLoading) {
       return (
         <div className="content">
           <div className="container">
-            Loading...
+            <Loading />
           </div>
         </div>
       )
@@ -145,7 +141,7 @@ class ResourceEditPage extends React.Component {
       <div className="content">
         <div className="container">
           <div className="page-heading">
-            <h2>Edit { resource.name.singular }</h2>
+            <h2>Edit { resource.meta ? resource.meta.name.singular : '' }</h2>
           </div>
 
           { error.message.length ? <div className="alert alert-danger">{error.message}</div> : '' }

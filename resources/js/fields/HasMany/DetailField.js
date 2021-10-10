@@ -1,18 +1,20 @@
 import React from 'react';
-import {Link} from "react-router-dom";
+import ResourceTable from "../../components/ResourceTable";
 
 const DetailField = (props) => {
-  const {
-    model,
-    field
-  } = props;
-
-  const value = model ? model[field.column][field.relation.title] : null;
-  const id = model ? model[field.relation.column] : null;
-  const table = field.relation.table;
+  const { relationship, resource, resourceName, resourceId, field } = props;
 
   return (
-    <span><Link to={ `/resources/${table}/${id}` }>{ value }</Link></span>
+    <div className="mt-5">
+      <ResourceTable
+        resourceUri={ field.attribute }
+        uriQueries={{
+          resource: resource,
+          resourceId: resourceId,
+          relationship: field.attribute
+        }}
+      />
+    </div>
   )
 }
 

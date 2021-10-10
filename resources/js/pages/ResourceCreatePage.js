@@ -2,6 +2,7 @@ import React from 'react';
 import {Redirect} from 'react-router-dom';
 import axios from 'axios';
 import FormFieldComponent from "../fields/FormFieldComponent";
+import Loading from "../components/Loading";
 
 class ResourceCreatePage extends React.Component {
   state = {
@@ -10,9 +11,15 @@ class ResourceCreatePage extends React.Component {
       errors: {},
     },
     isCreated: false,
+    isLoading: true,
     formData: {},
     newResourceId: null,
-    resource: null,
+    resource: {
+      meta: {
+        name: {}
+      },
+      data: [],
+    },
     relationships: {},
   };
 
@@ -29,7 +36,7 @@ class ResourceCreatePage extends React.Component {
     axios
       .get(`/panel/api/resources/${resource}/fields`)
       .then((response) => {
-        this.setState({ resource: response.data });
+        this.setState({ resource: response.data, isLoading: false });
       });
   }
 
@@ -124,17 +131,7 @@ class ResourceCreatePage extends React.Component {
    * Return fields.
    */
   getFieldsFromResource = (resource) => {
-    const groups = Object.keys(resource.groups || []);
-
-    let resourceFields = [];
-
-    groups.map((groupKey) => {
-      (resource.groups[groupKey].resourceFields || []).map((resourceField) => {
-        resourceFields.push(resourceField)
-      })
-    });
-
-    return resourceFields;
+    return resource.data;
   }
 
   render() {
@@ -148,6 +145,7 @@ class ResourceCreatePage extends React.Component {
       error,
       formData,
       isCreated,
+      isLoading,
       newResourceId,
       resource
     } = this.state;
@@ -156,11 +154,11 @@ class ResourceCreatePage extends React.Component {
       return <Redirect to={'/resources/' + params.resource + '/' + newResourceId} />
     }
 
-    if (resource === null) {
+    if (isLoading) {
       return (
         <div className="content">
           <div className="container">
-            Loading...
+            <Loading />
           </div>
         </div>
       )
@@ -170,7 +168,7 @@ class ResourceCreatePage extends React.Component {
       <div className="content">
         <div className="container">
           <div className="page-heading">
-            <h2>Create {resource.name.singular}</h2>
+            <h2>Create {resource.meta.name.singular}</h2>
           </div>
 
           {error.message.length ? <div className="alert alert-danger">{error.message}</div> : ''}

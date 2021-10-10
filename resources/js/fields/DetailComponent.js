@@ -3,6 +3,7 @@ import BelongsToField from "./BelongsTo/DetailField";
 import MorphToManyDetail from "./MorphToMany/DetailField";
 import TextareaField from "./Textarea/DetailField";
 import DateTimeField from "./DateTime/DetailField";
+import HasManyField from "./HasMany/DetailField";
 
 const DetailComponent = (props) => {
   const components = {
@@ -10,6 +11,7 @@ const DetailComponent = (props) => {
     MorphToMany: MorphToManyDetail,
     Textarea: TextareaField,
     DateTime: DateTimeField,
+    HasMany: HasManyField,
   };
 
   const {
