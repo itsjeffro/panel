@@ -2,7 +2,7 @@ import React from 'react';
 import ResourceTable from "../../components/ResourceTable";
 
 const DetailField = (props) => {
-  const { relationship, resource, resourceName, resourceId, field } = props;
+  const { resource, resourceName, resourceId, field } = props;
 
   return (
     <div className="mt-5">
