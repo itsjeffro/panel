@@ -31,6 +31,8 @@ class ResourceController extends Controller
 
     /**
      * Retrieve a single model from a given resource.
+     *
+     * @throws \Exception
      */
     public function show(string $resourceName, string $id): JsonResponse
     {
@@ -44,7 +46,13 @@ class ResourceController extends Controller
             $resourceModel = new ResourceModel($resource);
 
             return response()->json([
-                'groups' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_DETAIL)
+                'data' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_DETAIL),
+                'meta' => [
+                    'name' => [
+                        'singular' => $resource->modelName(),
+                        'plural' => $resource->modelPluralName(),
+                    ],
+                ]
             ]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => "Resource [{$resourceName}] not found"], 404);
@@ -65,11 +73,13 @@ class ResourceController extends Controller
                 ->findOrFail($id);
 
             return response()->json([
-                'name' => [
-                    'singular' => $resource->modelName(),
-                    'plural' => $resource->modelPluralName(),
-                ],
-                'groups' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_UPDATE),
+                'data' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_UPDATE),
+                'meta' => [
+                    'name' => [
+                        'singular' => $resource->modelName(),
+                        'plural' => $resource->modelPluralName(),
+                    ],
+                ]
             ]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => "Resource [{$resourceName}] not found"], 404);

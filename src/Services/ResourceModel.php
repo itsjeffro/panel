@@ -34,70 +34,19 @@ class ResourceModel
      *
      * @throws Exception
      */
-    public function getGroupedFields(Model $model, ?string $visibility = null): array
+    public function getGroupedFields(Model $model, ?string $visibility = null): Collection
     {
-        $fields =  collect($this->resource->fields())
-            ->filter(function ($field) use ($visibility) {
-                return $field instanceof Block ||
-                    ($field instanceof Field && $field->hasVisibility($visibility));
-            });
-
-        $groups = [
-            'general' => [
-                'name' => $this->resource->modelName() . ' Details',
-                'resourceFields' => [],
-            ],
-        ];
-
-        foreach ($fields as $field) {
-            if ($field instanceof Block) {
-                $groupKey = strtolower($field->getName());
-
-                if (!isset($groups[$groupKey]['name'])) {
-                    $groups[$groupKey]['name'] = $field->getName();
-                }
-
-                $blockFields = collect($field->fields())->filter(function ($field) use ($visibility) {
-                    return $field->hasVisibility($visibility);
-                });
-
-                $groups[$groupKey]['resourceFields'] = $blockFields->map(function ($blockField) use ($model) {
-                    return $this->prepareField($model, $blockField);
-                });
-            } elseif ($field instanceof HasMany) {
-                $groupKey = strtolower($field->getName());
-
-                if (!isset($groups[$groupKey]['name'])) {
-                    $groups[$groupKey]['name'] = $field->getName();
-                }
-
-                $groups[$groupKey] = $this->prepareField($model, $field);
-            } else {
-                $groupKey = 'general';
-
-                $groups[$groupKey]['resourceFields'][] = $this->prepareField($model, $field);
-            }
-        }
-
-        return $groups;
-    }
-
-    /**
-     * Returns only the resource's index fields.
-     */
-    public function getResourceIndexFields(Model $model): Collection
-    {
-        $resourceFields = $this->resource
-            ->fieldsByVisibility(Field::SHOW_ON_INDEX)
+        $fields =  $this->resource
+            ->fieldsByVisibility($visibility)
             ->values();
 
-        $fields = collect([]);
+        $resourceFields = collect([]);
 
-        foreach ($resourceFields as $resourceField) {
-            $fields->add($this->prepareField($model, $resourceField));
+        foreach ($fields as $field) {
+            $resourceFields->add($this->prepareField($model, $field));
         }
 
-        return $fields;
+        return $resourceFields;
     }
 
     /**
@@ -148,6 +97,7 @@ class ResourceModel
         }
 
         return [
+            'block' => $field->blockName,
             'component' => $field->component,
             'field' => [
                 'attribute' => $fieldAttribute,

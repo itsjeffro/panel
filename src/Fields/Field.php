@@ -4,6 +4,7 @@ namespace Itsjeffro\Panel\Fields;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Itsjeffro\Panel\Block;
 
 abstract class Field
 {
@@ -73,6 +74,13 @@ abstract class Field
     public $visibility = [];
 
     /**
+     * The block that the field belongs to.
+     *
+     * @var ?string
+     */
+    public $blockName = null;
+
+    /**
      * Field constructor.
      */
     public function __construct(?string $name = null, ?string $nameColumn = null, ?string $resourceNamespace = null)
@@ -85,8 +93,10 @@ abstract class Field
     /**
      * Instantiate a new instance of the child class utilising
      * methods from the extended Field class to use.
+     *
+     * @return Field|Block
      */
-    public static function make(?string $name = null, ?string $nameColumn = null, ?string $resourceNamespace = null): Field
+    public static function make(?string $name = null, ?string $nameColumn = null, ?string $resourceNamespace = null)
     {
         $childClass = static::class;
         $classSegments = explode('\\', $childClass);
@@ -292,6 +302,16 @@ abstract class Field
     public function hasVisibility(string $visibility): bool
     {
         return in_array($visibility, $this->visibility);
+    }
+
+    /**
+     * Set block name.
+     */
+    public function setBlockName(string $blockName): self
+    {
+        $this->blockName = $blockName;
+
+        return $this;
     }
 
     /**

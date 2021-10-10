@@ -4,6 +4,7 @@ namespace Itsjeffro\Panel;
 
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Itsjeffro\Panel\Resource;
 
 class Panel
 {
@@ -90,6 +91,8 @@ class Panel
 
     /**
      * Resolve instance of resource.
+     *
+     * @return Resource
      */
     public static function resolveResourceByName(string $resourceName): Resource
     {

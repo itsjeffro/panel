@@ -60,7 +60,7 @@ class ResourceHandler
                 return [
                     'resourceId' => $item->getKey(),
                     'resourceName' => $item->{$resource->title},
-                    'resourceFields' => $resourceModel->getResourceIndexFields($item),
+                    'resourceFields' => $resourceModel->getGroupedFields($item, Field::SHOW_ON_INDEX),
                 ];
             });
 

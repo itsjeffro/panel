@@ -2,6 +2,7 @@
 
 namespace Itsjeffro\Panel;
 
+use Illuminate\Support\Collection;
 use Itsjeffro\Panel\Fields\Field;
 
 class Block
@@ -40,8 +41,10 @@ class Block
     /**
      * Returns block's fields.
      */
-    public function fields(): array
+    public function fields(): Collection
     {
-        return $this->fields;
+        return collect($this->fields)->map(function ($field) {
+            return $field->setBlockName($this->blockName);
+        });
     }
 }

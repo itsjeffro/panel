@@ -23,11 +23,13 @@ class ResourceFieldController extends Controller
         $model = $resource->resolveModel();
 
         return response()->json([
-            'name' => [
-                'singular' => $resource->modelName(),
-                'plural' => $resource->modelPluralName(),
-            ],
-            'groups' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_CREATE),
+            'data' => $resourceModel->getGroupedFields($model, Field::SHOW_ON_CREATE),
+            'meta' => [
+                'name' => [
+                    'singular' => $resource->modelName(),
+                    'plural' => $resource->modelPluralName(),
+                ],
+            ]
         ]);
     }
 }
